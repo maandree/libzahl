@@ -28,3 +28,6 @@ RATIONALE
 	is too slow, probably because of all memory allocations,
 	and has an nonintuitive API. Hebimath is promising, but
 	I think it can be done better.
+
+NOTES
+	libzahl is currently not thread-safe.
