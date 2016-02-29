@@ -1,8 +1,8 @@
 NAME
-	libzahl - big integer library
+	libzahl - Big integer library
 
 ETYMOLOGY
-	The bold uppercase Z which represents the set of
+	The bold uppercase 'Z' which represents the set of
 	all integers is derived from the german word 'zahlen',
 	whose singular is 'zahl'.
 
@@ -15,7 +15,7 @@ DESCRIPTION
 	when an error is detected, rather than letting the
 	caller also perform a check. This shall make the
 	code in the user program cleaner too. libzahl will
-	use dedicated temporary bitnum integers whether
+	use dedicated temporary bignum integers whether
 	possible, and necessary, for its internal calculations.
 	libzahl will not deallocate allocations, but rather
 	cache them for reuse.

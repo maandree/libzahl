@@ -1,0 +1,33 @@
+.TH ZINIT 3 libzahl
+.SH NAME
+zinit - Prepare a bit integer for use.
+.SH SYNOPSIS
+.nf
+#include <zahl.h>
+
+void zinit(z_t \fIa\fP);
+.fi
+.SH DESCRIPTION
+.B zinit
+initializes the big integer
+.I a
+so that it can be used in other function calls.
+.P
+.B z_t
+is defined as
+.P
+.nf
+typedef struct {
+	/* You should not care about what is
+	 * inside this struct. It could change
+	 * in the future. */
+} z_t[1];
+.fi
+.SH SEE ALSO
+.BR zfree (3),
+.BR zswap (3),
+.BR zsave (3),
+.BR zsignum (3),
+.BR zeven (3),
+.BR zset (3),
+.BR zcmp (3)
