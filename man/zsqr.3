@@ -21,6 +21,10 @@ gets
 It is safe to call
 .B zsqr
 with non-unique parameters.
+.SH RATIONALE
+Multiplication algorithm can be optimised if
+we know that the multiplier and the multiplicand
+are equal.
 .SH SEE ALSO
 .BR zmodmul (3),
 .BR zmodpow (3),

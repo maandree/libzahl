@@ -38,6 +38,10 @@ except it is
 safe to call
 .B zdivmod with
 .IR "(quotient==remainder)" .
+.SH RATIONALE
+Calculating the remainder requires calculating division to
+be performed, and performing a division gives the remainder
+for free. It is often useful to calculate both.
 .SH SEE ALSO
 .BR zstr (3),
 .BR zadd (3),
