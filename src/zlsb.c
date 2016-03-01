@@ -5,15 +5,15 @@
 size_t
 zlsb(z_t a)
 {
-        size_t i = 0;
-        uint32_t x;
+	size_t i = 0;
+	uint32_t x;
 	if (zzero(a)) {
 		return SIZE_MAX;
 	}
 	for (;; i++) {
 		x = a->chars[i];
 		if (x) {
-		  	x = ~x;
+			x = ~x;
 			for (i *= BITS_PER_CHAR; x & 1; x >>= 1, i++);
 			return i;
 		}

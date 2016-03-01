@@ -12,7 +12,7 @@ int libzahl_set_up = 0;
 void
 zsetup(jmp_buf env)
 {
-        libzahl_jmp_buf = jmp_buf;
+	libzahl_jmp_buf = jmp_buf;
 
 	if (!libzahl_set_up) {
 		libzahl_set_up = 1;
