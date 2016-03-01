@@ -6,7 +6,7 @@ size_t
 zbits(z_t a)
 {
 	size_t i;
-	uint32_t x;
+	zahl_char_t x;
 	if (zzero(a)) {
 		return 1;
 	}

@@ -6,7 +6,7 @@ size_t
 zlsb(z_t a)
 {
 	size_t i = 0;
-	uint32_t x;
+	zahl_char_t x;
 	if (zzero(a)) {
 		return SIZE_MAX;
 	}

@@ -9,12 +9,15 @@
 
 
 
+/* You should pretend like this typedef does not exist. */
+typedef uint32_t zahl_char_t;
+
 /* This structure should be considered opaque. */
 typedef struct {
         int sign;
         size_t used;
         size_t alloced;
-        uint32_t *chars;
+        zahl_char_t *chars;
 } z_t[1];
 
 
