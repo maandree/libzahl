@@ -17,8 +17,8 @@ zload(z_t a, const void *buffer)
 	} else {
 		a->chars = 0;
 	}
-	if (a->sign) {
+	if (!zzero(a)) {
 		memcpy(a->chars, buf, a->used * sizeof(*(a->chars)));
 	}
-	return sizeof(z_t) - sizeof(a->chars) + (a->sign ? a->used * sizeof(*(a->chars)) : 0);
+	return sizeof(z_t) - sizeof(a->chars) + (zzero(a) ? 0 : a->used * sizeof(*(a->chars)));
 }
