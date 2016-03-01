@@ -1,0 +1,41 @@
+.TH ZMOD 3 libzahl
+.SH NAME
+zmod - Calculate the modulus of two big integer
+.SH SYNOPSIS
+.nf
+#include <zahl.h>
+
+void zmod(z_t \fIremainder\fP, z_t \fIdividend\fP, z_t \fIdivisor\fP);
+.fi
+.SH DESCRIPTION
+.B zmod
+calculates the remainder of a
+.I dividend
+and a
+.IR divisor ,
+and stores the result in
+.IR remainder .
+That is,
+.I remainder
+gets
+.I dividend
+Mod
+.IR divisor .
+.P
+The result
+.RI ( remainder )
+is always non-negative.
+.P
+It is safe to call
+.B zmod
+with non-unique parameters.
+.SH SEE ALSO
+.BR zdivmod (3),
+.BR zstr (3),
+.BR zadd (3),
+.BR zsub (3),
+.BR zmul (3),
+.BR zdiv (3),
+.BR zneg (3),
+.BR zabs (3),
+.BR zpow (3)
