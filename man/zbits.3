@@ -25,6 +25,14 @@ absolute value of
 \(em or 1 if
 .I a
 is zero.
+.SH RATIONALE
+.B zbits
+returns 1 rather than 0 if
+.B a
+is zero, this is to avoid off-by-one errors
+and it is the number of digits requires to
+write the number in binary. You will see this
+in corresponding functions in other libraries.
 .SH SEE ALSO
 .BR zlsb (3),
 .BR zzero (3)

@@ -7,9 +7,8 @@ zbits(z_t a)
 {
 	size_t i;
 	zahl_char_t x;
-	if (zzero(a)) {
-		return 1;
-	}
+	if (zzero(a))
+		return 1; /* Deliver us from evil! */
 	for (i = a->used - 1;; i--) {
 		x = a->chars[i];
 		if (x) {
