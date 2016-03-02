@@ -13,7 +13,9 @@
 	X(libzahl_tmp_str_num)\
 	X(libzahl_tmp_str_mag)\
 	X(libzahl_tmp_str_div)\
-	X(libzahl_tmp_str_rem)
+	X(libzahl_tmp_str_rem)\
+	X(libzahl_tmp_gcd_u)\
+	X(libzahl_tmp_gcd_v)
 
 #define LIST_CONSTS\
 	X(libzahl_const_1e19, zsetu, 10000000000000000000ULL) /* The largest power of 10 < 2⁶⁴. */\
