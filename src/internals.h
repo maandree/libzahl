@@ -12,10 +12,18 @@
 	X(libzahl_tmp_cmp)\
 	X(libzahl_tmp_str_num)\
 	X(libzahl_tmp_str_mag)\
-	X(libzahl_tmp_str_div)
+	X(libzahl_tmp_str_div)\
+	X(libzahl_tmp_str_rem)
+
+#define LIST_CONSTS\
+	X(libzahl_const_1e19, zsetu, 10000000000000000000ULL) /* The largest power of 10 < 2⁶⁴. */\
+	X(libzahl_const_1e9,  zsetu, 1000000000ULL)           /* The largest power of 10 < 2³². */
 
 #define X(x)  extern z_t x;
 LIST_TEMPS
+#undef X
+#define X(x, f, v)  extern z_t x;
+LIST_CONSTS
 #undef X
 
 extern jmp_buf libzahl_jmp_buf;

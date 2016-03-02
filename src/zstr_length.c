@@ -24,5 +24,5 @@ zstr_length(z_t a, unsigned long long int radix)
 		size_total += size_temp;
 		zdiv(num, num, div);
 	}
-	return size_total;
+	return size_total + (zsignum(a) < 0);
 }
