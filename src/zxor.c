@@ -1,6 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals"
 
+#include <string.h>
+#include <stdlib.h>
+
 
 void
 zxor(z_t a, z_t b, z_t c)

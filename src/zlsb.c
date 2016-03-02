@@ -7,9 +7,8 @@ zlsb(z_t a)
 {
 	size_t i = 0;
 	zahl_char_t x;
-	if (zzero(a)) {
+	if (zzero(a))
 		return SIZE_MAX;
-	}
 	for (;; i++) {
 		x = a->chars[i];
 		if (x) {

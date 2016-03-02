@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals"
 
+#include <stdlib.h>
 #include <string.h>
 
 

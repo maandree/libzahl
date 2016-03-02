@@ -1,6 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals"
 
+#include <stdlib.h>
+#include <stdio.h>
+
 #define num  libzahl_tmp_str_num
 #define rem  libzahl_tmp_str_rem
 

@@ -1,6 +1,8 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals"
 
+#include <stdlib.h>
+
 #define SIZE_MULTIPLE(fit, in)  ((sizeof(fit) + sizeof(in) - 1) / sizeof(in))
 
 

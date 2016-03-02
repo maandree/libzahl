@@ -13,7 +13,7 @@ zsplit(z_t high, z_t low, z_t a, size_t delim)
 		return;
 	}
 
-	chars = delim >> LB_BITS_PER_CHAR;
+	chars = FLOOR_BITS_TO_CHARS(delim);
 
 	if (high == a) {
 		if (a->used < chars)

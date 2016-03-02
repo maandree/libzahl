@@ -1,6 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals"
 
+#include <stdlib.h>
+#include <string.h>
+
 
 void
 zor(z_t a, z_t b, z_t c)
