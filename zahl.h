@@ -104,7 +104,7 @@ size_t zlsb(z_t);                      /* Index of first set bit, SIZE_MAX if no
 void zgcd(z_t, z_t, z_t);              /* a := gcd(b, c) */
 
 /* NONPRIME if b ∉ ℙ, PROBABLY_PRIME, if b ∈ ℙ with (1 − 4↑−c) certainty, 2 if PRIME ∈ ℙ.
- * If NONPRIME is returned the witness of b's compositeness is stored in a unless a is NONPRIME. */
+ * If NONPRIME is returned the witness of b's compositeness is stored in a. */
 enum zprimality zptest(z_t, z_t, int);
 
 
