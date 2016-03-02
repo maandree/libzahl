@@ -16,6 +16,8 @@ ztrunc(z_t a, z_t b, size_t bits)
 		chars = CEILING_BITS_TO_CHARS(bits);
 		a->sign = b->sign;
 		a->used = chars < b->used ? chars : b->used;
+		if (a->used < chars)
+			bits = 0;
 		if (a->alloced < b->alloced) {
 			a->alloced = b->alloced;
 			a->chars = realloc(a->chars, b->alloced * sizeof(*(a->chars)));
