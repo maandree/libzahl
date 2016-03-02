@@ -18,6 +18,24 @@ It is safe to call
 .B znot
 with
 .IR "(a==b)" .
+.SH NOTES
+Be aware, the following code will halt for any input
+.P
+.nf
+#include <zahl.h>
+
+void
+silly(z_t a)
+{
+	while (!zzero(a))
+		znot(a, a);
+}
+.fi
+.P
+Also note that
+.B z_t
+uses neither two's complement, ones' complement, nor
+sign-and-magnitude.
 .SH SEE ALSO
 .BR zand (3),
 .BR zor (3),
