@@ -118,8 +118,8 @@ void zrand(z_t, enum zranddev, enum zranddist, z_t);
 char *zstr(z_t, char *);               /* Write a in decimal onto b. */
 int zsets(z_t, const char *);          /* a := b */
 
-/* Length of a in radix b, assuming a > 0. */
-size_t zstr_length_positive(z_t, unsigned long long int);
+/* Length of a in radix b. */
+size_t zstr_length(z_t, unsigned long long int);
 
 
 /* Inline functions. */

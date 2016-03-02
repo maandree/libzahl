@@ -9,7 +9,10 @@
 #define BITS_IN_LAST_CHAR(bits)      ((bits) & (BITS_PER_CHAR - 1))
 
 #define LIST_TEMPS\
-	X(libzahl_tmp_cmp)
+	X(libzahl_tmp_cmp)\
+	X(libzahl_tmp_str_num)\
+	X(libzahl_tmp_str_mag)\
+	X(libzahl_tmp_str_div)
 
 #define X(x)  extern z_t x;
 LIST_TEMPS
