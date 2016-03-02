@@ -92,6 +92,7 @@ void zxor(z_t, z_t, z_t);              /* a := b ^ c */
 void znot(z_t, z_t);                   /* a := ~b */
 void zlsh(z_t, z_t, size_t);           /* a := b << c */
 void zrsh(z_t, z_t, size_t);           /* a := b >> c */
+void ztrunc(z_t, z_t, size_t);         /* a := b & ((1 << c) - 1) */
 int zbtest(z_t, size_t);               /* (a >> b) & 1 */
 void zsplit(z_t, z_t, z_t, size_t);    /* a := c >> d, b := c - (a << d) */
 size_t zbits(z_t);                     /* ⌊log₂ |a|⌋ + 1, 1 if a = 0 */
