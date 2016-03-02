@@ -12,7 +12,7 @@ zgcd(z_t a, z_t b, z_t c)
 	 * Binary GCD algorithm.
 	 */
 
-	size_t shifts = 0, i = 0;
+	size_t shifts = 0, i = 0, min;
 	zahl_char_t uv, bit;
 	int neg;
 
@@ -36,13 +36,21 @@ zgcd(z_t a, z_t b, z_t c)
 	zabs(v, c);
 	neg = zsignum(b) < 0 && zsignum(c) < 0;
 
-	for (;; i++) {
-		uv = (i < u->used ? u->chars[i] : 0)
-		   | (i < v->used ? v->chars[i] : 0);
+	min = u->used < v->used ? u->used : v->used;
+	for (; i < min; i++) {
+		uv = u->chars[i] | v->used[i];
 		for (bit = 1; bit; bit <<= 1, shifts++)
 			if (uv & bit)
 				goto loop_done;
 	}
+	for (; i < u->used; i++)
+		for (bit = 1; bit; bit <<= 1, shifts++)
+			if (u->chars[i] & bit)
+				goto loop_done;
+	for (; i < v->used; i++)
+		for (bit = 1; bit; bit <<= 1, shifts++)
+			if (v->chars[i] & bit)
+				goto loop_done;
 loop_done:
 	zrsh(u, u, shifts);
 	zrsh(v, v, shifts);
