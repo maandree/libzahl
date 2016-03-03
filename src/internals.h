@@ -39,6 +39,7 @@ LIST_TEMPS
 LIST_CONSTS
 #undef X
 
+extern z_t libzahl_tmp_divmod_ds[BITS_PER_CHAR];
 extern jmp_buf libzahl_jmp_buf;
 extern int libzahl_set_up;
 

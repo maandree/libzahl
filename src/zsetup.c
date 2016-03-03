@@ -8,6 +8,7 @@ LIST_TEMPS
 LIST_CONSTS
 #undef X
 
+z_t libzahl_tmp_divmod_ds[BITS_PER_CHAR];
 jmp_buf libzahl_jmp_buf;
 int libzahl_set_up = 0;
 
@@ -15,6 +16,7 @@ int libzahl_set_up = 0;
 void
 zsetup(jmp_buf env)
 {
+	size_t i;
 	libzahl_jmp_buf = jmp_buf;
 
 	if (!libzahl_set_up) {
@@ -27,5 +29,7 @@ zsetup(jmp_buf env)
 		zinit(x), f(x, v);
 		LIST_CONSTS;
 #undef X
+		for (i = BITS_PER_CHAR; i--;)
+			zinit(libzahl_tmp_divmod_ds[i]);
 	}
 }

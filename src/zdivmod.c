@@ -1,9 +1,10 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals"
 
-#define ta  libzahl_tmp_divmod_a
-#define tb  libzahl_tmp_divmod_b
-#define td  libzahl_tmp_divmod_d
+#define ta   libzahl_tmp_divmod_a
+#define tb   libzahl_tmp_divmod_b
+#define td   libzahl_tmp_divmod_d
+#define tds  libzahl_tmp_divmod_ds
 
 
 void
@@ -57,15 +58,35 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 	SET_SIGNUM(ta, 0);
 	zabs(tb, c);
 
-	for (;;) {
-		if (zcmpmag(td, tb) <= 0) {
-			zsub(tb, tb, td);
-			zbset(ta, ta, bit, 1);
+	if (bit < BITS_PER_CHAR) {
+		for (;;) {
+			if (zcmpmag(td, tb) <= 0) {
+				zsub(tb, tb, td);
+				zbset(ta, ta, bit, 1);
+			}
+			if (!bit--)
+				goto done;
+			zrsh(td, td, 1);
 		}
-		if (!bit--)
-			break;
-		zrsh(td, td, 1);
+	} else {
+		size_t i;
+		for (i = 0; i < BITS_PER_CHAR; i++)
+			zrsh(tds[i], td, i);
+		for (;;) {
+			for (i = 0; i < BITS_PER_CHAR; i++) {
+				if (zcmpmag(td[i], tb) <= 0) {
+					zsub(tb, tb, td[i]);
+					zbset(ta, ta, bit, 1);
+				}
+				if (!bit--)
+					goto done;
+				zrsh(td[i], td[i], 1);
+			}
+			for (i = bit < BITS_PER_CHAR ? bit : BITS_PER_CHAR; i--;)
+				zrsh(tds[i], tds[i], BITS_PER_CHAR);
+		}
 	}
+done:
 
 	zset(a, ta);
 	zset(b, tb);

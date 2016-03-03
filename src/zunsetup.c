@@ -5,6 +5,7 @@
 void
 zunsetup(jmp_buf env)
 {
+	size_t i;
 	if (libzahl_set_up) {
 		libzahl_set_up = 0;
 #define X(x)\
@@ -15,5 +16,7 @@ zunsetup(jmp_buf env)
 		zfree(x);
 		LIST_CONSTS;
 #undef X
+		for (i = BITS_PER_CHAR; i--;)
+			zfree(libzahl_tmp_divmod_ds[i]);
 	}
 }
