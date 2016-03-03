@@ -73,6 +73,7 @@ void zdiv(z_t, z_t, z_t);              /* a := b / c */
 void zdivmod(z_t, z_t, z_t, z_t);      /* a := c / d, b = c % d */
 void zmod(z_t, z_t, z_t);              /* a := b % c */
 void zsqr(z_t, z_t);                   /* a := b² */
+void zmodsqr(z_t, z_t, z_t);           /* a := b² % c */
 void zneg(z_t, z_t);                   /* a := -b */
 void zabs(z_t, z_t);                   /* a := |b| */
 void zpow(z_t, z_t, z_t);              /* a := b ↑ c */
@@ -80,8 +81,7 @@ void zmodpow(z_t, z_t, z_t, z_t);      /* a := (b ↑ c) % d */
 
 /* These are used internally and may be removed in a future version. */
 void zadd_unsigned(z_t, z_t, z_t);     /* a := |b| + |c|, b and c must not be the same reference. */
-void zsub_unsigned(z_t, z_t, z_t);     /* a := |b| - |c|, b and c must not be the same reference. */
-void zsub_positive(z_t, z_t, z_t);     /* a := |b| - |c|, assumes b ≥ c and that, and b is not c. */
+void zsub_unsigned(z_t, z_t, z_t);     /* a := |b| - |c| */
 
 
 /* Bitwise operations. */

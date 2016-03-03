@@ -3,6 +3,7 @@
 
 #define BITS_PER_CHAR                32
 #define LB_BITS_PER_CHAR             5
+#define ZAHL_CHAR_MAX                UINT32_MAX
 
 #define FLOOR_BITS_TO_CHARS(bits)    ((bits) >> LB_BITS_PER_CHAR)
 #define CEILING_BITS_TO_CHARS(bits)  (((bits) + (BITS_PER_CHAR - 1)) >> LB_BITS_PER_CHAR)
@@ -15,7 +16,14 @@
 	X(libzahl_tmp_str_div)\
 	X(libzahl_tmp_str_rem)\
 	X(libzahl_tmp_gcd_u)\
-	X(libzahl_tmp_gcd_v)
+	X(libzahl_tmp_gcd_v)\
+	X(libzahl_tmp_modmul)\
+	X(libzahl_tmp_div)\
+	X(libzahl_tmp_mod)\
+	X(libzahl_tmp_pow_b)\
+	X(libzahl_tmp_pow_c)\
+	X(libzahl_tmp_pow_d)\
+	X(libzahl_tmp_modsqr)
 
 #define LIST_CONSTS\
 	X(libzahl_const_1e19, zsetu, 10000000000000000000ULL) /* The largest power of 10 < 2⁶⁴. */\
