@@ -100,6 +100,9 @@ void zsplit(z_t, z_t, z_t, size_t);    /* a := c >> d, b := c - (a << d) */
 size_t zbits(z_t);                     /* ⌊log₂ |a|⌋ + 1, 1 if a = 0 */
 size_t zlsb(z_t);                      /* Index of first set bit, SIZE_MAX if none are set. */
 
+/* If d > 0: a := b | (1 << c), f d = 0: a := b & ~(1 << c), if d < 0: a := b ^ (1 << c) */
+void zbset(z_t, z_t, size_t, int);
+
 
 /* Number theory. */
 
