@@ -33,7 +33,7 @@ zmul(z_t a, z_t b, z_t c)
 	SET_SIGNUM(b, 1);
 	SET_SIGNUM(c, 1);
 
-        m = m > m2 ? m : m2;
+        m = MAX(m, m2);
 	m2 = m >> 1;
 
 	zinit(z0);

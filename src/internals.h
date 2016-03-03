@@ -1,6 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 #include "../zahl.h"
 
+#include <string.h>
+#include <stdlib.h>
+
 #define BITS_PER_CHAR                32
 #define LB_BITS_PER_CHAR             5
 #define ZAHL_CHAR_MAX                UINT32_MAX
@@ -43,6 +46,23 @@ extern z_t libzahl_tmp_divmod_ds[BITS_PER_CHAR];
 extern jmp_buf libzahl_jmp_buf;
 extern int libzahl_set_up;
 
-#define FAILURE_JUMP()  (longjmp(libzahl_jmp_buf, 1))
+#define FAILURE_JUMP()               longjmp(libzahl_jmp_buf, 1)
+#define zmemcpy(d, s, n)             memcpy(d, s, (n) * sizeof(zahl_char_t))
+#define zmemmove(d, s, n)            memmove(d, s, (n) * sizeof(zahl_char_t))
+#define zmemset(a, v, n)             memset(a, v, (n) * sizeof(zahl_char_t))
+#define zmemcmp(a, b, n)             memcmp(a, b, (n) * sizeof(zahl_char_t))
 
-#define SET_SIGNUM(a, signum)  ((a)->sign = (signum))
+#define SET_SIGNUM(a, signum)        ((a)->sign = (signum))
+#define SET(a, b)                    do { if (a != b) zset(a, b)} while (0)
+
+#define MIN(a, b)                    ((a) < (b) ? (a) : (b))
+#define MAX(a, b)                    ((a) > (b) ? (a) : (b))
+
+static inline void
+zahl_realloc(z_t *p, size_t n)
+{
+	p->chars = realloc(p->chars, n * sizeof(zahl_char_t));
+	if (!p->chars)
+		FAILURE_JUMP();
+	p->alloced = n;
+}

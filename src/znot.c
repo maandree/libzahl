@@ -13,8 +13,7 @@ znot(z_t a, z_t b)
 	}
 
 	bits = zbits(b);
-	if (a != b)
-		zset(a, b);
+	SET(a, b);
 	SET_SIGNUM(a, -zsignum(a));
 
 	for (n = a->used; n--;)

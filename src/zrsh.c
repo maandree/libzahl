@@ -1,9 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals"
 
-#include <stdlib.h>
-#include <string.h>
-
 
 void
 zrsh(z_t a, z_t b, size_t bits)
@@ -11,8 +8,7 @@ zrsh(z_t a, z_t b, size_t bits)
 	size_t i, chars, cbits;
 
 	if (!bits) {
-		if (a != b)
-			zset(a, b);
+		SET(a, b);
 		return;
 	}
 
@@ -28,14 +24,12 @@ zrsh(z_t a, z_t b, size_t bits)
 
 	if (chars && a == b) {
 		a->used -= chars;
-		memmove(a->chars, a->chars + chars, a->used * sizeof(*(a->chars)));
+		zmemmove(a->chars, a->chars + chars, a->used);
 	} else if (a != b) {
 		a->used = b->used - chars;
-		if (a->alloced < a->used) {
-			a->alloced = a->used;
-			a->chars = realloc(a->chars, a->used * sizeof(*(a->chars)));
-		}
-		memcpy(a->chars, b->chars + chars, a->used * sizeof(*(a->chars)));
+		if (a->alloced < a->used)
+			zahl_realloc(a->chars, a->used);
+		zmemcpy(a->chars, b->chars + chars, a->used);
 	}
 
 	a->chars[0] >>= bits;

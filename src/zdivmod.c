@@ -36,8 +36,8 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 			return;
 		} else if (sign < 0) {
 			zsub_unsigned(b, d, c);
-		} else if (b != c) {
-			zset(b, c);
+		} else {
+			SET(b, c);
 		}
 		SET_SIGNUM(b, 1);
 		SET_SIGNUM(a, 0);
@@ -82,13 +82,13 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 					goto done;
 				zrsh(td[i], td[i], 1);
 			}
-			for (i = bit < BITS_PER_CHAR ? bit : BITS_PER_CHAR; i--;)
+			for (i = MIN(bit, BITS_PER_CHAR); i--;)
 				zrsh(tds[i], tds[i], BITS_PER_CHAR);
 		}
 	}
 done:
 
-	zset(a, ta);
-	zset(b, tb);
+	zswap(a, ta);
+	zswap(b, tb);
 	SET_SIGNUM(a, sign);
 }

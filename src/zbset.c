@@ -1,9 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals"
 
-#include <stdlib.h>
-#include <string.h>
-
 
 void
 zbset(z_t a, z_t b, size_t bit, int action)
@@ -15,8 +12,7 @@ zbset(z_t a, z_t b, size_t bit, int action)
 	bit = BITS_IN_LAST_CHAR(bit);
 	x <<= bit;
 
-	if (a != b)
-		zset(a, b);
+	SET(a, b);
 
 	if (action) {
 		if (zzero(a)) {
@@ -24,11 +20,9 @@ zbset(z_t a, z_t b, size_t bit, int action)
 			SET_SIGNUM(a, 1);
 		}
 		if (a->used <= chars) {
-			if (a->alloced <= chars) {
-				a->alloced = chars + 1;
-				a->chars = realloc(a->chars, a->alloced * sizeof(*(a->chars)));
-			}
-			memset(a->chars + a->used, 0, (chars - a->used + 1) * sizeof(*(a->chars)));
+			if (a->alloced <= chars)
+				zahl_realloc(a, chars + 1);
+			zmemset(a->chars + a->used, 0, chars - a->used + 1);
 		}
 	}
 

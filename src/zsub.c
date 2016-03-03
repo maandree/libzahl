@@ -1,9 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals"
 
-#include <stdlib.h>
-#include <string.h>
-
 
 void
 zsub_unsigned(z_t a, z_t b, z_t c)
@@ -18,16 +15,14 @@ zsub_unsigned(z_t a, z_t b, z_t c)
 			SET_SIGNUM(a, 0);
 			return;
 		}
-		if (a != c)
-			zset(a, c);
-		*subtrahend = *b;
+		SET(a, c);
+		*s = *b;
 	} else {
-		if (a != b)
-			zset(a, b);
-		*subtrahend = *c;
+		SET(a, b);
+		*s = *c;
 	}
 
-	n = a->used < s->used ? a->used : s->used;
+	n = MIN(a->used, s->used);
 
 	for (i = 0; i < n; i++) {
 		carry[~i & 1] = carry[i & 1] ? (a->chars[i] <= s->chars[i]) : (a->chars[i] < s->chars[i]);
@@ -51,8 +46,7 @@ zsub(z_t a, z_t b, z_t c)
 	} else if (zzero(b)) {
 		zneg(a, c);
 	} else if (zzero(c)) {
-		if (a != b)
-			zset(a, b);
+		SET(a, b);
 	} else if ((zsignum(b) | zsignum(c)) < 0) {
 		if (zsignum(b) < 0) {
 			if (zsignum(c) < 0) {

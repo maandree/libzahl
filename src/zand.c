@@ -1,9 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals"
 
-#include <stdlib.h>
-#include <string.h>
-
 
 void
 zand(z_t a, z_t b, z_t c)
@@ -15,7 +12,7 @@ zand(z_t a, z_t b, z_t c)
 		return;
 	}
 
-	n = b->used < c->used ? b->used : c->used;
+	n = MIN(b->used, c->used);
 	while (n--)
 		if (b->chars[n] & c->chars[n])
 			goto found_highest;
@@ -31,11 +28,9 @@ found_highest:
 		while (n--)
 			a->chars[n] &= b->chars[n];
 	} else {
-		if (a->alloced < a->used) {
-			a->alloced = a->used;
-			a->chars = realloc(a->chars, a->used * sizeof(*(a->chars)));
-		}
-		memcpy(a->chars, c->chars, a->used * sizeof(*(a->chars)));
+		if (a->alloced < a->used)
+			zahl_realloc(a, a->used);
+		zmemcpy(a->chars, c->chars, a->used);
 		while (n--)
 			a->chars[n] &= b->chars[n];
 	}

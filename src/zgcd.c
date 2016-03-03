@@ -17,18 +17,15 @@ zgcd(z_t a, z_t b, z_t c)
 	int neg;
 
 	if (!zcmp(b, c)) {
-		if (a != b)
-			zset(a, b);
+		SET(a, b);
 		return;
 	}
 	if (zzero(b)) {
-		if (a != c)
-			zset(a, c);
+		SET(a, c);
 		return;
 	}
 	if (zzero(c)) {
-		if (a != b)
-			zset(a, b);
+		SET(a, b);
 		return;
 	}
 
@@ -36,7 +33,7 @@ zgcd(z_t a, z_t b, z_t c)
 	zabs(v, c);
 	neg = zsignum(b) < 0 && zsignum(c) < 0;
 
-	min = u->used < v->used ? u->used : v->used;
+	min = MIN(u->used, v->used);
 	for (; i < min; i++) {
 		uv = u->chars[i] | v->used[i];
 		for (bit = 1; bit; bit <<= 1, shifts++)

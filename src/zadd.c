@@ -1,9 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals"
 
-#include <stdlib.h>
-#include <string.h>
-
 
 void
 zadd_unsigned(z_t a, z_t b, z_t c)
@@ -17,32 +14,30 @@ zadd_unsigned(z_t a, z_t b, z_t c)
 		return;
 	}
 
-	size = b->used > c->used ? b->used : c->used;
-	if (a->alloced < size + 1) {
-		a->alloced = size + 1;
-		a->chars = realloc(a->chars, a->alloced * sizeof(*(a->chars)));
-	}
+	size = MAX(b->used, c->used);
+	if (a->alloced < size + 1)
+		zahl_realloc(a, size + 1);
 	a->chars[size] = 0;
 
 	n = b->used + c->used - size;
 	if (a == b) {
 		if (a->used < c->used) {
 			n = c->used;
-			memset(a->chars + a->used, 0, (n - a->used) * sizeof(*(a->chars)));
+			zmemset(a->chars + a->used, 0, n - a->used);
 		}
 		addend = c->chars;
 	} else if (a == c) {
 		if (a->used < b->used) {
 			n = b->used;
-			memset(a->chars + a->used, 0, (n - a->used) * sizeof(*(a->chars)));
+			zmemset(a->chars + a->used, 0, n - a->used);
 		}
 		addend = b->chars;
 	} else if (b->used > c->used) {
-		memcpy(a->chars, b->chars, b->used * sizeof(*(a->chars)));
+		zmemcpy(a->chars, b->chars, b->used);
 		a->used = b->used;
 		addend = c->chars;
 	} else {
-		memcpy(a->chars, c->chars, c->used * sizeof(*(a->chars)));
+		zmemcpy(a->chars, c->chars, c->used));
 		a->used = c->used;
 		addend = b->chars;
 	}
@@ -70,11 +65,9 @@ void
 zadd(z_t a, z_t b, z_t c)
 {
 	if (zzero(b)) {
-		if (a != b)
-			zset(a, c);
+		SET(a, c);
 	} else if (zzero(c)) {
-		if (a != b)
-			zset(a, b);
+		SET(a, b);
 	} else if (b == c) {
 		zlsh(a, b, 1);
 	} else if ((zsignum(b) | zsignum(c)) < 0) {
