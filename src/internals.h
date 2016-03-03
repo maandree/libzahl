@@ -33,7 +33,8 @@
 
 #define LIST_CONSTS\
 	X(libzahl_const_1e19, zsetu, 10000000000000000000ULL) /* The largest power of 10 < 2⁶⁴. */\
-	X(libzahl_const_1e9,  zsetu, 1000000000ULL)           /* The largest power of 10 < 2³². */
+	X(libzahl_const_1e9,  zsetu, 1000000000ULL)           /* The largest power of 10 < 2³². */\
+	X(libzahl_const_1,    zsetu, 1)
 
 #define X(x)  extern z_t x;
 LIST_TEMPS
