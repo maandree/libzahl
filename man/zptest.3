@@ -35,6 +35,11 @@ This factor can be either composite, prime, or 1.
 The risk that a composite number is determined to be
 a probably prime is
 .IR (1-4↑-tries) .
+.P
+It is safe to call
+.B zptest
+with non-unique parameters, and with
+.IR "(witness==0)" .
 .SH RETURN VALUE
 This function will either return:
 .TP

@@ -29,12 +29,19 @@
 	X(libzahl_tmp_modsqr)\
 	X(libzahl_tmp_divmod_a)\
 	X(libzahl_tmp_divmod_b)\
-	X(libzahl_tmp_divmod_d)
+	X(libzahl_tmp_divmod_d)\
+	X(libzahl_tmp_ptest_x)\
+	X(libzahl_tmp_ptest_a)\
+	X(libzahl_tmp_ptest_d)\
+	X(libzahl_tmp_ptest_n1)\
+	X(libzahl_tmp_ptest_n4)
 
 #define LIST_CONSTS\
 	X(libzahl_const_1e19, zsetu, 10000000000000000000ULL) /* The largest power of 10 < 2⁶⁴. */\
 	X(libzahl_const_1e9,  zsetu, 1000000000ULL)           /* The largest power of 10 < 2³². */\
-	X(libzahl_const_1,    zsetu, 1)
+	X(libzahl_const_1,    zsetu, 1)\
+	X(libzahl_const_2,    zsetu, 2)\
+	X(libzahl_const_4,    zsetu, 4)
 
 #define X(x)  extern z_t x;
 LIST_TEMPS
