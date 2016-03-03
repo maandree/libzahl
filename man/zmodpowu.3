@@ -1,14 +1,14 @@
-.TH ZMODPOW 3 libzahl
+.TH ZMODPOWU 3 libzahl
 .SH NAME
-zmodpow - Calculate a modular power of a big integer
+zmodpowu - Calculate a modular power of a big integer
 .SH SYNOPSIS
 .nf
 #include <zahl.h>
 
-void zmodpow(z_t \fIpower\fP, z_t \fIbase\fP, z_t \fIexponent\fP, z_t \fImodulator\fP);
+void zmodpowu(z_t \fIpower\fP, z_t \fIbase\fP, unsigned long long int \fIexponent\fP, z_t \fImodulator\fP);
 .fi
 .SH DESCRIPTION
-.B zmodpow
+.B zmodpowu
 calculates the
 .IR exponent :th
 power of a
@@ -27,14 +27,14 @@ Mod
 .IR modulator .
 .P
 It is safe to call
-.B zmodpow
+.B zmodpowu
 with non-unique parameters.
 .SH RATIONALE
 It is possible to calculate the modular power
 with a faster algorithm than calculating the
 power and than the modulus of that power.
 .SH SEE ALSO
-.BR zmodpowu (3),
+.BR zmodpow (3),
 .BR zmodsqr (3),
 .BR zmodmul (3),
 .BR zsqr (3),

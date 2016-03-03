@@ -78,6 +78,8 @@ void zneg(z_t, z_t);                   /* a := -b */
 void zabs(z_t, z_t);                   /* a := |b| */
 void zpow(z_t, z_t, z_t);              /* a := b ↑ c */
 void zmodpow(z_t, z_t, z_t, z_t);      /* a := (b ↑ c) % d */
+void zpowu(z_t, z_t, unsigned long long int);
+void zmodpowu(z_t, z_t, z_t, unsigned long long int);
 
 /* These are used internally and may be removed in a future version. */
 void zadd_unsigned(z_t, z_t, z_t);     /* a := |b| + |c|, b and c must not be the same reference. */

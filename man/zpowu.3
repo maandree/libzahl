@@ -1,14 +1,14 @@
-.TH ZPOW 3 libzahl
+.TH ZPOWU 3 libzahl
 .SH NAME
-zpow - Calculate a power of a big integer
+zpowu - Calculate a power of a big integer
 .SH SYNOPSIS
 .nf
 #include <zahl.h>
 
-void zpow(z_t \fIpower\fP, z_t \fIbase\fP, z_t \fIexponent\fP);
+void zpowu(z_t \fIpower\fP, z_t \fIbase\fP, unsigned long long int \fIexponent\fP);
 .fi
 .SH DESCRIPTION
-.B zpow
+.B zpowu
 calculates the
 .IR exponent :th
 power of a
@@ -23,11 +23,11 @@ gets
 .IR exponent .
 .P
 It is safe to call
-.B zpow
+.B zpowu
 with non-unique parameters.
 .SH SEE ALSO
 .BR zpowu (3),
-.BR zmodpow (3),
+.BR zmodpowu (3),
 .BR zsqr (3),
 .BR zstr (3),
 .BR zadd (3),
