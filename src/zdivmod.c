@@ -4,13 +4,12 @@
 #define ta  libzahl_tmp_divmod_a
 #define tb  libzahl_tmp_divmod_b
 #define td  libzahl_tmp_divmod_d
-#define te  libzahl_tmp_divmod_e
 
 
 void
 zdivmod(z_t a, z_t b, z_t c, z_t d)
 {
-	size_t c_bits, d_bits, shift;
+	size_t c_bits, d_bits, bit;
 	int sign, cmpmag;
 
 	sign = zsignum(c) * zsignum(d);
@@ -47,25 +46,24 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 	c_bits = zbits(c);
 	d_bits = zbits(d);
 
-	shift = c_bits - d_bits;
-	zlsh(td, d, shift);
+	bit = c_bits - d_bits;
+	zlsh(td, d, bit);
 	SET_SIGNUM(td, 1);
 	if (zcmpmag(td, c) > 0) {
 		zrsh(td, td, 1);
-		shift -= 1;
+		bit -= 1;
 	}
 
-	zsetu(te, 1);
-	zlsh(te, te, shift);
 	SET_SIGNUM(ta, 0);
 	zabs(tb, c);
 
-	while (!zzero(te)) {
+	for (;;) {
 		if (zcmpmag(td, tb) <= 0) {
 			zsub(tb, tb, td);
-			zor(ta, ta, te);
+			zbset(ta, ta, bit, 1);
 		}
-		zrsh(te, te, 1);
+		if (!bit--)
+			break;
 		zrsh(td, td, 1);
 	}
 

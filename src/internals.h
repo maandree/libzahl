@@ -26,8 +26,7 @@
 	X(libzahl_tmp_modsqr)\
 	X(libzahl_tmp_divmod_a)\
 	X(libzahl_tmp_divmod_b)\
-	X(libzahl_tmp_divmod_d)\
-	X(libzahl_tmp_divmod_e)
+	X(libzahl_tmp_divmod_d)
 
 #define LIST_CONSTS\
 	X(libzahl_const_1e19, zsetu, 10000000000000000000ULL) /* The largest power of 10 < 2⁶⁴. */\
