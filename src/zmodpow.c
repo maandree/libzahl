@@ -11,7 +11,8 @@
 void
 zmodpow(z_t a, z_t b, z_t c, z_t d)
 {
-	size_t i, n;
+	size_t i, j, n, bits;
+	zahl_char_t x;
 
 	if (zsignum(c) <= 0) {
 		if (zzero(c)) {
@@ -35,7 +36,8 @@ zmodpow(z_t a, z_t b, z_t c, z_t d)
 		return;
 	}
 
-	n = zbits(c);
+	bits = zbits(c);
+	n = FLOOR_BITS_TO_CHARS(bits);
 
 	zmod(tb, b, d);
 	zset(tc, c);
@@ -43,8 +45,11 @@ zmodpow(z_t a, z_t b, z_t c, z_t d)
 	zsetu(a, 1);
 
 	for (i = 0; i < n; i++) {
-		if (zbtest(tc, i))
-			zmodmul(a, a, tb, td);
-		zmodsqr(tb, tb, td);
+		x = tc->chars[i];
+		for (j = BITS_PER_CHAR; j--; x >>= 1) {
+			if (x & 1)
+				zmodmul(a, a, tb, td);
+			zmodsqr(tb, tb, td);
+		}
 	}
 }
