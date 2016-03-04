@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -27,12 +27,12 @@ zrand_get_random_bits(z_t r, size_t bits, int fd)
 		read_just = read(fd, (char *)(r->chars) + read_total, n);
 		if (read_just < 0)
 			FAILURE_JUMP();
-		read_total += read_just;
-		n -= read_just;
+		read_total += (size_t)read_just;
+		n -= (size_t)read_just;
 	}
 
-	bit = BITS_IN_LAST_CHAR(bit)
-	mask <<= bit;
+	bits = BITS_IN_LAST_CHAR(bits);
+	mask <<= bits;
 	mask -= 1;
 
 	r->chars[chars - 1] &= mask;
@@ -70,6 +70,8 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 	}
 
 	fd = open(pathname, O_RDONLY);
+	if (fd < 0)
+		FAILURE_JUMP();
 
 	switch (dist) {
 	case QUASIUNIFORM:

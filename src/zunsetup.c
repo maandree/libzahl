@@ -1,9 +1,9 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 
 void
-zunsetup(jmp_buf env)
+zunsetup(void)
 {
 	size_t i;
 	if (libzahl_set_up) {

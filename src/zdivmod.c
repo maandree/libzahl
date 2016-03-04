@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 #define ta   libzahl_tmp_divmod_a
 #define tb   libzahl_tmp_divmod_b
@@ -74,13 +74,13 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 			zrsh(tds[i], td, i);
 		for (;;) {
 			for (i = 0; i < BITS_PER_CHAR; i++) {
-				if (zcmpmag(td[i], tb) <= 0) {
-					zsub(tb, tb, td[i]);
+				if (zcmpmag(tds[i], tb) <= 0) {
+					zsub(tb, tb, tds[i]);
 					zbset(ta, ta, bit, 1);
 				}
 				if (!bit--)
 					goto done;
-				zrsh(td[i], td[i], 1);
+				zrsh(tds[i], tds[i], 1);
 			}
 			for (i = MIN(bit, BITS_PER_CHAR); i--;)
 				zrsh(tds[i], tds[i], BITS_PER_CHAR);

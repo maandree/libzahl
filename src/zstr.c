@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 #include <stdio.h>
 
@@ -39,7 +39,7 @@ zstr(z_t a, char *b)
 
 	neg = zsignum(a) < 0;
 	zabs(num, a);
-	n -= neg;
+	n -= (size_t)neg;
 	n = n > 9 ? (n - 9) : 0;
 	b[0] = '-';
 	b += neg;
@@ -53,7 +53,7 @@ zstr(z_t a, char *b)
 			overridden = b[n + (9 - 1)];
 			n = n > 9 ? (n - 9) : 0;
 		} else {
-			n += sprintf(b + n, "%lu", (unsigned long)(rem->chars[0]));
+			n += (size_t)sprintf(b + n, "%lu", (unsigned long)(rem->chars[0]));
 			b[n] = overridden;
 			break;
 		}

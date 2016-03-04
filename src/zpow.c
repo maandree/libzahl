@@ -1,7 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
-
-#include <errno.h>
+#include "internals.h"
 
 #define tb  libzahl_tmp_pow_b
 #define tc  libzahl_tmp_pow_c
@@ -41,7 +39,7 @@ zpow(z_t a, z_t b, z_t c)
 
 	for (i = 0; i < n; i++) {
 		x = tc->chars[i];
-		for (j = BITS_PER_CHAR; j--; x >>= 1, j) {
+		for (j = BITS_PER_CHAR; j--; x >>= 1) {
 			if (x & 1)
 				zmul(a, a, tb);
 			zsqr(tb, tb);

@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 #define u  libzahl_tmp_gcd_u
 #define v  libzahl_tmp_gcd_v
@@ -35,7 +35,7 @@ zgcd(z_t a, z_t b, z_t c)
 
 	min = MIN(u->used, v->used);
 	for (; i < min; i++) {
-		uv = u->chars[i] | v->used[i];
+		uv = u->chars[i] | v->chars[i];
 		for (bit = 1; bit; bit <<= 1, shifts++)
 			if (uv & bit)
 				goto loop_done;

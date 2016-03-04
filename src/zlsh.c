@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 
 void
@@ -18,7 +18,7 @@ zlsh(z_t a, z_t b, size_t bits)
 	}
 
 	chars = FLOOR_BITS_TO_CHARS(bits);
-	bits = BITS_IN_LAST_CHAR(bits)
+	bits = BITS_IN_LAST_CHAR(bits);
 	cbits = BITS_PER_CHAR - 1 - bits;
 
 	a->used = b->used + chars;

@@ -3,6 +3,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #define BITS_PER_CHAR                32
 #define LB_BITS_PER_CHAR             5
@@ -61,13 +62,13 @@ extern int libzahl_set_up;
 #define zmemcmp(a, b, n)             memcmp(a, b, (n) * sizeof(zahl_char_t))
 
 #define SET_SIGNUM(a, signum)        ((a)->sign = (signum))
-#define SET(a, b)                    do { if (a != b) zset(a, b)} while (0)
+#define SET(a, b)                    do { if (a != b) zset(a, b); } while (0)
 
 #define MIN(a, b)                    ((a) < (b) ? (a) : (b))
 #define MAX(a, b)                    ((a) > (b) ? (a) : (b))
 
 static inline void
-zahl_realloc(z_t *p, size_t n)
+zahl_realloc(z_t p, size_t n)
 {
 	p->chars = realloc(p->chars, n * sizeof(zahl_char_t));
 	if (!p->chars)

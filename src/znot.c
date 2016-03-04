@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 
 void
@@ -8,7 +8,7 @@ znot(z_t a, z_t b)
 	size_t bits, n;
 
 	if (zzero(b)) {
-		SET_SIGNUM(a, 0)
+		SET_SIGNUM(a, 0);
 		return;
 	}
 
@@ -21,7 +21,7 @@ znot(z_t a, z_t b)
 	bits &= BITS_PER_CHAR - 1;
 	a->chars[a->used - 1] &= ((zahl_char_t)1 << bits) - 1;
 
-	while (; a->used; a->used--)
+	for (; a->used; a->used--)
 		if (a->chars[a->used - 1])
 			break;
 	if (!a->used)

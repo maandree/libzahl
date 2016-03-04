@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 #define num  libzahl_tmp_str_num
 #define mag  libzahl_tmp_str_mag

@@ -1,9 +1,9 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 
 void
-zmodmul(z_t a, z_t b, z_t c)
+zmodmul(z_t a, z_t b, z_t c, z_t d)
 {
 	/* TODO Montgomery modular multiplication */
 	if (a == d) {

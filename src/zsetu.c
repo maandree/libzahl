@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 #define SIZE_MULTIPLE(fit, in)  ((sizeof(fit) + sizeof(in) - 1) / sizeof(in))
 
@@ -12,7 +12,7 @@ zsetu(z_t a, unsigned long long int b)
 		return;
 	}
 	if (a->alloced < SIZE_MULTIPLE(b, *(a->chars)))
-		zahl_realloc(a, SIZE_MULTIPLE(b, *(a->chars)))
+		zahl_realloc(a, SIZE_MULTIPLE(b, *(a->chars)));
 	SET_SIGNUM(a, 1);
 	a->used = 0;
 	while (b) {

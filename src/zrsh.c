@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 
 void
@@ -19,7 +19,7 @@ zrsh(z_t a, z_t b, size_t bits)
 		return;
 	}
 
-	bits = BITS_IN_LAST_CHAR(bits)
+	bits = BITS_IN_LAST_CHAR(bits);
 	cbits = BITS_PER_CHAR - 1 - bits;
 
 	if (chars && a == b) {
@@ -28,7 +28,7 @@ zrsh(z_t a, z_t b, size_t bits)
 	} else if (a != b) {
 		a->used = b->used - chars;
 		if (a->alloced < a->used)
-			zahl_realloc(a->chars, a->used);
+			zahl_realloc(a, a->used);
 		zmemcpy(a->chars, b->chars + chars, a->used);
 	}
 

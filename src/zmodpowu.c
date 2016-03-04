@@ -1,7 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
-
-#include <errno.h>
+#include "internals.h"
 
 #define tb  libzahl_tmp_pow_b
 #define td  libzahl_tmp_pow_d
@@ -10,8 +8,6 @@
 void
 zmodpowu(z_t a, z_t b, unsigned long long int c, z_t d)
 {
-	size_t i, n;
-
 	if (!c) {
 		if (zzero(b)) {
 			errno = EDOM; /* Indeterminate form: 0:th power of 0 */
@@ -30,8 +26,6 @@ zmodpowu(z_t a, z_t b, unsigned long long int c, z_t d)
 		SET_SIGNUM(a, 0);
 		return;
 	}
-
-	n = zbits(c);
 
 	zmod(tb, b, d);
 	zset(td, d);

@@ -1,11 +1,11 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 #define x   libzahl_tmp_ptest_x
 #define a   libzahl_tmp_ptest_a
 #define d   libzahl_tmp_ptest_d
 #define n1  libzahl_tmp_ptest_n1
-#define n2  libzahl_tmp_ptest_n4
+#define n4  libzahl_tmp_ptest_n4
 
 
 enum zprimality
@@ -39,16 +39,16 @@ zptest(z_t witness, z_t n, int t)
 	zrsh(d, n1, r);
 
 	while (t--) {
-		zrand(a, n4, FAST_RANDOM, UNIFORM);
+		zrand(a, FAST_RANDOM, UNIFORM, n4);
 		zadd_unsigned(a, a, libzahl_const_2);
-		zmodpow(x, a, d, tn);
+		zmodpow(x, a, d, n);
 
 		if (!zcmp(x, libzahl_const_1) || !zcmp(x, n1))
 			continue;
 
 		for (i = 1; i < r; i++) {
 			zsqr(x, x);
-			zmod(x, x, tn);
+			zmod(x, x, n);
 			if (!zcmp(x, libzahl_const_1)) {
 				if (witness)
 					zswap(witness, a);

@@ -1,7 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
-
-#include <errno.h>
+#include "internals.h"
 
 #define tb  libzahl_tmp_pow_b
 #define tc  libzahl_tmp_pow_c

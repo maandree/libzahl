@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 
 void
@@ -47,5 +47,5 @@ zxor(z_t a, z_t b, z_t c)
 			a->chars[n] ^= b->chars[n];
 	}
 
-	SET_SIGNUM(a, 1 - 2 * ((zsignum(b) ^ zsignum(c)) < 0);
+	SET_SIGNUM(a, 1 - 2 * ((zsignum(b) ^ zsignum(c)) < 0));
 }

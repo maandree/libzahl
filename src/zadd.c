@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
 
 void
@@ -37,7 +37,7 @@ zadd_unsigned(z_t a, z_t b, z_t c)
 		a->used = b->used;
 		addend = c->chars;
 	} else {
-		zmemcpy(a->chars, c->chars, c->used));
+		zmemcpy(a->chars, c->chars, c->used);
 		a->used = c->used;
 		addend = b->chars;
 	}

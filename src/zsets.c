@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
-#include "internals"
+#include "internals.h"
 
-#include <errno.h>
+#include <ctype.h>
 
 
 int
@@ -30,7 +30,7 @@ zsets(z_t a, const char *str)
 		while (*str) {
 #define X(n)\
 		case n:\
-			temp *= 10, temp += *str++ & 15;\
+			temp *= 10, temp += *str++ & 15;
 		X(0) X(18) X(17) X(16) X(15) X(14) X(13) X(12) X(11)
 		X(10) X(9) X(8) X(7) X(6) X(5) X(4) X(3) X(2) X(1)
 #undef X
