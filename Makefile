@@ -70,7 +70,10 @@ libzahl.a: $(OBJ)
 test: test.c libzahl.a
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ $^
 
+check: test
+	./test
+
 clean:
 	-rm -- *.o *.su *.a *.so test 2>/dev/null
 
-.PHONY: all clean
+.PHONY: all check clean
