@@ -62,7 +62,8 @@ extern int libzahl_set_up;
 #define zmemcmp(a, b, n)             memcmp(a, b, (n) * sizeof(zahl_char_t))
 
 #define SET_SIGNUM(a, signum)        ((a)->sign = (signum))
-#define SET(a, b)                    do { if (a != b) zset(a, b); } while (0)
+#define SET(a, b)                    do { if ((a) != (b)) zset(a, b); } while (0)
+#define ENSURE_SIZE(a, n)            do { if ((a)->alloced < (n)) zahl_realloc(a, (n)); } while (0)
 
 #define MIN(a, b)                    ((a) < (b) ? (a) : (b))
 #define MAX(a, b)                    ((a) > (b) ? (a) : (b))

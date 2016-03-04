@@ -11,8 +11,7 @@ zsetu(z_t a, unsigned long long int b)
 		SET_SIGNUM(a, 0);
 		return;
 	}
-	if (a->alloced < SIZE_MULTIPLE(b, *(a->chars)))
-		zahl_realloc(a, SIZE_MULTIPLE(b, *(a->chars)));
+	ENSURE_SIZE(a, SIZE_MULTIPLE(b, *(a->chars)));
 	SET_SIGNUM(a, 1);
 	a->used = 0;
 	while (b) {

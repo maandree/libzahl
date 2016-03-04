@@ -42,12 +42,18 @@ zmodpow(z_t a, z_t b, z_t c, z_t d)
 	zset(td, d);
 	zsetu(a, 1);
 
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < n; i++) { /* Remember, n is floored. */
 		x = tc->chars[i];
 		for (j = BITS_PER_CHAR; j--; x >>= 1) {
 			if (x & 1)
 				zmodmul(a, a, tb, td);
 			zmodsqr(tb, tb, td);
 		}
+	}
+	x = tc->chars[i];
+	for (; x; x >>= 1) {
+		if (x & 1)
+			zmodmul(a, a, tb, td);
+		zmodsqr(tb, tb, td);
 	}
 }

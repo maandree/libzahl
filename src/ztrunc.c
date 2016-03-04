@@ -18,9 +18,10 @@ ztrunc(z_t a, z_t b, size_t bits)
 	a->used = MIN(chars, b->used);
 	if (a->used < chars)
 		bits = 0;
-	if (a->alloced < b->alloced)
-		zahl_realloc(a, b->alloced);
-	zmemcpy(a->chars, b->chars, a->used);
+	if (a != b) {
+		ENSURE_SIZE(a, b->alloced);
+		zmemcpy(a->chars, b->chars, a->used);
+	}
 	bits = BITS_IN_LAST_CHAR(bits);
 	if (bits) {
 		mask <<= bits;

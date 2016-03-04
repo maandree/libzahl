@@ -28,8 +28,7 @@ found_highest:
 		while (n--)
 			a->chars[n] &= b->chars[n];
 	} else {
-		if (a->alloced < a->used)
-			zahl_realloc(a, a->used);
+		ENSURE_SIZE(a, a->used);
 		zmemcpy(a->chars, c->chars, a->used);
 		while (n--)
 			a->chars[n] &= b->chars[n];

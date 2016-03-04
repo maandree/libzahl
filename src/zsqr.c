@@ -20,7 +20,7 @@ zsqr(z_t a, z_t b)
 
 	m2 = zbits(b);
 
-	if (m2 <= 16) {
+	if (m2 <= BITS_PER_CHAR / 2) {
 		zsetu(a, b->chars[0] * b->chars[0]);
 		SET_SIGNUM(a, 1);
 		return;

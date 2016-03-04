@@ -16,15 +16,16 @@
 static void
 zrand_get_random_bits(z_t r, size_t bits, int fd)
 {
-	size_t read_total, n, chars = CEILING_BITS_TO_CHARS(bits);
+	size_t read_total = 0, n, chars = CEILING_BITS_TO_CHARS(bits);
 	ssize_t read_just;
-	uint32_t mask = 1;
+	zahl_char_t mask = 1;
+	char *buf;
 
-	if (r->alloced < chars)
-		zahl_realloc(r, chars);
+	ENSURE_SIZE(r, chars);
+	buf = (char *)(r->chars);
 
-	for (n = chars << LB_BITS_PER_CHAR; n;) {
-		read_just = read(fd, (char *)(r->chars) + read_total, n);
+	for (n = chars * sizeof(zahl_char_t); n;) {
+		read_just = read(fd, buf + read_total, n);
 		if (read_just < 0)
 			FAILURE_JUMP();
 		read_total += (size_t)read_just;
@@ -75,6 +76,10 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 
 	switch (dist) {
 	case QUASIUNIFORM:
+		if (zsignum(n) < 0) {
+			errno = EDOM; /* n must be non-negative. */
+			FAILURE_JUMP();
+		}
 		bits = zbits(n);
 		zrand_get_random_bits(r, bits, fd);
 		zadd(r, r, libzahl_const_1);
@@ -83,10 +88,14 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 		break;
 
 	case UNIFORM:
+		if (zsignum(n) < 0) {
+			errno = EDOM; /* n must be non-negative. */
+			FAILURE_JUMP();
+		}
 		bits = zbits(n);
 		do
 			zrand_get_random_bits(r, bits, fd);
-		while (zcmp(r, n) > 0);
+		while (zcmpmag(r, n) > 0);
 		break;
 
 	default:

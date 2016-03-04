@@ -56,7 +56,7 @@ FUN =\
 OBJ = $(FUN:=.o)
 MAN = $(foreach F,$(FUN),man/$(F).3) man/libzahl.7
 
-all: libzahl.a
+all: libzahl.a test
 
 %.o: src/%.c $(HDR) config.mk
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
@@ -65,7 +65,10 @@ libzahl.a: $(OBJ)
 	$(AR) rc $@ $?
 	$(RANLIB) $@
 
+test: test.c libzahl.a
+	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ $^
+
 clean:
-	-rm -- *.o *.su *.a *.so 2>/dev/null
+	-rm -- *.o *.su *.a *.so test 2>/dev/null
 
 .PHONY: all clean

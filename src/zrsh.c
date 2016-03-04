@@ -27,8 +27,7 @@ zrsh(z_t a, z_t b, size_t bits)
 		zmemmove(a->chars, a->chars + chars, a->used);
 	} else if (a != b) {
 		a->used = b->used - chars;
-		if (a->alloced < a->used)
-			zahl_realloc(a, a->used);
+		ENSURE_SIZE(a, a->used);
 		zmemcpy(a->chars, b->chars + chars, a->used);
 	}
 

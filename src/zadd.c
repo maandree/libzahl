@@ -15,8 +15,7 @@ zadd_unsigned(z_t a, z_t b, z_t c)
 	}
 
 	size = MAX(b->used, c->used);
-	if (a->alloced < size + 1)
-		zahl_realloc(a, size + 1);
+	ENSURE_SIZE(a, size + 1);
 	a->chars[size] = 0;
 
 	n = b->used + c->used - size;

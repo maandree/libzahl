@@ -5,12 +5,12 @@
 void
 zbset(z_t a, z_t b, size_t bit, int action)
 {
-	zahl_char_t x = 1;
+	zahl_char_t mask = 1;
 	size_t chars;
 
 	chars = FLOOR_BITS_TO_CHARS(bit);
 	bit = BITS_IN_LAST_CHAR(bit);
-	x <<= bit;
+	mask <<= bit;
 
 	SET(a, b);
 
@@ -20,19 +20,19 @@ zbset(z_t a, z_t b, size_t bit, int action)
 			SET_SIGNUM(a, 1);
 		}
 		if (a->used <= chars) {
-			if (a->alloced <= chars)
-				zahl_realloc(a, chars + 1);
-			zmemset(a->chars + a->used, 0, chars - a->used + 1);
+			ENSURE_SIZE(a, chars + 1);
+			zmemset(a->chars + a->used, 0, chars + 1 - a->used);
+			a->used = chars + 1;
 		}
 	}
 
 	if (action > 0) {
-		a->chars[chars] |= x;
+		a->chars[chars] |= mask;
 		return;
 	} else if (action < 0) {
-		a->chars[chars] ^= x;
-	} else if (a->used > chars) {
-		a->chars[chars] &= ~x;
+		a->chars[chars] ^= mask;
+	} else if (chars < a->used) {
+		a->chars[chars] &= ~mask;
 	}
 
 	while (a->used && !a->chars[a->used - 1])

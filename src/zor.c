@@ -21,8 +21,7 @@ zor(z_t a, z_t b, z_t c)
 	m = MAX(b->used, c->used);
 	n = b->used + c->used - m;
 
-	if (a->alloced < m)
-		zahl_realloc(a, m);
+	ENSURE_SIZE(a, m);
 
 	if (a == b) {
 		zmemcpy(a->chars + n, m == b->used ? b->chars : c->chars, m - n);

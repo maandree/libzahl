@@ -22,8 +22,7 @@ zlsh(z_t a, z_t b, size_t bits)
 	cbits = BITS_PER_CHAR - 1 - bits;
 
 	a->used = b->used + chars;
-	if (a->alloced < a->used)
-		zahl_realloc(a, a->used);
+	ENSURE_SIZE(a, a->used);
 	if (a == b)
 		zmemmove(a->chars + chars, b->chars, a->used);
 	else
@@ -36,8 +35,7 @@ zlsh(z_t a, z_t b, size_t bits)
 		a->chars[i] |= carry[i & 1];
 	}
 	if (carry[i & 1]) {
-		if (a->alloced == a->used)
-			zahl_realloc(a, a->alloced << 1);
+		ENSURE_SIZE(a, a->alloced << 1);
 		a->chars[i] = carry[i & 1];
 		a->used++;
 	}

@@ -6,11 +6,12 @@ size_t
 zload(z_t a, const void *buffer)
 {
 	const char *buf = buffer;
-	a->sign    = *((const int *)buf),    buf += sizeof(int);
-	a->used    = *((const size_t *)buf), buf += sizeof(size_t);
-	a->alloced = *((const size_t *)buf), buf += sizeof(size_t);
-	if (a->alloced)
-		zahl_realloc(a, a->alloced);
+	size_t alloced;
+	a->sign = *((const int *)buf),    buf += sizeof(int);
+	a->used = *((const size_t *)buf), buf += sizeof(size_t);
+	alloced = *((const size_t *)buf), buf += sizeof(size_t);
+	if (alloced)
+		ENSURE_SIZE(a, alloced);
 	else
 		a->chars = 0;
 	if (!zzero(a))

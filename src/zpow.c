@@ -37,12 +37,18 @@ zpow(z_t a, z_t b, z_t c)
 	zset(tc, c);
 	zsetu(a, 1);
 
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < n; i++) { /* Remember, n is floored. */
 		x = tc->chars[i];
 		for (j = BITS_PER_CHAR; j--; x >>= 1) {
 			if (x & 1)
 				zmul(a, a, tb);
 			zsqr(tb, tb);
 		}
+	}
+	x = tc->chars[i];
+	for (; x; x >>= 1) {
+		if (x & 1)
+			zmul(a, a, tb);
+		zsqr(tb, tb);
 	}
 }

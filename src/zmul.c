@@ -24,7 +24,7 @@ zmul(z_t a, z_t b, z_t c)
 	b_sign = zsignum(b);
 	c_sign = zsignum(c);
 
-	if (m <= 16 && m2 <= 16) {
+	if (m <= BITS_PER_CHAR / 2 && m2 <= BITS_PER_CHAR / 2) {
 		zsetu(a, b->chars[0] * c->chars[0]);
 		SET_SIGNUM(a, b_sign * c_sign);
 		return;
