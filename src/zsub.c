@@ -30,7 +30,7 @@ zsub_unsigned(z_t a, z_t b, z_t c)
 		a->chars[i] -= carry[i & 1];
 	}
 
-	if (carry[i] & 1) {
+	if (carry[i & 1]) {
 		while (!a->chars[i])
 			a->chars[i++] = ZAHL_CHAR_MAX;
 		a->chars[i] -= 1;

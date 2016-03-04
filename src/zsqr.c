@@ -21,7 +21,11 @@ zsqr(z_t a, z_t b)
 	m2 = zbits(b);
 
 	if (m2 <= BITS_PER_CHAR / 2) {
-		zsetu(a, b->chars[0] * b->chars[0]);
+		/* zsetu(a, b->chars[0] * b->chars[0]); { */
+		ENSURE_SIZE(a, 1);
+		a->used = 1;
+		a->chars[0] = b->chars[0] * b->chars[0];
+		/* } */
 		SET_SIGNUM(a, 1);
 		return;
 	}
@@ -38,14 +42,14 @@ zsqr(z_t a, z_t b)
 
 	zsplit(high, low, b, m2);
 
-#if 0
+#if 1
 	zsqr(z0, low);
 	zsqr(z2, high);
 	zmul(z1, low, high);
 
+	zlsh(z1, z1, m2 + 1);
+	m2 <<= 1;
 	zlsh(z2, z2, m2);
-	m2 = (m2 << 1) | 1;
-	zlsh(z1, z1, m2);
 
 	zadd(a, z2, z1);
 	zadd(a, a, z0);

@@ -11,6 +11,7 @@ LIST_CONSTS
 z_t libzahl_tmp_divmod_ds[BITS_PER_CHAR];
 jmp_buf libzahl_jmp_buf;
 int libzahl_set_up = 0;
+int libzahl_error;
 
 
 void

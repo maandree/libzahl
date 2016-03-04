@@ -19,7 +19,7 @@ ztrunc(z_t a, z_t b, size_t bits)
 	if (a->used < chars)
 		bits = 0;
 	if (a != b) {
-		ENSURE_SIZE(a, b->alloced);
+		ENSURE_SIZE(a, a->used);
 		zmemcpy(a->chars, b->chars, a->used);
 	}
 	bits = BITS_IN_LAST_CHAR(bits);

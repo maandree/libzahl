@@ -13,14 +13,11 @@ zpow(z_t a, z_t b, z_t c)
 
 	if (zsignum(c) <= 0) {
 		if (zzero(c)) {
-			if (zzero(b)) {
-				errno = EDOM; /* Indeterminate form: 0:th power of 0 */
-				FAILURE_JUMP();
-			}
+			if (zzero(b))
+				FAILURE(EDOM); /* Indeterminate form: 0:th power of 0 */
 			zsetu(a, 1);
 		} else if (zzero(b)) {
-			errno = EDOM; /* Undefined form: Division by 0 */
-			FAILURE_JUMP();
+			FAILURE(EDOM); /* Undefined form: Division by 0 */
 		} else {
 			SET_SIGNUM(a, 0);
 		}

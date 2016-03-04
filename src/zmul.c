@@ -13,7 +13,10 @@ zmul(z_t a, z_t b, z_t c)
 	z_t z0, z1, z2, b_high, b_low, c_high, c_low;
 	int b_sign, c_sign;
 
-	if (zzero(b) || zzero(c)) {
+	b_sign = zsignum(b);
+	c_sign = zsignum(c);
+
+	if (!b_sign || !c_sign) {
 		SET_SIGNUM(a, 0);
 		return;
 	}
@@ -21,11 +24,12 @@ zmul(z_t a, z_t b, z_t c)
 	m = zbits(b);
 	m2 = b == c ? m : zbits(c);
 
-	b_sign = zsignum(b);
-	c_sign = zsignum(c);
-
-	if (m <= BITS_PER_CHAR / 2 && m2 <= BITS_PER_CHAR / 2) {
-		zsetu(a, b->chars[0] * c->chars[0]);
+	if (m + m2 <= BITS_PER_CHAR) {
+		/* zsetu(a, b->chars[0] * c->chars[0]); { */
+		ENSURE_SIZE(a, 1);
+		a->used = 1;
+		a->chars[0] = b->chars[0] * c->chars[0];
+		/* } */
 		SET_SIGNUM(a, b_sign * c_sign);
 		return;
 	}
@@ -47,7 +51,7 @@ zmul(z_t a, z_t b, z_t c)
 	zsplit(b_high, b_low, b, m2);
 	zsplit(c_high, c_low, c, m2);
 
-#if 0
+#if 1
 	zmul(z0, b_low, c_low);
 	zmul(z2, b_high, c_high);
 	zadd(b_low, b_low, b_high);
@@ -57,9 +61,9 @@ zmul(z_t a, z_t b, z_t c)
 	zsub(z1, z1, z0);
 	zsub(z1, z1, z2);
 
-	zlsh(z2, z2, m2);
-	m2 <<= 1;
 	zlsh(z1, z1, m2);
+	m2 <<= 1;
+	zlsh(z2, z2, m2);
 
 	zadd(a, z2, z1);
 	zadd(a, a, z0);

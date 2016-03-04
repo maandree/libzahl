@@ -9,9 +9,8 @@ zsave(z_t a, void *buffer)
 		char *buf = buffer;
 		*((int *)buf)    = a->sign,    buf += sizeof(int);
 		*((size_t *)buf) = a->used,    buf += sizeof(size_t);
-		*((size_t *)buf) = a->alloced, buf += sizeof(size_t);
 		if (!zzero(a))
 			zmemcpy(buf, a->chars, a->used);
 	}
-	return sizeof(z_t) - sizeof(a->chars) + (zzero(a) ? 0 : a->used * sizeof(*(a->chars)));
+	return sizeof(int) + sizeof(size_t) + (zzero(a) ? 0 : a->used * sizeof(zahl_char_t));
 }

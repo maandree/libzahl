@@ -17,6 +17,7 @@ FUN =\
 	zcmpu\
 	zdiv\
 	zdivmod\
+	zerror\
 	zfree\
 	zgcd\
 	zinit\
@@ -32,6 +33,7 @@ FUN =\
 	zneg\
 	znot\
 	zor\
+	zperror\
 	zpow\
 	zpowu\
 	zptest\

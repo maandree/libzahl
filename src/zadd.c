@@ -49,8 +49,8 @@ zadd_unsigned(z_t a, z_t b, z_t c)
 		a->chars[i] += addend[i] + carry[i & 1];
 	}
 
-	while (carry[~i & 1]) {
-		carry[i & 1] = a->chars[i] == ZAHL_CHAR_MAX;
+	while (carry[i & 1]) {
+		carry[~i & 1] = a->chars[i] == ZAHL_CHAR_MAX;
 		a->chars[i++] += 1;
 	}
 

@@ -54,8 +54,9 @@ LIST_CONSTS
 extern z_t libzahl_tmp_divmod_ds[BITS_PER_CHAR];
 extern jmp_buf libzahl_jmp_buf;
 extern int libzahl_set_up;
+extern int libzahl_error;
 
-#define FAILURE_JUMP()               longjmp(libzahl_jmp_buf, 1)
+#define FAILURE(error)               (libzahl_error = (error), longjmp(libzahl_jmp_buf, 1))
 #define zmemcpy(d, s, n)             memcpy(d, s, (n) * sizeof(zahl_char_t))
 #define zmemmove(d, s, n)            memmove(d, s, (n) * sizeof(zahl_char_t))
 #define zmemset(a, v, n)             memset(a, v, (n) * sizeof(zahl_char_t))
@@ -72,7 +73,10 @@ static inline void
 zahl_realloc(z_t p, size_t n)
 {
 	p->chars = realloc(p->chars, n * sizeof(zahl_char_t));
-	if (!p->chars)
-		FAILURE_JUMP();
+	if (!p->chars) {
+		if (!errno) /* sigh... */
+			errno = ENOMEM;
+		FAILURE(errno);
+	}
 	p->alloced = n;
 }

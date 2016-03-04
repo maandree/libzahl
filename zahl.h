@@ -25,6 +25,10 @@ enum zprimality { NONPRIME = 0, PROBABLY_PRIME, PRIME };
 enum zranddev { FAST_RANDOM = 0, SECURE_RANDOM };
 enum zranddist { QUASIUNIFORM = 0, UNIFORM };
 
+enum zerror {
+	ZERROR_ERRNO_SET = 0
+};
+
 
 
 /* The parameters in the functions below are numbers a, b, c, ... */
@@ -126,6 +130,12 @@ int zsets(z_t, const char *);          /* a := b */
 
 /* Length of a in radix b. */
 size_t zstr_length(z_t, unsigned long long int);
+
+
+/* Error handling functions. */
+
+enum zerror zerror(const char **);     /* Return the current error code, and unless a is 0, a description in *a. */
+void zperror(const char *);            /* Identical to perror(3p) except it supports libzahl errors. */
 
 
 /* Inline functions. */

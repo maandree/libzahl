@@ -8,10 +8,8 @@ void
 zpowu(z_t a, z_t b, unsigned long long int c)
 {
 	if (!c) {
-		if (zzero(b)) {
-			errno = EDOM; /* Indeterminate form: 0:th power of 0 */
-			FAILURE_JUMP();
-		}
+		if (zzero(b))
+			FAILURE(EDOM); /* Indeterminate form: 0:th power of 0 */
 		zsetu(a, 1);
 		return;
 	} else if (zzero(b)) {

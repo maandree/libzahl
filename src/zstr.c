@@ -15,15 +15,16 @@
 char *
 zstr(z_t a, char *b)
 {
-	size_t n;
-	char overridden;
+	char buf[9 + 1];
+	size_t n, len;
+	char overridden = 0;
 	int neg;
 
 	if (zzero(a)) {
 		if (!b) {
 			b = malloc(2);
 			if (!b)
-				FAILURE_JUMP();
+				FAILURE(errno);
 		}
 		b[0] = '0';
 		b[1] = 0;
@@ -31,30 +32,32 @@ zstr(z_t a, char *b)
 	}
 
 	n = zstr_length(a, 10);
+
 	if (!b) {
 		b = malloc(n + 1);
 		if (!b)
-			FAILURE_JUMP();
+			FAILURE(errno);
 	}
 
 	neg = zsignum(a) < 0;
 	zabs(num, a);
-	n -= (size_t)neg;
-	n = n > 9 ? (n - 9) : 0;
 	b[0] = '-';
 	b += neg;
-	overridden = 0;
+	n -= neg;
+	n = n > 9 ? (n - 9) : 0;
 
 	for (;;) {
 		zdivmod(num, rem, num, libzahl_const_1e9);
 		if (!zzero(num)) {
-			sprintf(b + n, "%09lu", (unsigned long)(rem->chars[0]));
+			sprintf(b + n, "%09lu", zzero(rem) ? 0UL : (unsigned long)(rem->chars[0]));
 			b[n + 9] = overridden;
-			overridden = b[n + (9 - 1)];
+			overridden = b[n];
 			n = n > 9 ? (n - 9) : 0;
 		} else {
-			n += (size_t)sprintf(b + n, "%lu", (unsigned long)(rem->chars[0]));
-			b[n] = overridden;
+			len = (size_t)sprintf(buf, "%lu", (unsigned long)(rem->chars[0]));
+			if (overridden)
+				buf[len] = b[n + len];
+			memcpy(b + n, buf, len + 1);
 			break;
 		}
 	}

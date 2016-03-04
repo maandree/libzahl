@@ -18,15 +18,13 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 	if (!sign) {
 		if (zzero(c)) {
 			if (zzero(d)) {
-				errno = EDOM; /* Indeterminate form: 0 divided by 0 */
-				FAILURE_JUMP();
+				FAILURE(EDOM); /* Indeterminate form: 0 divided by 0 */
 			} else {
 				SET_SIGNUM(a, 0);
 				SET_SIGNUM(b, 0);
 			}
 		} else {
-			errno = EDOM; /* Undefined form: Division by 0 */
-			FAILURE_JUMP();
+			FAILURE(EDOM); /* Undefined form: Division by 0 */
 		}
 		return;
 	} else if ((cmpmag = zcmpmag(c, d)) <= 0) {
@@ -64,7 +62,7 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 				zsub(tb, tb, td);
 				zbset(ta, ta, bit, 1);
 			}
-			if (!bit--)
+			if (!bit-- || zzero(tb))
 				goto done;
 			zrsh(td, td, 1);
 		}
@@ -78,11 +76,10 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 					zsub(tb, tb, tds[i]);
 					zbset(ta, ta, bit, 1);
 				}
-				if (!bit--)
+				if (!bit-- || zzero(tb))
 					goto done;
-				zrsh(tds[i], tds[i], 1);
 			}
-			for (i = MIN(bit, BITS_PER_CHAR); i--;)
+			for (i = MIN(bit, BITS_PER_CHAR - 1) + 1; i--;)
 				zrsh(tds[i], tds[i], BITS_PER_CHAR);
 		}
 	}

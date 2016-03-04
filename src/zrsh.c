@@ -20,7 +20,7 @@ zrsh(z_t a, z_t b, size_t bits)
 	}
 
 	bits = BITS_IN_LAST_CHAR(bits);
-	cbits = BITS_PER_CHAR - 1 - bits;
+	cbits = BITS_PER_CHAR - bits;
 
 	if (chars && a == b) {
 		a->used -= chars;
@@ -31,10 +31,14 @@ zrsh(z_t a, z_t b, size_t bits)
 		zmemcpy(a->chars, b->chars + chars, a->used);
 	}
 
-	a->chars[0] >>= bits;
-	for (i = 1; i < a->used; i++) {
-		a->chars[i - 1] |= a->chars[i] >> cbits;
-		a->chars[i] >>= bits;
+	if (bits) { /* This if statement is very important in C. */
+		a->chars[0] >>= bits;
+		for (i = 1; i < a->used; i++) {
+			a->chars[i - 1] |= a->chars[i] << cbits;
+			a->chars[i] >>= bits;
+		}
+		while (!a->chars[a->used - 1])
+			a->used--;
 	}
 
 	SET_SIGNUM(a, zsignum(b));

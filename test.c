@@ -11,7 +11,8 @@
 			fprintf(stderr,\
 				"Failure at line %i: %s, expected %s, but got %i.\n",\
 				__LINE__, #expr, #expected, got);\
-			return 1;\
+			ret = 1;\
+			goto done;\
 		}\
 	} while (0)
 
@@ -22,7 +23,8 @@
 			fprintf(stderr,\
 				"Failure at line %i: %s, expected %zu, but got %zu.\n",\
 				__LINE__, #expr, (size_t)(expected), got);\
-			return 1;\
+			ret = 1;\
+			goto done;\
 		}\
 	} while (0)
 
@@ -33,7 +35,24 @@
 			fprintf(stderr,\
 				"Failure at line %i: %s, expected %s, but got %s.\n",\
 				__LINE__, #expr, expected, got);\
-			return 1;\
+			ret = 1;\
+			goto done;\
+		}\
+	} while (0)
+
+#define assert_nr(expr)\
+	do {\
+		if (setjmp(env2)) {\
+			ret = 0;\
+			zsetup(env);\
+		} else {\
+			zsetup(env2);\
+			expr;\
+			fprintf(stderr,\
+				"Failure at line %i: %s, should not have returned.\n",\
+				__LINE__, #expr);\
+			ret = 1;\
+			goto done;\
 		}\
 	} while (0)
 
@@ -43,14 +62,14 @@ main(void)
 	/* static because otherwise it would have to be volatile yeilding a lot of stupid
 	 * warnings. auto variables are not guaranteed to be readable after a long jump. */
 	static z_t a, b, c, d, _0, _1, _2, _3;
-	
-	jmp_buf env;
-	char buf[1000];
-	int ret = 0;
-	size_t n;
+	static char buf[1000];
+	static int ret = 0;
+	static jmp_buf env, env2;
+	static size_t n;
 
 	if (setjmp(env)) {
-		ret = 1;
+		zperror(0);
+		ret = 2;
 		goto done;
 	}
 
@@ -182,6 +201,9 @@ main(void)
 	assert((zneg(_2, _2), zcmp(a, _2)), < 0); zneg(_2, _2);
 	zneg(b, _3);
 	assert(zcmp(a, b), == 0);
+
+	zunsetup();
+	zsetup(env);
 
 	zsub(a, _2, _1);
 	assert(zcmpmag(_2, _1), > 0);
@@ -471,6 +493,11 @@ main(void)
 	znot(a, a);
 	assert(zcmp(a, _0), == 0);
 
+	zsetu(a, 0x1234);
+	zsetu(c, 0x234);
+	ztrunc(a, a, 12);
+	assert(zcmp(a, c), == 0);
+
 	zsetu(a, 0xEEFF);
 	zsetu(c, 0xEE);
 	zsetu(d, 0xFF);
@@ -716,6 +743,254 @@ main(void)
 	assert((zseti(a, 10), zptest(0, a, 100)), == NONPRIME);
 	assert((zseti(a, 11), zptest(0, a, 100)), != NONPRIME);
 	assert((zseti(a, 101), zptest(0, a, 100)), != NONPRIME);
+
+	assert_nr(zdivmod(a, b, _0, _0));
+	assert_nr(zdivmod(a, b, _1, _0));
+	zdivmod(a, b, _0, _1);
+	zdivmod(a, b, _1, _1);
+	assert_nr(zdiv(a, _0, _0));
+	assert_nr(zdiv(a, _1, _0));
+	zdiv(a, _0, _1);
+	zdiv(a, _1, _1);
+	assert_nr(zmod(a, _0, _0));
+	assert_nr(zmod(a, _1, _0));
+	zmod(a, _0, _1);
+	zmod(a, _1, _1);
+	assert_nr(zpow(a, _0, _0));
+	assert_nr((zneg(_1, _1), zpow(a, _0, _1))); zneg(_1, _1);
+	zpow(a, _0, _1);
+	zpow(a, _1, _0);
+	zneg(_1, _1), zpow(a, _1, _0), zneg(_1, _1);
+	assert_nr(zmodmul(a, _1, _1, _0));
+	assert_nr(zmodpow(a, _0, _0, _1));
+	assert_nr((zneg(_1, _1), zmodpow(a, _0, _1, _1))); zneg(_1, _1);
+	zmodpow(a, _0, _1, _1);
+	zmodpow(a, _1, _0, _1);
+	zneg(_1, _1), zmodpow(a, _1, _0, _1), zneg(_1, _1);
+	assert_nr(zmodpow(a, _0, _0, _0));
+	assert_nr((zneg(_1, _1), zmodpow(a, _0, _1, _0))); zneg(_1, _1);
+	assert_nr(zmodpow(a, _0, _1, _0));
+	assert_nr(zmodpow(a, _1, _0, _0));
+	assert_nr((zneg(_1, _1), zmodpow(a, _1, _0, _0))); zneg(_1, _1);
+	assert_nr(zpowu(a, _0, 0));
+	zpowu(a, _0, 1);
+	zpowu(a, _1, 0);
+	zneg(_1, _1), zpowu(a, _1, 0), zneg(_1, _1);
+	assert_nr(zmodpowu(a, _0, 0, _1));
+	zmodpowu(a, _0, 1, _1);
+	zmodpowu(a, _1, 0, _1);
+	zneg(_1, _1), zmodpowu(a, _1, 0, _1), zneg(_1, _1);
+	assert_nr(zmodpowu(a, _0, 0, _0));
+	assert_nr((zneg(_1, _1), zmodpowu(a, _0, 1, _0))); zneg(_1, _1);
+	assert_nr(zmodpowu(a, _0, 1, _0));
+	assert_nr(zmodpowu(a, _1, 0, _0));
+	assert_nr((zneg(_1, _1), zmodpowu(a, _1, 0, _0))); zneg(_1, _1);
+
+	zsetu(a, 1LL);
+	assert_s(zstr(a, buf), "1");
+	zsetu(a, 10LL);
+	assert_s(zstr(a, buf), "10");
+	zsetu(a, 100LL);
+	assert_s(zstr(a, buf), "100");
+	zsetu(a, 1000LL);
+	assert_s(zstr(a, buf), "1000");
+	zsetu(a, 10000LL);
+	assert_s(zstr(a, buf), "10000");
+	zsetu(a, 100000LL);
+	assert_s(zstr(a, buf), "100000");
+	zsetu(a, 1000000LL);
+	assert_s(zstr(a, buf), "1000000");
+	zsetu(a, 10000000LL);
+	assert_s(zstr(a, buf), "10000000");
+	zsetu(a, 100000000LL);
+	assert_s(zstr(a, buf), "100000000");
+	zsetu(a, 999999999LL);
+	assert_s(zstr(a, buf), "999999999");
+	zsetu(a, 1000000000LL);
+	assert_s(zstr(a, buf), "1000000000");
+	zsetu(a, 1000000001LL);
+	assert_s(zstr(a, buf), "1000000001");
+	zsetu(a, 2000000000LL);
+	assert_s(zstr(a, buf), "2000000000");
+	zsetu(a, 2050000000LL);
+	assert_s(zstr(a, buf), "2050000000");
+	zsetu(a, 2100000000LL);
+	assert_s(zstr(a, buf), "2100000000");
+	zsetu(a, 2140000000LL);
+	assert_s(zstr(a, buf), "2140000000");
+	zsetu(a, 2147000000LL);
+	assert_s(zstr(a, buf), "2147000000");
+	zsetu(a, 2147483000LL);
+	assert_s(zstr(a, buf), "2147483000");
+	zsetu(a, 2147483640LL);
+	assert_s(zstr(a, buf), "2147483640");
+	zsetu(a, 2147483646LL);
+	assert_s(zstr(a, buf), "2147483646");
+
+	zseti(a, 2147483647LL);
+	assert_s(zstr(a, buf), "2147483647");
+	zseti(a, -2147483647LL);
+	assert_s(zstr(a, buf), "-2147483647");
+	zseti(a, -2147483647LL - 1LL);
+	assert_s(zstr(a, buf), "-2147483648");
+
+	zsetu(a, 2147483647ULL);
+	assert_s(zstr(a, buf), "2147483647");
+	zsetu(a, 2147483648ULL);
+	assert_s(zstr(a, buf), "2147483648");
+	zsetu(a, 2147483649ULL);
+	assert_s(zstr(a, buf), "2147483649");
+
+	zsetu(a, 3000000000ULL);
+	assert_s(zstr(a, buf), "3000000000");
+	zsetu(a, 3100000000ULL);
+	assert_s(zstr(a, buf), "3100000000");
+	zsetu(a, 3200000000ULL);
+	assert_s(zstr(a, buf), "3200000000");
+	zsetu(a, 3300000000ULL);
+	assert_s(zstr(a, buf), "3300000000");
+	zsetu(a, 3400000000ULL);
+	assert_s(zstr(a, buf), "3400000000");
+	zsetu(a, 3500000000ULL);
+	assert_s(zstr(a, buf), "3500000000");
+	zsetu(a, 3600000000ULL);
+	assert_s(zstr(a, buf), "3600000000");
+	zsetu(a, 3700000000ULL);
+	assert_s(zstr(a, buf), "3700000000");
+	zsetu(a, 3800000000ULL);
+	assert_s(zstr(a, buf), "3800000000");
+	zsetu(a, 3900000000ULL);
+	assert_s(zstr(a, buf), "3900000000");
+	zsetu(a, 3999999999ULL);
+	assert_s(zstr(a, buf), "3999999999");
+	zsetu(a, 4000000000ULL);
+	assert_s(zstr(a, buf), "4000000000");
+	zsetu(a, 4000000001ULL);
+	assert_zu(zstr_length(a, 10), 10);
+	assert_s(zstr(a, buf), "4000000001");
+
+	zsetu(a, 4000000000ULL);
+	zsetu(b, 4000000000ULL);
+	zadd(c, a, a);
+	zsets(d, "8000000000");
+	assert(zcmp(c, d), == 0);
+	zadd(c, a, b);
+	assert(zcmp(c, d), == 0);
+	zadd(c, c, a);
+	zsets(d, "12000000000");
+	assert(zcmp(c, d), == 0);
+	zsub(c, c, a);
+	zsets(d, "8000000000");
+	assert(zcmp(c, d), == 0);
+	zsub(c, c, a);
+	zsets(d, "4000000000");
+	assert(zcmp(c, d), == 0);
+	zsets(d, "8000000000");
+	zrsh(d, d, 1);
+	assert(zcmp(c, d), == 0);
+	zsets(a, "6234216714");
+	zsets(b, "9424614147");
+	zsets(d, "830476546");
+	zand(c, a, b);
+	assert(zcmp(c, d), == 0);
+	zsets(a, "234216714");
+	zsets(b, "9424614147");
+	zsets(d, "9629466379");
+	zor(c, a, b);
+	assert(zcmp(c, d), == 0);
+	zsets(a, "6234216714");
+	zsets(b, "9424614147");
+	zsets(d, "13997877769");
+	zxor(c, a, b);
+	assert(zcmp(c, d), == 0);
+	zsets(a, "34216714");
+	zsets(b, "9424614147");
+	zsets(d, "9458821129");
+	zxor(c, a, b);
+	assert(zcmp(c, d), == 0);
+	zsetu(a, 1000000000ULL);
+	zsets(d, "1000000000000000000");
+	zmul(c, a, a);
+	assert(zcmp(c, d), == 0);
+	zdiv(c, c, a);
+	assert(zcmp(c, a), == 0);
+	zsetu(a, 1000000000ULL);
+	zsets(d, "1000000000000000000");
+	zsqr(c, a);
+	assert(zcmp(c, d), == 0);
+	zsetu(a, 1000000000ULL);
+	zmodpowu(c, a, 5, _3);
+	assert(zcmpu(c, 1), == 0);
+	zsetu(a, 1000000000ULL);
+	zsets(d, "1");
+	zpowu(c, a, 0);
+	assert(zcmp(c, d), == 0);
+	zsetu(a, 1000000000ULL);
+	zsets(d, "1000000000");
+	zpowu(c, a, 1);
+	assert(zcmp(c, d), == 0);
+	zsetu(a, 1000000000ULL);
+	zsets(d, "1000000000000000000");
+	zpowu(c, a, 2);
+	assert(zcmp(c, d), == 0);
+	zsetu(a, 1000000000ULL);
+	zsets(b, "1000000000000000000");
+	zsets(d, "1000000000000000000000000000");
+	zmul(c, a, b);
+	assert(zcmp(c, d), == 0);
+	zsetu(a, 1000000000ULL);
+	zsets(d, "1000000000000000000000000000");
+	zmul(b, a, a);
+	zmul(b, b, a);
+	assert(zcmp(c, d), == 0);
+	zsetu(a, 1000000000ULL);
+	zsets(d, "1000000000000000000000000000");
+	zpowu(c, a, 3);
+	assert(zcmp(c, d), == 0);
+	zsetu(a, 1000000000ULL);
+	zsets(d, "1000000000000000000000000000000000000");
+	zpowu(c, a, 4);
+	assert(zcmp(c, d), == 0);
+	zsetu(a, 1000000000ULL);
+	zsets(d, "1000000000000000000000000000000000000000000000");
+	zpowu(c, a, 5);
+	assert(zcmp(c, d), == 0);
+
+	zsetu(a, 4294967294ULL);
+	assert_s(zstr(a, buf), "4294967294");
+	zsetu(a, 4294967295ULL);
+	assert_s(zstr(a, buf), "4294967295");
+	zsetu(a, 4294967296ULL);
+	assert_s(zstr(a, buf), "4294967296");
+	zsetu(a, 4294967297ULL);
+	assert_s(zstr(a, buf), "4294967297");
+
+	zseti(a, 9223372036854775807LL);
+	assert_s(zstr(a, buf), "9223372036854775807");
+	zseti(a, -9223372036854775807LL);
+	assert_s(zstr(a, buf), "-9223372036854775807");
+	zseti(a, -9223372036854775807LL - 1LL);
+	assert_s(zstr(a, buf), "-9223372036854775808");
+
+	zsetu(a, 18446744073709551614ULL);
+	assert_s(zstr(a, buf), "18446744073709551614");
+	zsetu(a, 18446744073709551615ULL);
+	assert_s(zstr(a, buf), "18446744073709551615");
+	zadd(a, a, _1);
+	assert_s(zstr(a, buf), "18446744073709551616");
+	zadd(a, a, _1);
+	assert_s(zstr(a, buf), "18446744073709551617");
+
+	zsets(a, "1000000000000000000000000000000");
+	assert_s(zstr(a, buf), "1000000000000000000000000000000");
+	zsets(a, "+1000000000000000000000000000000");
+	assert_s(zstr(a, buf), "1000000000000000000000000000000");
+	zsets(a, "-1000000000000000000000000000000");
+	assert_s(zstr(a, buf), "-1000000000000000000000000000000");
+
+	zsetu(a, 1000000000000000ULL);
+	zsqr(a, a);
+	assert_s(zstr(a, buf), "1000000000000000000000000000000");
 
 done:
 	zfree(a), zfree(b), zfree(c), zfree(d), zfree(_0), zfree(_1), zfree(_2), zfree(_3);

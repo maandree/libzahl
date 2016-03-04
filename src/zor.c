@@ -20,6 +20,7 @@ zor(z_t a, z_t b, z_t c)
 
 	m = MAX(b->used, c->used);
 	n = b->used + c->used - m;
+	a->used = m;
 
 	ENSURE_SIZE(a, m);
 
