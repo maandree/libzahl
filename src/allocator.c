@@ -1,8 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals.h"
 
-#include <stdint.h>
-
 
 void
 libzahl_realloc(z_t a, size_t need)
