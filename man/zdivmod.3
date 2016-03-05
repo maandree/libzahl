@@ -9,11 +9,11 @@ void zdivmod(z_t \fIquotient\fP, z_t \fIremainder\fP, z_t \fIdividend\fP, z_t \f
 .fi
 .SH DESCRIPTION
 .B zdivmod
-calculates the quotient and the remainder of a
+calculates the truncated quotient and the remainder of a
 .I dividend
 and a
 .IR divisor ,
-and stores the quotient in
+and stores the truncated quotient in
 .I quotient
 and the remainder in
 .IR remainder .
@@ -38,6 +38,10 @@ except it is
 safe to call
 .B zdivmod with
 .IR "(quotient==remainder)" .
+.P
+See
+.BR zmod (3)
+for details on modulation.
 .SH RATIONALE
 Calculating the remainder requires calculating division to
 be performed, and performing a division gives the remainder
