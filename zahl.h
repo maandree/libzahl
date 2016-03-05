@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* Warning: libzahl is not thread-safe. */
+/* Caution: Do not use libzahl for cryptographic applications, use a specialised library. */
 
 
 #include <stddef.h>

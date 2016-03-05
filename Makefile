@@ -63,7 +63,7 @@ INLINE_FUN =\
 	zzero\
 	zsignum
 
-OBJ = $(FUN:=.o)
+OBJ = $(FUN:=.o) allocator.o
 MAN = $(foreach F,$(FUN) $(INLINE_FUN),man/$(F).3) man/libzahl.7
 
 all: libzahl.a

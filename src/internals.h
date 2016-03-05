@@ -56,6 +56,9 @@ extern z_t libzahl_tmp_divmod_ds[BITS_PER_CHAR];
 extern jmp_buf libzahl_jmp_buf;
 extern int libzahl_set_up;
 extern int libzahl_error;
+extern zahl_char_t **libzahl_pool[sizeof(size_t) * 8];
+extern size_t libzahl_pool_n[sizeof(size_t) * 8];
+extern size_t libzahl_pool_alloc[sizeof(size_t) * 8];
 
 #define FAILURE(error)               (libzahl_error = (error), longjmp(libzahl_jmp_buf, 1))
 #define zmemcpy(d, s, n)             memcpy(d, s, (n) * sizeof(zahl_char_t))
@@ -65,19 +68,9 @@ extern int libzahl_error;
 
 #define SET_SIGNUM(a, signum)        ((a)->sign = (signum))
 #define SET(a, b)                    do { if ((a) != (b)) zset(a, b); } while (0)
-#define ENSURE_SIZE(a, n)            do { if ((a)->alloced < (n)) zahl_realloc(a, (n)); } while (0)
+#define ENSURE_SIZE(a, n)            do { if ((a)->alloced < (n)) libzahl_realloc(a, (n)); } while (0)
 
 #define MIN(a, b)                    ((a) < (b) ? (a) : (b))
 #define MAX(a, b)                    ((a) > (b) ? (a) : (b))
 
-static inline void
-zahl_realloc(z_t p, size_t n)
-{
-	p->chars = realloc(p->chars, n * sizeof(zahl_char_t));
-	if (!p->chars) {
-		if (!errno) /* sigh... */
-			errno = ENOMEM;
-		FAILURE(errno);
-	}
-	p->alloced = n;
-}
+void libzahl_realloc(z_t a, size_t need);

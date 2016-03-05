@@ -33,5 +33,11 @@ I think it can be done better.
 .SH NOTES
 .B libzahl
 is currently not thread-safe.
+.P
+You are strongly discouraged from using
+.B libzahl
+for cryptographic applications. Instead, use a library
+specifically targeting cryptography, otherwise, your
+program may be subject to side-channel attacks.
 .SH SEE ALSO
 .BR zsetup (3)
