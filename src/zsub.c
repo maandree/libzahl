@@ -17,17 +17,6 @@ zsub_unsigned(z_t a, z_t b, z_t c)
 	} else if (zzero(c)) {
 		zabs(a, b);
 		return;
-	} else if (a == b || a == c) {
-		/* TODO This should not be necessary. */
-		z_t tb, tc;
-		zinit(tb);
-		zinit(tc);
-		zset(tb, b);
-		zset(tc, c);
-		zsub_unsigned(a, tb, tc);
-		zfree(tb);
-		zfree(tc);
-		return;
 	}
 
 	magcmp = zcmpmag(b, c);
@@ -36,13 +25,23 @@ zsub_unsigned(z_t a, z_t b, z_t c)
 			SET_SIGNUM(a, 0);
 			return;
 		}
+		n = MIN(b->used, c->used);
+		if (a == b) {
+			zset(libzahl_tmp_sub, b);
+			s = libzahl_tmp_sub->chars;
+		} else {
+			s = b->chars;
+		}
 		SET(a, c);
-		n = MIN(a->used, b->used);
-		s = b->chars;
 	} else {
+		n = MIN(b->used, c->used);
+		if (a == c) {
+			zset(libzahl_tmp_sub, c);
+			s = libzahl_tmp_sub->chars;
+		} else {
+			s = c->chars;
+		}
 		SET(a, b);
-		n = MIN(a->used, c->used);
-		s = c->chars;
 	}
 
 	for (i = 0; i < n; i++) {

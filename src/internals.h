@@ -21,6 +21,7 @@
 	X(libzahl_tmp_str_rem)\
 	X(libzahl_tmp_gcd_u)\
 	X(libzahl_tmp_gcd_v)\
+	X(libzahl_tmp_sub)\
 	X(libzahl_tmp_modmul)\
 	X(libzahl_tmp_div)\
 	X(libzahl_tmp_mod)\
