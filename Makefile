@@ -20,7 +20,6 @@ FUN =\
 	zerror\
 	zfree\
 	zgcd\
-	zinit\
 	zload\
 	zlsb\
 	zlsh\
@@ -55,8 +54,17 @@ FUN =\
 	zunsetup\
 	zxor
 
+INLINE_FUN =\
+	zinit\
+	zeven\
+	zodd\
+	zeven_nonzero\
+	zodd_nonzero\
+	zzero\
+	zsignum
+
 OBJ = $(FUN:=.o)
-MAN = $(foreach F,$(FUN),man/$(F).3) man/libzahl.7
+MAN = $(foreach F,$(FUN) $(INLINE_FUN),man/$(F).3) man/libzahl.7
 
 all: libzahl.a
 

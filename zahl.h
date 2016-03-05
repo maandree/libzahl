@@ -42,7 +42,6 @@ void zunsetup(void);                   /* Free resources used by libzahl */
 
 /* Memory functions. */
 
-void zinit(z_t);                       /* Prepare a for use. */
 void zfree(z_t);                       /* Free resources in a. */
 void zswap(z_t, z_t);                  /* (a, b) := (b, a) */
 size_t zsave(z_t, void *);             /* Store a into b (if !!b), and return number of written bytes. */
@@ -140,9 +139,10 @@ void zperror(const char *);            /* Identical to perror(3p) except it supp
 
 /* Inline functions. */
 
+static inline void zinit(z_t a)        { a->alloced = 0; a->chars = 0; }          /* Prepare a for use. */
 static inline int zeven(z_t a)         { return !a->sign || !(a->chars[0] & 1); } /* Is a even? */
 static inline int zodd(z_t a)          { return a->sign && (a->chars[0] & 1); }   /* Is a odd? */
 static inline int zeven_nonzero(z_t a) { return !(a->chars[0] & 1); }             /* Is a even? Assumes a ≠ 0. */
 static inline int zodd_nonzero(z_t a)  { return (a->chars[0] & 1); }              /* Is a odd? Assumes a ≠ 0. */
 static inline int zzero(z_t a)         { return !a->sign; }                       /* Is a zero? */
-static inline int zsignum(z_t a)       { return a->sign; }                        /* a/|a|, 0 if a is zero */
+static inline int zsignum(z_t a)       { return a->sign; }                        /* a/|a|, 0 if a is zero. */
