@@ -64,7 +64,8 @@ INLINE_FUN =\
 	zsignum
 
 OBJ = $(FUN:=.o) allocator.o
-MAN = $(foreach F,$(FUN) $(INLINE_FUN),man/$(F).3) man/libzahl.7
+MAN3 = $(FUN:=.3) $(INLINE_FUN:=.3)
+MAN7 = libzahl.7
 
 all: libzahl.a
 
@@ -84,7 +85,23 @@ test: test.c libzahl.a test-random.c
 check: test
 	./test
 
+install: libzahl.a
+	mkdir -p -- "$(DESTDIR)$(EXECPREFIX)/lib"
+	mkdir -p -- "$(DESTDIR)$(PREFIX)/include"
+	mkdir -p -- "$(DESTDIR)$(MANPREFIX)/man3"
+	mkdir -p -- "$(DESTDIR)$(MANPREFIX)/man7"
+	cp -- libzahl.a "$(DESTDIR)$(EXECPREFIX)/lib"
+	cp -- zahl.h "$(DESTDIR)$(PREFIX)/include"
+	cp -- $(foreach M,$(MAN3),man/$(M)) "$(DESTDIR)$(MANPREFIX)/man3"
+	cp -- $(foreach M,$(MAN7),man/$(M)) "$(DESTDIR)$(MANPREFIX)/man7"
+
+uninstall:
+	rm -- "$(DESTDIR)$(EXECPREFIX)/lib/libzahl.a"
+	rm -- "$(DESTDIR)$(PREFIX)/include/zahl.h"
+	cd "$(DESTDIR)$(MANPREFIX)/man3" && rm $(MAN3)
+	cd "$(DESTDIR)$(MANPREFIX)/man7" && rm $(MAN7)
+
 clean:
 	-rm -- *.o *.su *.a *.so test test-random.c 2>/dev/null
 
-.PHONY: all check clean
+.PHONY: all check clean install uninstall

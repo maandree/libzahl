@@ -2,7 +2,7 @@ VERSION = 0.0
 
 PREFIX = /usr/local
 EXECPREFIX = $(PREFIX)
-MANPREFIX = $(PREFIX)/shared/man
+MANPREFIX = $(PREFIX)/share/man
 
 CC = cc
 AR = ar
