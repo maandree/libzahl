@@ -21,19 +21,16 @@ zxor(z_t a, z_t b, z_t c)
 	m = MAX(b->used, c->used);
 	n = b->used + c->used - m;
 
-	if (n == m && !zmemcmp(b->chars, c->chars, m)) {
-		SET_SIGNUM(a, 0);
-		return;
-	}
-
 	ENSURE_SIZE(a, m);
 
 	if (a == b) {
-		zmemcpy(a->chars + n, m == b->used ? b->chars : c->chars, m - n);
+		if (b->used < c->used)
+			zmemcpy(a->chars + n, c->chars + n, m - n);
 		while (n--)
 			a->chars[n] ^= c->chars[n];
 	} else if (a == c) {
-		zmemcpy(a->chars + n, m == b->used ? b->chars : c->chars, m - n);
+		if (c->used < b->used)
+			zmemcpy(a->chars + n, b->chars + n, m - n);
 		while (n--)
 			a->chars[n] ^= b->chars[n];
 	} else if (m == b->used) {
@@ -46,5 +43,11 @@ zxor(z_t a, z_t b, z_t c)
 			a->chars[n] ^= b->chars[n];
 	}
 
-	SET_SIGNUM(a, 1 - 2 * ((zsignum(b) ^ zsignum(c)) < 0));
+	a->used = m;
+	while (a->used && !a->chars[a->used - 1])
+		a->used--;
+	if (a->used)
+		SET_SIGNUM(a, 1 - 2 * ((zsignum(b) ^ zsignum(c)) < 0));
+	else
+		SET_SIGNUM(a, 0);
 }

@@ -32,8 +32,6 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 			zseti(a, sign);
 			SET_SIGNUM(b, 0);
 			return;
-		} else if (sign < 0) {
-			zsub_unsigned(b, d, c);
 		} else {
 			SET(b, c);
 		}

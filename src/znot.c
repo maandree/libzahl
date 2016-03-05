@@ -18,12 +18,12 @@ znot(z_t a, z_t b)
 
 	for (n = a->used; n--;)
 		a->chars[n] = ~(a->chars[n]);
-	bits &= BITS_PER_CHAR - 1;
-	a->chars[a->used - 1] &= ((zahl_char_t)1 << bits) - 1;
+	bits = BITS_IN_LAST_CHAR(bits);
+	if (bits)
+		a->chars[a->used - 1] &= ((zahl_char_t)1 << bits) - 1;
 
-	for (; a->used; a->used--)
-		if (a->chars[a->used - 1])
-			break;
+	while (a->used && !a->chars[a->used - 1])
+		 a->used--;
 	if (!a->used)
 		SET_SIGNUM(a, 0);
 }

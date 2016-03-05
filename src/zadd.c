@@ -9,16 +9,20 @@ zadd_unsigned(z_t a, z_t b, z_t c)
 	uint32_t carry[] = {0, 0};
 	zahl_char_t *addend;
 
-	if (a == c) {
-		zadd_unsigned(a, c, b);
+	if (zzero(b)) {
+		zabs(a, c);
+		return;
+	} else if (zzero(c)) {
+		zabs(a, b);
 		return;
 	}
 
 	size = MAX(b->used, c->used);
+	n = b->used + c->used - size;
+
 	ENSURE_SIZE(a, size + 1);
 	a->chars[size] = 0;
 
-	n = b->used + c->used - size;
 	if (a == b) {
 		if (a->used < c->used) {
 			n = c->used;
@@ -56,7 +60,7 @@ zadd_unsigned(z_t a, z_t b, z_t c)
 
 	if (a->used < i)
 		a->used = i;
-	SET_SIGNUM(a, !zzero(b) | !zzero(c));
+	SET_SIGNUM(a, 1);
 }
 
 

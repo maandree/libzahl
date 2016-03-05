@@ -62,7 +62,7 @@ main(void)
 	/* static because otherwise it would have to be volatile yeilding a lot of stupid
 	 * warnings. auto variables are not guaranteed to be readable after a long jump. */
 	static z_t a, b, c, d, _0, _1, _2, _3;
-	static char buf[1000];
+	static char buf[2000];
 	static int ret = 0;
 	static jmp_buf env, env2;
 	static size_t n;
@@ -308,6 +308,19 @@ main(void)
 	assert((zadd_unsigned(a, b, c), zcmp(a, _3)), == 0);
 	assert((zadd_unsigned(a, b, _2), zcmp(a, _3)), == 0);
 	assert((zadd_unsigned(a, _1, c), zcmp(a, _3)), == 0);
+
+	assert((zadd_unsigned(a, _0, _0), zcmp(a, _0)), == 0);
+	assert((zadd_unsigned(a, _0, _1), zcmp(a, _1)), == 0);
+	assert((zadd_unsigned(a, _1, _1), zcmp(a, _2)), == 0);
+	assert((zadd_unsigned(a, _1, _0), zcmp(a, _1)), == 0);
+	zneg(_1, _1);
+	assert((zadd_unsigned(a, _0, _0), zcmp(a, _0)), == 0);
+	assert((zadd_unsigned(a, _0, _1), zcmp(a, _1)), != 0);
+	assert((zadd_unsigned(a, _0, _1), zcmpmag(a, _1)), == 0);
+	assert((zadd_unsigned(a, _1, _1), zcmp(a, _2)), == 0);
+	assert((zadd_unsigned(a, _1, _0), zcmp(a, _1)), != 0);
+	assert((zadd_unsigned(a, _1, _0), zcmpmag(a, _1)), == 0);
+	zneg(_1, _1);
 
 	assert((zsub_unsigned(a, _2, _1), zcmp(a, _1)), == 0);
 	assert((zsub_unsigned(a, _2, b), zcmp(a, _1)), == 0);
@@ -992,8 +1005,11 @@ main(void)
 	zsqr(a, a);
 	assert_s(zstr(a, buf), "1000000000000000000000000000000");
 
+#include "test-random.c"
+
 done:
 	zfree(a), zfree(b), zfree(c), zfree(d), zfree(_0), zfree(_1), zfree(_2), zfree(_3);
 	zunsetup();
 	return ret;
 }
+

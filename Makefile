@@ -58,7 +58,7 @@ FUN =\
 OBJ = $(FUN:=.o)
 MAN = $(foreach F,$(FUN),man/$(F).3) man/libzahl.7
 
-all: libzahl.a test
+all: libzahl.a
 
 %.o: src/%.c $(HDR) config.mk
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
@@ -67,13 +67,16 @@ libzahl.a: $(OBJ)
 	$(AR) rc $@ $?
 	$(RANLIB) $@
 
-test: test.c libzahl.a
-	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ $^
+test-random.c: test-generate.py
+	./test-generate.py > test-random.c
+
+test: test.c libzahl.a test-random.c
+	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ test.c libzahl.a
 
 check: test
 	./test
 
 clean:
-	-rm -- *.o *.su *.a *.so test 2>/dev/null
+	-rm -- *.o *.su *.a *.so test test-random.c 2>/dev/null
 
 .PHONY: all check clean

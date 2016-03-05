@@ -86,7 +86,7 @@ void zpowu(z_t, z_t, unsigned long long int);
 void zmodpowu(z_t, z_t, unsigned long long int, z_t);
 
 /* These are used internally and may be removed in a future version. */
-void zadd_unsigned(z_t, z_t, z_t);     /* a := |b| + |c|, b and c must not be the same reference. */
+void zadd_unsigned(z_t, z_t, z_t);     /* a := |b| + |c| */
 void zsub_unsigned(z_t, z_t, z_t);     /* a := |b| - |c| */
 
 

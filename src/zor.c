@@ -20,16 +20,17 @@ zor(z_t a, z_t b, z_t c)
 
 	m = MAX(b->used, c->used);
 	n = b->used + c->used - m;
-	a->used = m;
 
 	ENSURE_SIZE(a, m);
 
 	if (a == b) {
-		zmemcpy(a->chars + n, m == b->used ? b->chars : c->chars, m - n);
+		if (b->used < c->used)
+			zmemcpy(a->chars + n, c->chars + n, m - n);
 		while (n--)
 			a->chars[n] |= c->chars[n];
 	} else if (a == c) {
-		zmemcpy(a->chars + n, m == b->used ? b->chars : c->chars, m - n);
+		if (c->used < b->used)
+			zmemcpy(a->chars + n, b->chars + n, m - n);
 		while (n--)
 			a->chars[n] |= b->chars[n];
 	} else if (m == b->used) {
@@ -42,5 +43,6 @@ zor(z_t a, z_t b, z_t c)
 			a->chars[n] |= b->chars[n];
 	}
 
+	a->used = m;
 	SET_SIGNUM(a, (zsignum(b) > 0 && zsignum(c) > 0) * 2 - 1);
 }
