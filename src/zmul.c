@@ -7,6 +7,12 @@ zmul(z_t a, z_t b, z_t c)
 {
 	/*
 	 * Karatsuba algorithm
+	 * 
+	 * Basically, this how you were toughed to multiply large numbers
+	 * by hand in school: 4010⋅3020 = (4000 + 10)(3000 + 20) =
+	 = 40⋅30⋅10⁴ + (40⋅20 + 30⋅10)⋅10² + 10⋅20, but the middle is
+	 * optimised to only one multiplication:
+	 * 40⋅20 + 30⋅10 = (40 + 10)(30 + 20) − 40⋅30 − 10⋅20.
 	 */
 
 	size_t m, m2;
