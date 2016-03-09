@@ -5,3 +5,4 @@
 *.so
 /test
 /test-random.c
+/benchmark

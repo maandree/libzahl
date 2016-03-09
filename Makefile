@@ -82,6 +82,9 @@ test-random.c: test-generate.py
 test: test.c libzahl.a test-random.c
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ test.c libzahl.a
 
+benchmark: bench/benchmark.c libzahl.a
+	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ $^
+
 check: test
 	./test
 
