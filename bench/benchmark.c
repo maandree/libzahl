@@ -1,7 +1,11 @@
 #include <time.h>
 #include <stdio.h>
 
-#include "../zahl.h"
+#ifdef BENCHMARK_LIB
+# include BENCHMARK_LIB
+#else
+# include "../zahl.h"
+#endif
 
 
 #ifndef CLOCK_MONOTONIC_RAW

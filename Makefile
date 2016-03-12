@@ -82,8 +82,16 @@ test-random.c: test-generate.py
 test: test.c libzahl.a test-random.c
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ test.c libzahl.a
 
+ifndef BENCHMARK_LIB
 benchmark: bench/benchmark.c libzahl.a
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ $^
+endif
+ifdef BENCHMARK_LIB
+CPPFLAGS += -DBENCHMARK_LIB='"$(BENCHMARK_LIB).h"'
+BENCHMARK_libtommath = -ltommath
+benchmark: bench/benchmark.c bench/$(BENCHMARK_LIB).h
+	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark.c $(BENCHMARK_$(BENCHMARK_LIB))
+endif
 
 check: test
 	./test
