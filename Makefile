@@ -89,6 +89,7 @@ endif
 ifdef BENCHMARK_LIB
 CPPFLAGS += -DBENCHMARK_LIB='"$(BENCHMARK_LIB).h"'
 BENCHMARK_libtommath = -ltommath
+BENCHMARK_libgmp = -lgmp
 benchmark: bench/benchmark.c bench/$(BENCHMARK_LIB).h
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark.c $(BENCHMARK_$(BENCHMARK_LIB))
 endif

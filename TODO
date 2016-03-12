@@ -1,0 +1,2 @@
+GMP has mpz_divexact(q,n,d), we should have zdiv_exact(q,n,d).
+It uses optimised division algorithm that requires that d|n.
