@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#define BITS_PER_CHAR                32
-#define LB_BITS_PER_CHAR             5
-#define ZAHL_CHAR_MAX                UINT32_MAX
+#define BITS_PER_CHAR                64
+#define LB_BITS_PER_CHAR             6
+#define ZAHL_CHAR_MAX                UINT64_MAX
 
 #define FLOOR_BITS_TO_CHARS(bits)    ((bits) >> LB_BITS_PER_CHAR)
 #define CEILING_BITS_TO_CHARS(bits)  (((bits) + (BITS_PER_CHAR - 1)) >> LB_BITS_PER_CHAR)

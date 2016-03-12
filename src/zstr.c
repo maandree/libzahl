@@ -6,16 +6,16 @@
 #define num  libzahl_tmp_str_num
 #define rem  libzahl_tmp_str_rem
 
-/* All 9 you see here is derived from that 10⁹ is the largest
- * power of than < 2³², and 32 is the number of bits in
- * zahl_char_t. If zahl_char_t is chanced, the value 9, and
- * the cast to unsigned long must be changed accordingly. */
+/* All 19 you see here is derived from that 10¹⁹ is the largest
+ * power of than < 2⁶⁴, and 64 is the number of bits in
+ * zahl_char_t. If zahl_char_t is chanced, the value 19, and
+ * the cast to unsigned long long must be changed accordingly. */
 
 
 char *
 zstr(z_t a, char *b)
 {
-	char buf[9 + 1];
+	char buf[19 + 1];
 	size_t n, len;
 	char overridden = 0;
 	int neg;
@@ -44,17 +44,17 @@ zstr(z_t a, char *b)
 	b[0] = '-';
 	b += neg;
 	n -= neg;
-	n = n > 9 ? (n - 9) : 0;
+	n = n > 19 ? (n - 19) : 0;
 
 	for (;;) {
-		zdivmod(num, rem, num, libzahl_const_1e9);
+		zdivmod(num, rem, num, libzahl_const_1e19);
 		if (!zzero(num)) {
-			sprintf(b + n, "%09lu", zzero(rem) ? 0UL : (unsigned long)(rem->chars[0]));
-			b[n + 9] = overridden;
+			sprintf(b + n, "%019llu", zzero(rem) ? 0ULL : (unsigned long long)(rem->chars[0]));
+			b[n + 19] = overridden;
 			overridden = b[n];
-			n = n > 9 ? (n - 9) : 0;
+			n = n > 19 ? (n - 19) : 0;
 		} else {
-			len = (size_t)sprintf(buf, "%lu", (unsigned long)(rem->chars[0]));
+			len = (size_t)sprintf(buf, "%llu", (unsigned long long)(rem->chars[0]));
 			if (overridden)
 				buf[len] = b[n + len];
 			memcpy(b + n, buf, len + 1);

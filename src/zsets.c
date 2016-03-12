@@ -41,9 +41,6 @@ zsets(z_t a, const char *str)
 			if (!temp)
 				continue;
 			libzahl_tmp_str_num->chars[0] = (zahl_char_t)temp;
-			temp >>= BITS_PER_CHAR;
-			libzahl_tmp_str_num->chars[1] = (zahl_char_t)temp;
-			libzahl_tmp_str_num->used = 1 + !!temp;
 			zadd(a, a, libzahl_tmp_str_num);
 		}
 	}

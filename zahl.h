@@ -11,7 +11,7 @@
 
 
 /* You should pretend like this typedef does not exist. */
-typedef uint32_t zahl_char_t;
+typedef uint64_t zahl_char_t;
 
 /* This structure should be considered opaque. */
 typedef struct {
