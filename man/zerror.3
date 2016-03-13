@@ -37,5 +37,48 @@ The error is stored in
 (The error may not be stored in
 .I errno
 until this function is called.)
+.TP
+.B ZERROR_0_POW_0
+An attempt to calculate the zeroth power of zero was made.
+This is on indeterminate form and cannot be calculated.
+The closest matching
+.I errno
+value is
+.BR EDOM .
+.TP
+.B ZERROR_0_DIV_0
+An attempt to divide zero by zero was made.
+This is on indeterminate form and cannot be calculated.
+The closest matching
+.I errno
+value is
+.BR EDOM .
+.TP
+.B ZERROR_DIV_0
+An attempt to divide a non-zero value by zero was made.
+This is undefined and cannot be calculated.
+This occurs if a divisor or a modulator is zero, or if
+zero is raised to a negative number.
+The closest matching
+.I errno
+value is
+.BR EDOM .
+.TP
+.B ZERROR_NEGATIVE
+A function argument that must not be negative was negative.
+The closest matching
+.I errno
+values is
+.B EDOM
+and
+.BR EINVAL .
+.SH RETURN VALUE
+.B zerror
+returns the error that caused libzahl a function to fail.
+.SH NOTES
+.I errno
+is only set if
+.B ZERROR_ERRNO_SET
+is returned.
 .SH SEE ALSO
 .BR zperror (3)

@@ -16,22 +16,22 @@ zgcd(z_t a, z_t b, z_t c)
 	zahl_char_t uv, bit;
 	int neg;
 
-	if (EXPECT(!zcmp(b, c), 0)) {
+	if (unlikely(!zcmp(b, c))) {
 		SET(a, b);
 		return;
 	}
-	if (EXPECT(zzero(b), 0)) {
+	if (unlikely(zzero(b))) {
 		SET(a, c);
 		return;
 	}
-	if (EXPECT(zzero(c), 0)) {
+	if (unlikely(zzero(c))) {
 		SET(a, b);
 		return;
 	}
 
 	zabs(u, b);
 	zabs(v, c);
-	neg = zsignum(b) < 0 && zsignum(c) < 0;
+	neg = znegative2(b, c);
 
 	min = MIN(u->used, v->used);
 	for (; i < min; i++) {

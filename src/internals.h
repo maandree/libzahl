@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <limits.h>
 
 #define BITS_PER_CHAR                64
 #define LB_BITS_PER_CHAR             6
@@ -60,13 +61,14 @@ extern size_t libzahl_pool_n[sizeof(size_t) * 8];
 extern size_t libzahl_pool_alloc[sizeof(size_t) * 8];
 
 #if defined(__GNUC__) || defined(__clang__)
-# define EXPECT(value, expected)     __builtin_expect(value, expected)
+# define likely(value)               __builtin_expect(!!(value), 1)
+# define unlikely(value)             __builtin_expect(!!(value), 0)
 #else
-# define EXPECT(value, expected)     (value)
+# define likely(value)               (value)
+# define unlikely(value)             (value)
 #endif
 
-#define FAILURE(error)               (libzahl_error = (error), longjmp(libzahl_jmp_buf, 1))
-#define zmemmove(d, s, n)            memmove((d), (s), (n) * sizeof(zahl_char_t))
+#define libzahl_failure(error)       (libzahl_error = (error), longjmp(libzahl_jmp_buf, 1))
 #define SET_SIGNUM(a, signum)        ((a)->sign = (signum))
 #define SET(a, b)                    do { if ((a) != (b)) zset(a, b); } while (0)
 #define ENSURE_SIZE(a, n)            do { if ((a)->alloced < (n)) libzahl_realloc(a, (n)); } while (0)
@@ -74,6 +76,16 @@ extern size_t libzahl_pool_alloc[sizeof(size_t) * 8];
 #define MAX(a, b)                    ((a) > (b) ? (a) : (b))
 #define TRIM(a)                      for (; (a)->used && !(a)->chars[(a)->used - 1]; (a)->used--)
 #define TRIM_NONZERO(a)              for (; !(a)->chars[(a)->used - 1]; (a)->used--)
+#define TRIM_AND_ZERO(a)             do { TRIM(a); if (!(a)->used) SET_SIGNUM(a, 0); } while (0)
+#define znegative(a)                 (zsignum(a) < 0)
+#define znegative1(a, b)             ((zsignum(a) | zsignum(b)) < 0)
+#define znegative2(a, b)             ((zsignum(a) & zsignum(b)) < 0)
+#define zpositive(a)                 (zsignum(a) > 0)
+#define zpositive1(a, b)             (zpositive(a) + zpositive(b) > 0)
+#define zpositive2(a, b)             (zsignum(a) + zsignum(b) == 2)
+#define zzero1(a, b)                 (zzero(a) + zzero(b) > 0)
+#define zzero2(a, b)                 (!(zsignum(a) | zsignum(b)))
+#define zmemmove(d, s, n)            memmove((d), (s), (n) * sizeof(zahl_char_t))
 
 void libzahl_realloc(z_t a, size_t need);
 
@@ -90,3 +102,39 @@ zmemset(zahl_char_t *a, register zahl_char_t v, register size_t n)
 	while (n--)
 		a[n] = v;
 }
+
+/*
+ * libzahl_msb_nz_zu
+ *         ^^^ ^^ ^^
+ *         |   |  |
+ *         |   |  \- size_t parameter
+ *         |   \- non-zero input
+ *         \- most significant bit
+ */
+
+#if SIZE_MAX == ULONG_MAX
+# define libzahl_msb_nz_zu(x)        libzahl_msb_nz_lu(x)
+#else
+# define libzahl_msb_nz_zu(x)        libzahl_msb_nz_llu(x)
+#endif
+
+#if defined(__GNUC__) || defined(__clang__)
+# define libzahl_msb_nz_lu(x)        (8 * sizeof(unsigned long int) - (size_t)__builtin_clzl(x));
+# define libzahl_msb_nz_llu(x)       (8 * sizeof(unsigned long long int) - (size_t)__builtin_clzll(x));
+#else
+static inline size_t
+libzahl_msb_nz_lu(unsigned long int x)
+{
+	size_t r = 0;
+	for (; x; x >>= 1, r++);
+	return r;
+}
+
+static inline size_t
+libzahl_msb_nz_llu(unsigned long long int x)
+{
+	size_t r = 0;
+	for (; x; x >>= 1, r++);
+	return r;
+}
+#endif

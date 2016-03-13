@@ -5,9 +5,9 @@
 int
 zcmpi(z_t a, long long int b)
 {
-	if (EXPECT(!b, 0))
+	if (unlikely(!b))
 		return zsignum(a);
-	if (EXPECT(zzero(a), 0))
+	if (unlikely(zzero(a)))
 		return b > 0 ? -1 : b < 0;
 	zseti(libzahl_tmp_cmp, b);
 	return zcmp(a, libzahl_tmp_cmp);

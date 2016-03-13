@@ -11,7 +11,11 @@ zperror(const char *prefix)
 		errno = libzahl_error;
 		perror(prefix);
 	} else {
-		/* Current, we should not be able to get here. */
-		abort();
+		const char *desc;
+		zerror(&desc);
+		if (prefix && *prefix)
+			fprintf(stderr, "%s: %s\n", prefix, desc);
+		else
+			fprintf(stderr, "%s\n", desc);
 	}
 }

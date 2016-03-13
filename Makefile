@@ -80,7 +80,7 @@ test-random.c: test-generate.py
 	./test-generate.py > test-random.c
 
 test: test.c libzahl.a test-random.c
-	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ test.c libzahl.a
+	$(CC) $(LDFLAGS) $(CFLAGS:--O*) -O0 $(CPPFLAGS) -o $@ test.c libzahl.a
 
 ifndef BENCHMARK_LIB
 benchmark: bench/benchmark.c libzahl.a

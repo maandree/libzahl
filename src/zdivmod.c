@@ -15,19 +15,19 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 
 	sign = zsignum(c) * zsignum(d);
 
-	if (EXPECT(!sign, 0)) {
+	if (unlikely(!sign)) {
 		if (zzero(c)) {
 			if (zzero(d)) {
-				FAILURE(EDOM); /* Indeterminate form: 0 divided by 0 */
+				libzahl_failure(-ZERROR_0_DIV_0);
 			} else {
 				SET_SIGNUM(a, 0);
 				SET_SIGNUM(b, 0);
 			}
 		} else {
-			FAILURE(EDOM); /* Undefined form: Division by 0 */
+			libzahl_failure(-ZERROR_DIV_0);
 		}
 		return;
-	} else if (EXPECT((cmpmag = zcmpmag(c, d)) <= 0, 0)) {
+	} else if (unlikely((cmpmag = zcmpmag(c, d)) <= 0)) {
 	  	if (cmpmag == 0) {
 			zseti(a, sign);
 			SET_SIGNUM(b, 0);

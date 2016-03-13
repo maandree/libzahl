@@ -5,9 +5,9 @@
 int
 zcmpu(z_t a, unsigned long long int b)
 {
-	if (EXPECT(!b, 0))
+	if (unlikely(!b))
 		return zsignum(a);
-	if (EXPECT(zsignum(a) <= 0, 0))
+	if (unlikely(zsignum(a) <= 0))
 		return -1;
 	zsetu(libzahl_tmp_cmp, b);
 	return zcmp(a, libzahl_tmp_cmp);

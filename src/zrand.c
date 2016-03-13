@@ -27,7 +27,7 @@ zrand_get_random_bits(z_t r, size_t bits, int fd)
 	for (n = chars * sizeof(zahl_char_t); n;) {
 		read_just = read(fd, buf + read_total, n);
 		if (read_just < 0)
-			FAILURE(errno);
+			libzahl_failure(errno);
 		read_total += (size_t)read_just;
 		n -= (size_t)read_just;
 	}
@@ -62,22 +62,22 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 		pathname = SECURE_RANDOM_PATHNAME;
 		break;
 	default:
-		abort();
+		libzahl_failure(EINVAL);
 	}
 
-	if (EXPECT(zzero(n), 0)) {
+	if (unlikely(zzero(n))) {
 		SET_SIGNUM(r, 0);
 		return;
 	}
 
 	fd = open(pathname, O_RDONLY);
 	if (fd < 0)
-		FAILURE(errno);
+		libzahl_failure(errno);
 
 	switch (dist) {
 	case QUASIUNIFORM:
-		if (EXPECT(zsignum(n) < 0, 0))
-			FAILURE(EDOM); /* n must be non-negative. */
+		if (unlikely(znegative(n)))
+			libzahl_failure(-ZERROR_NEGATIVE);
 		bits = zbits(n);
 		zrand_get_random_bits(r, bits, fd);
 		zadd(r, r, libzahl_const_1);
@@ -86,8 +86,8 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 		break;
 
 	case UNIFORM:
-		if (EXPECT(zsignum(n) < 0, 0))
-			FAILURE(EDOM); /* n must be non-negative. */
+		if (unlikely(znegative(n)))
+			libzahl_failure(-ZERROR_NEGATIVE);
 		bits = zbits(n);
 		do
 			zrand_get_random_bits(r, bits, fd);
@@ -95,7 +95,7 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 		break;
 
 	default:
-		abort();
+		libzahl_failure(EINVAL);
 	}
 
 	close(fd);

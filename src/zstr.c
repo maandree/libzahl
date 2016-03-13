@@ -16,16 +16,12 @@ char *
 zstr(z_t a, char *b)
 {
 	char buf[19 + 1];
-	size_t n, len;
+	size_t n, len, neg;
 	char overridden = 0;
-	int neg;
 
 	if (zzero(a)) {
-		if (!b) {
-			b = malloc(2);
-			if (!b)
-				FAILURE(errno);
-		}
+		if (!b && !(b = malloc(2)))
+			libzahl_failure(errno);
 		b[0] = '0';
 		b[1] = 0;
 		return b;
@@ -33,13 +29,10 @@ zstr(z_t a, char *b)
 
 	n = zstr_length(a, 10);
 
-	if (!b) {
-		b = malloc(n + 1);
-		if (!b)
-			FAILURE(errno);
-	}
+	if (!b && !(b = malloc(n + 1)))
+		libzahl_failure(errno);
 
-	neg = zsignum(a) < 0;
+	neg = znegative(a);
 	zabs(num, a);
 	b[0] = '-';
 	b += neg;

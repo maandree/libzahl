@@ -7,13 +7,13 @@ zor(z_t a, z_t b, z_t c)
 {
 	size_t n, m;
 
-	if (EXPECT(zzero(b), 0)) {
+	if (unlikely(zzero(b))) {
 		if (zzero(c))
 			SET_SIGNUM(a, 0);
 		else
 			SET(a, c);
 		return;
-	} else if (EXPECT(zzero(c), 0)) {
+	} else if (unlikely(zzero(c))) {
 		SET(a, b);
 		return;
 	}
@@ -28,7 +28,7 @@ zor(z_t a, z_t b, z_t c)
 			zmemcpy(a->chars + n, c->chars + n, m - n);
 		while (n--)
 			a->chars[n] |= c->chars[n];
-	} else if (EXPECT(a == c, 0)) {
+	} else if (unlikely(a == c)) {
 		if (c->used < b->used)
 			zmemcpy(a->chars + n, b->chars + n, m - n);
 		while (n--)
@@ -44,5 +44,5 @@ zor(z_t a, z_t b, z_t c)
 	}
 
 	a->used = m;
-	SET_SIGNUM(a, (zsignum(b) > 0 && zsignum(c) > 0) * 2 - 1);
+	SET_SIGNUM(a, zpositive2(b, c) * 2 - 1);
 }

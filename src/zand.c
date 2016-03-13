@@ -7,7 +7,7 @@ zand(z_t a, z_t b, z_t c)
 {
 	size_t n;
 
-	if (EXPECT(zzero(b) || zzero(c), 0)) {
+	if (unlikely(zzero1(b, c))) {
 		SET_SIGNUM(a, 0);
 		return;
 	}
@@ -24,7 +24,7 @@ found_highest:
 	if (a == b) {
 		while (n--)
 			a->chars[n] &= c->chars[n];
-	} else if (EXPECT(a == c, 0)) {
+	} else if (unlikely(a == c)) {
 		while (n--)
 			a->chars[n] &= b->chars[n];
 	} else {
@@ -33,5 +33,5 @@ found_highest:
 		while (n--)
 			a->chars[n] &= b->chars[n];
 	}
-	SET_SIGNUM(a, (zsignum(b) > 0 || zsignum(c) > 0) * 2 - 1);
+	SET_SIGNUM(a, zpositive1(b, c) * 2 - 1);
 }

@@ -112,7 +112,7 @@ main(void)
 	assert(zodd(_2), == 0);
 	assert(zzero(_2), == 0);
 	assert(zsignum(_2), == 1);
-	
+
 	assert((zneg(_2, _2), zsignum(_2)), == -1); zneg(_2, _2);
 	assert(zsignum(_2), == 1);
 

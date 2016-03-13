@@ -8,17 +8,17 @@
 void
 zmodpowu(z_t a, z_t b, unsigned long long int c, z_t d)
 {
-	if (EXPECT(!c, 0)) {
+	if (unlikely(!c)) {
 		if (zzero(b))
-			FAILURE(EDOM); /* Indeterminate form: 0:th power of 0 */
+			libzahl_failure(-ZERROR_0_POW_0);
 		else if (zzero(d))
-			FAILURE(EDOM); /* Undefined form: Division by 0 */
+			libzahl_failure(-ZERROR_DIV_0);
 		else
 			zsetu(a, 1);
 		return;
-	} else if (EXPECT(zzero(d), 0)) {
-		FAILURE(EDOM); /* Undefined form: Division by 0 */
-	} else if (EXPECT(zzero(b), 0)) {
+	} else if (unlikely(zzero(d))) {
+		libzahl_failure(-ZERROR_DIV_0);
+	} else if (unlikely(zzero(b))) {
 		SET_SIGNUM(a, 0);
 		return;
 	}

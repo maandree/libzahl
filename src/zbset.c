@@ -35,7 +35,5 @@ zbset(z_t a, z_t b, size_t bit, int action)
 		a->chars[chars] &= ~mask;
 	}
 
-	TRIM(a);
-	if (!a->used)
-		SET_SIGNUM(a, 0);
+	TRIM_AND_ZERO(a);
 }

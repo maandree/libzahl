@@ -12,22 +12,22 @@ zmodpow(z_t a, z_t b, z_t c, z_t d)
 	size_t i, j, n, bits;
 	zahl_char_t x;
 
-	if (EXPECT(zsignum(c) <= 0, 0)) {
+	if (unlikely(zsignum(c) <= 0)) {
 		if (zzero(c)) {
 			if (zzero(b))
-				FAILURE(EDOM); /* Indeterminate form: 0:th power of 0 */
+				libzahl_failure(-ZERROR_0_POW_0);
 			else if (zzero(d))
-				FAILURE(EDOM); /* Undefined form: Division by 0 */
+				libzahl_failure(-ZERROR_DIV_0);
 			zsetu(a, 1);
-		} else if (zzero(b) || zzero(d)) {
-			FAILURE(EDOM); /* Undefined form: Division by 0 */
+		} else if (zzero1(b, d)) {
+			libzahl_failure(-ZERROR_DIV_0);
 		} else {
 			SET_SIGNUM(a, 0);
 		}
 		return;
-	} else if (EXPECT(zzero(d), 0)) {
-		FAILURE(EDOM); /* Undefined form: Division by 0 */
-	} else if (EXPECT(zzero(b), 0)) {
+	} else if (unlikely(zzero(d))) {
+		libzahl_failure(-ZERROR_DIV_0);
+	} else if (unlikely(zzero(b))) {
 		SET_SIGNUM(a, 0);
 		return;
 	}

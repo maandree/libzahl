@@ -5,15 +5,13 @@
 void
 zfree(z_t a)
 {
-	size_t i = 0, x, j;
+	size_t i, x, j;
 	zahl_char_t **new;
 
-	if (!a->chars)
+	if (unlikely(!a->chars))
 		return;
 
-	for (x = a->alloced; x; x >>= 1)
-		i += 1;
-
+	i = libzahl_msb_nz_zu(a->alloced);
 	j = libzahl_pool_n[i]++;
 
 	if (j == libzahl_pool_alloc[i]) {

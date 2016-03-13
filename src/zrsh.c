@@ -7,14 +7,14 @@ zrsh(z_t a, z_t b, size_t bits)
 {
 	size_t i, chars, cbits;
 
-	if (EXPECT(!bits, 0)) {
+	if (unlikely(!bits)) {
 		SET(a, b);
 		return;
 	}
 
 	chars = FLOOR_BITS_TO_CHARS(bits);
 
-	if (EXPECT(zzero(b) || chars >= b->used || zbits(b) <= bits, 0)) {
+	if (unlikely(zzero(b) || chars >= b->used || zbits(b) <= bits)) {
 		SET_SIGNUM(a, 0);
 		return;
 	}
@@ -22,16 +22,16 @@ zrsh(z_t a, z_t b, size_t bits)
 	bits = BITS_IN_LAST_CHAR(bits);
 	cbits = BITS_PER_CHAR - bits;
 
-	if (EXPECT(chars, 1) && EXPECT(a == b, 1)) {
+	if (likely(chars) && likely(a == b)) {
 		a->used -= chars;
 		zmemmove(a->chars, a->chars + chars, a->used);
-	} else if (EXPECT(a != b, 0)) {
+	} else if (unlikely(a != b)) {
 		a->used = b->used - chars;
 		ENSURE_SIZE(a, a->used);
 		zmemcpy(a->chars, b->chars + chars, a->used);
 	}
 
-	if (EXPECT(bits, 0)) { /* This if statement is very important in C. */
+	if (unlikely(bits)) { /* This if statement is very important in C. */
 		a->chars[0] >>= bits;
 		for (i = 1; i < a->used; i++) {
 			a->chars[i - 1] |= a->chars[i] << cbits;

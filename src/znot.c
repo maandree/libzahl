@@ -7,7 +7,7 @@ znot(z_t a, z_t b)
 {
 	size_t bits, i;
 
-	if (EXPECT(zzero(b), 0)) {
+	if (unlikely(zzero(b))) {
 		SET_SIGNUM(a, 0);
 		return;
 	}
@@ -22,7 +22,5 @@ znot(z_t a, z_t b)
 	if (bits)
 		a->chars[a->used - 1] &= ((zahl_char_t)1 << bits) - 1;
 
-	TRIM(a);
-	if (!a->used)
-		SET_SIGNUM(a, 0);
+	TRIM_AND_ZERO(a);
 }

@@ -5,13 +5,13 @@
 void
 zsplit(z_t high, z_t low, z_t a, size_t delim)
 {
-	if (EXPECT(zzero(a), 0)) {
+	if (unlikely(zzero(a))) {
 		SET_SIGNUM(high, 0);
 		SET_SIGNUM(low, 0);
 		return;
 	}
 
-	if (EXPECT(high == a, 0)) {
+	if (unlikely(high == a)) {
 		ztrunc(low, a, delim);
 		zrsh(high, a, delim);
 	} else {

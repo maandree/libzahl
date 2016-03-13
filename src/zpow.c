@@ -17,18 +17,18 @@ zpow(z_t a, z_t b, z_t c)
 	size_t i, j, n, bits;
 	zahl_char_t x;
 
-	if (EXPECT(zsignum(c) <= 0, 0)) {
+	if (unlikely(zsignum(c) <= 0)) {
 		if (zzero(c)) {
 			if (zzero(b))
-				FAILURE(EDOM); /* Indeterminate form: 0:th power of 0 */
+				libzahl_failure(-ZERROR_0_POW_0);
 			zsetu(a, 1);
 		} else if (zzero(b)) {
-			FAILURE(EDOM); /* Undefined form: Division by 0 */
+			libzahl_failure(-ZERROR_DIV_0);
 		} else {
 			SET_SIGNUM(a, 0);
 		}
 		return;
-	} else if (EXPECT(zzero(b), 0)) {
+	} else if (unlikely(zzero(b))) {
 		SET_SIGNUM(a, 0);
 		return;
 	}

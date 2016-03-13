@@ -3,6 +3,9 @@
 /* Warning: libzahl is not thread-safe. */
 /* Caution: Do not use libzahl for cryptographic applications, use a specialised library. */
 
+#ifndef ZAHL_H
+#define ZAHL_H
+
 
 #include <stddef.h>
 #include <setjmp.h>
@@ -27,7 +30,11 @@ enum zranddev { FAST_RANDOM = 0, SECURE_RANDOM };
 enum zranddist { QUASIUNIFORM = 0, UNIFORM };
 
 enum zerror {
-	ZERROR_ERRNO_SET = 0
+	ZERROR_ERRNO_SET = 0,          /* Please refer to errno. */
+	ZERROR_0_POW_0,                /* Indeterminate form: 0:th power of 0. (Translatable to EDOM.) */
+	ZERROR_0_DIV_0,                /* Indeterminate form: 0 divided by 0. (Translatable to EDOM.) */
+	ZERROR_DIV_0,                  /* Undefined result: Division by 0. (Translatable to EDOM.) */
+	ZERROR_NEGATIVE                /* Argument must be non-negative. (Translatable to EDOM or EINVAL.) */
 };
 
 
@@ -160,7 +167,7 @@ zlsb(z_t a)
 		return SIZE_MAX;
 	for (; !a->chars[i]; i++);
 	i *= 8 * sizeof(zahl_char_t);
-	i += __builtin_ctzll(a->chars[i]);
+	i += (size_t)__builtin_ctzll(a->chars[i]);
 	return i;
 }
 #else
@@ -190,7 +197,7 @@ zbits(z_t a)
 		return 1;
 	while (!a->chars[a->used - 1])  a->used--; /* TODO should not be necessary */
 	rc = a->used * 8 * sizeof(zahl_char_t);
-	rc -= __builtin_clzll(a->chars[a->used - 1]);
+	rc -= (size_t)__builtin_clzll(a->chars[a->used - 1]);
 	return rc;
 }
 #else
@@ -207,4 +214,7 @@ zbits(z_t a)
 	for (; x; x >>= 1, rc++);
 	return rc;
 }
+#endif
+
+
 #endif
