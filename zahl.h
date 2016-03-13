@@ -44,7 +44,6 @@ void zunsetup(void);                   /* Free resources used by libzahl */
 /* Memory functions. */
 
 void zfree(z_t);                       /* Free resources in a. */
-void zswap(z_t, z_t);                  /* (a, b) := (b, a) */
 size_t zsave(z_t, void *);             /* Store a into b (if !!b), and return number of written bytes. */
 size_t zload(z_t, const void *);       /* Restore a from b, and return number of read bytes. */
 
@@ -78,8 +77,6 @@ void zdivmod(z_t, z_t, z_t, z_t);      /* a := c / d, b = c % d */
 void zmod(z_t, z_t, z_t);              /* a := b % c */
 void zsqr(z_t, z_t);                   /* a := b² */
 void zmodsqr(z_t, z_t, z_t);           /* a := b² % c */
-void zneg(z_t, z_t);                   /* a := -b */
-void zabs(z_t, z_t);                   /* a := |b| */
 void zpow(z_t, z_t, z_t);              /* a := b ↑ c */
 void zmodpow(z_t, z_t, z_t, z_t);      /* a := (b ↑ c) % d */
 void zpowu(z_t, z_t, unsigned long long int);
@@ -140,10 +137,13 @@ void zperror(const char *);            /* Identical to perror(3p) except it supp
 
 /* Inline functions. */
 
-static inline void zinit(z_t a)        { a->alloced = 0; a->chars = 0; }          /* Prepare a for use. */
-static inline int zeven(z_t a)         { return !a->sign || !(a->chars[0] & 1); } /* Is a even? */
-static inline int zodd(z_t a)          { return a->sign && (a->chars[0] & 1); }   /* Is a odd? */
-static inline int zeven_nonzero(z_t a) { return !(a->chars[0] & 1); }             /* Is a even? Assumes a ≠ 0. */
-static inline int zodd_nonzero(z_t a)  { return (a->chars[0] & 1); }              /* Is a odd? Assumes a ≠ 0. */
-static inline int zzero(z_t a)         { return !a->sign; }                       /* Is a zero? */
-static inline int zsignum(z_t a)       { return a->sign; }                        /* a/|a|, 0 if a is zero. */
+static inline void zinit(z_t a)        { a->alloced = 0; a->chars = 0; }            /* Prepare a for use. */
+static inline void zswap(z_t a, z_t b) { z_t t; *t = *a; *a = *b; *b = *t; }        /* (a, b) := (b, a) */
+static inline int zeven(z_t a)         { return !a->sign || !(a->chars[0] & 1); }   /* Is a even? */
+static inline int zodd(z_t a)          { return a->sign && (a->chars[0] & 1); }     /* Is a odd? */
+static inline int zeven_nonzero(z_t a) { return !(a->chars[0] & 1); }               /* Is a even? Assumes a ≠ 0. */
+static inline int zodd_nonzero(z_t a)  { return (a->chars[0] & 1); }                /* Is a odd? Assumes a ≠ 0. */
+static inline int zzero(z_t a)         { return !a->sign; }                         /* Is a zero? */
+static inline int zsignum(z_t a)       { return a->sign; }                          /* a/|a|, 0 if a is zero. */
+static inline void zabs(z_t a, z_t b)  { if (a != b) zset(a, b); a->sign = !!a->sign; }  /* a := |b| */
+static inline void zneg(z_t a, z_t b)  { if (a != b) zset(a, b); a->sign = -a->sign; }   /* a := -b */

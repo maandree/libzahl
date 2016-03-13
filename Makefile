@@ -5,7 +5,6 @@ HDR =\
 	src/internals.h
 
 FUN =\
-	zabs\
 	zadd\
 	zand\
 	zbits\
@@ -29,7 +28,6 @@ FUN =\
 	zmodpowu\
 	zmodsqr\
 	zmul\
-	zneg\
 	znot\
 	zor\
 	zperror\
@@ -49,19 +47,21 @@ FUN =\
 	zstr\
 	zstr_length\
 	zsub\
-	zswap\
 	ztrunc\
 	zunsetup\
 	zxor
 
 INLINE_FUN =\
 	zinit\
+	zswap\
 	zeven\
 	zodd\
 	zeven_nonzero\
 	zodd_nonzero\
 	zzero\
-	zsignum
+	zsignum\
+	zabs\
+	zneg
 
 OBJ = $(FUN:=.o) allocator.o
 MAN3 = $(FUN:=.3) $(INLINE_FUN:=.3)
