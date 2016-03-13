@@ -22,7 +22,7 @@ zmul(z_t a, z_t b, z_t c)
 	b_sign = zsignum(b);
 	c_sign = zsignum(c);
 
-	if (!b_sign || !c_sign) {
+	if (EXPECT(!b_sign || !c_sign, 0)) {
 		SET_SIGNUM(a, 0);
 		return;
 	}

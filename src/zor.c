@@ -7,13 +7,13 @@ zor(z_t a, z_t b, z_t c)
 {
 	size_t n, m;
 
-	if (zzero(b)) {
+	if (EXPECT(zzero(b), 0)) {
 		if (zzero(c))
 			SET_SIGNUM(a, 0);
 		else
 			SET(a, c);
 		return;
-	} else if (zzero(c)) {
+	} else if (EXPECT(zzero(c), 0)) {
 		SET(a, b);
 		return;
 	}
@@ -28,7 +28,7 @@ zor(z_t a, z_t b, z_t c)
 			zmemcpy(a->chars + n, c->chars + n, m - n);
 		while (n--)
 			a->chars[n] |= c->chars[n];
-	} else if (a == c) {
+	} else if (EXPECT(a == c, 0)) {
 		if (c->used < b->used)
 			zmemcpy(a->chars + n, b->chars + n, m - n);
 		while (n--)

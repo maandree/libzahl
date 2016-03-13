@@ -40,7 +40,7 @@ zunsetup(void)
 #define QUASIUNIFORM            0
 #define UNIFORM                 1
 
-#define zperror(x)              0
+#define zperror(x)              ((void)0)
 #define zinit                   mpz_init
 #define zfree                   mpz_clear
 
@@ -54,7 +54,6 @@ zunsetup(void)
 #define zand                    mpz_and
 #define zor                     mpz_ior
 #define zxor                    mpz_xor
-#define znot                    mpz_com
 #define zbtest                  mpz_tstbit
 #define zeven                   mpz_even_p /* Note, must not have side effects. */
 #define zodd                    mpz_odd_p /* Note, must not have side effects. */
@@ -115,6 +114,17 @@ zseti(z_t r, long long int val)
 		zsetu(r, (unsigned long long int)-val);
 		zneg(r, r);
 	}
+}
+
+static void
+znot(z_t r, z_t a)
+{
+	size_t bits = zbits(a);
+	mpz_set_ui(_b, 0);
+	mpz_setbit(_b, bits);
+	zsub(_b, _b, _1);
+	zxor(r, a, _b);
+	zneg(r, r);
 }
 
 static void

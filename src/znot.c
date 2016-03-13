@@ -5,25 +5,24 @@
 void
 znot(z_t a, z_t b)
 {
-	size_t bits, n;
+	size_t bits, i;
 
-	if (zzero(b)) {
+	if (EXPECT(zzero(b), 0)) {
 		SET_SIGNUM(a, 0);
 		return;
 	}
 
 	bits = zbits(b);
-	SET(a, b);
-	SET_SIGNUM(a, -zsignum(a));
+	a->used = b->used;
+	SET_SIGNUM(a, -zsignum(b));
 
-	for (n = a->used; n--;)
-		a->chars[n] = ~(a->chars[n]);
+	for (i = 0; i < a->used; i++)
+		a->chars[i] = ~(b->chars[i]);
 	bits = BITS_IN_LAST_CHAR(bits);
 	if (bits)
 		a->chars[a->used - 1] &= ((zahl_char_t)1 << bits) - 1;
 
-	while (a->used && !a->chars[a->used - 1])
-		 a->used--;
+	TRIM(a);
 	if (!a->used)
 		SET_SIGNUM(a, 0);
 }

@@ -5,12 +5,12 @@
 void
 zset(z_t a, z_t b)
 {
-	if (zzero(b)) {
-		SET_SIGNUM(a, 0);
+	if (EXPECT(b->sign == 0, 0)) {
+		a->sign = 0;
 	} else {
-		ENSURE_SIZE(a, b->used);
 		a->sign = b->sign;
 		a->used = b->used;
+		ENSURE_SIZE(a, b->used);
 		zmemcpy(a->chars, b->chars, b->used);
 	}
 }

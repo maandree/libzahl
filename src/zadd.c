@@ -9,10 +9,10 @@ zadd_unsigned(z_t a, z_t b, z_t c)
 	uint32_t carry[] = {0, 0};
 	zahl_char_t *addend;
 
-	if (zzero(b)) {
+	if (EXPECT(zzero(b), 0)) {
 		zabs(a, c);
 		return;
-	} else if (zzero(c)) {
+	} else if (EXPECT(zzero(c), 0)) {
 		zabs(a, b);
 		return;
 	}
@@ -29,7 +29,7 @@ zadd_unsigned(z_t a, z_t b, z_t c)
 			zmemset(a->chars + a->used, 0, n - a->used);
 		}
 		addend = c->chars;
-	} else if (a == c) {
+	} else if (EXPECT(a == c, 0)) {
 		if (a->used < b->used) {
 			n = b->used;
 			zmemset(a->chars + a->used, 0, n - a->used);
@@ -67,13 +67,13 @@ zadd_unsigned(z_t a, z_t b, z_t c)
 void
 zadd(z_t a, z_t b, z_t c)
 {
-	if (zzero(b)) {
+	if (EXPECT(zzero(b), 0)) {
 		SET(a, c);
-	} else if (zzero(c)) {
+	} else if (EXPECT(zzero(c), 0)) {
 		SET(a, b);
-	} else if (b == c) {
+	} else if (EXPECT(b == c, 0)) {
 		zlsh(a, b, 1);
-	} else if ((zsignum(b) | zsignum(c)) < 0) {
+	} else if (EXPECT((zsignum(b) | zsignum(c)) < 0, 0)) {
 		if (zsignum(b) < 0) {
 			if (zsignum(c) < 0) {
 				zadd_unsigned(a, b, c);

@@ -10,11 +10,11 @@ zsub_unsigned(z_t a, z_t b, z_t c)
 	size_t i, n;
 	int magcmp;
 
-	if (zzero(b)) {
+	if (EXPECT(zzero(b), 0)) {
 		zabs(a, c);
 		zneg(a, a);
 		return;
-	} else if (zzero(c)) {
+	} else if (EXPECT(zzero(c), 0)) {
 		zabs(a, b);
 		return;
 	}
@@ -61,13 +61,13 @@ zsub_unsigned(z_t a, z_t b, z_t c)
 void
 zsub(z_t a, z_t b, z_t c)
 {
-	if (b == c) {
+	if (EXPECT(b == c, 0)) {
 		SET_SIGNUM(a, 0);
-	} else if (zzero(b)) {
+	} else if (EXPECT(zzero(b), 0)) {
 		zneg(a, c);
-	} else if (zzero(c)) {
+	} else if (EXPECT(zzero(c), 0)) {
 		SET(a, b);
-	} else if ((zsignum(b) | zsignum(c)) < 0) {
+	} else if (EXPECT((zsignum(b) | zsignum(c)) < 0, 0)) {
 		if (zsignum(b) < 0) {
 			if (zsignum(c) < 0) {
 				zsub_unsigned(a, c, b);

@@ -6,9 +6,9 @@ void
 ztrunc(z_t a, z_t b, size_t bits)
 {
 	zahl_char_t mask = 1;
-	size_t chars, i;
+	size_t chars;
 
-	if (zzero(b)) {
+	if (EXPECT(zzero(b), 0)) {
 		SET_SIGNUM(a, 0);
 		return;
 	}
@@ -16,21 +16,20 @@ ztrunc(z_t a, z_t b, size_t bits)
 	chars = CEILING_BITS_TO_CHARS(bits);
 	a->sign = b->sign;
 	a->used = MIN(chars, b->used);
-	if (a->used < chars)
+	if (EXPECT(a->used < chars, 0))
 		bits = 0;
-	if (a != b) {
+	if (EXPECT(a != b, 1)) {
 		ENSURE_SIZE(a, a->used);
 		zmemcpy(a->chars, b->chars, a->used);
 	}
 	bits = BITS_IN_LAST_CHAR(bits);
-	if (bits) {
+	if (EXPECT(!!bits, 1)) {
 		mask <<= bits;
 		mask -= 1;
 		a->chars[a->used - 1] &= mask;
 	}
 
-	for (i = a->used; i--;)
-		if (a->chars[i])
-			return;
-	SET_SIGNUM(a, 0);
+	TRIM(a);
+	if (!a->used)
+		SET_SIGNUM(a, 0);
 }

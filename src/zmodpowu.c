@@ -8,7 +8,7 @@
 void
 zmodpowu(z_t a, z_t b, unsigned long long int c, z_t d)
 {
-	if (!c) {
+	if (EXPECT(!c, 0)) {
 		if (zzero(b))
 			FAILURE(EDOM); /* Indeterminate form: 0:th power of 0 */
 		else if (zzero(d))
@@ -16,9 +16,9 @@ zmodpowu(z_t a, z_t b, unsigned long long int c, z_t d)
 		else
 			zsetu(a, 1);
 		return;
-	} else if (zzero(d)) {
+	} else if (EXPECT(zzero(d), 0)) {
 		FAILURE(EDOM); /* Undefined form: Division by 0 */
-	} else if (zzero(b)) {
+	} else if (EXPECT(zzero(b), 0)) {
 		SET_SIGNUM(a, 0);
 		return;
 	}

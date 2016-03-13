@@ -17,7 +17,7 @@ zptest(z_t witness, z_t n, int t)
 
 	size_t i, r;
 
-	if (zcmpu(n, 3) <= 0) {
+	if (EXPECT(zcmpu(n, 3) <= 0, 0)) {
 		if (zcmpu(n, 1) <= 0) {
 			if (witness)
 				SET(witness, n);
@@ -26,7 +26,7 @@ zptest(z_t witness, z_t n, int t)
 			return PRIME;
 		}
 	}
-	if (zeven(n)) {
+	if (EXPECT(zeven(n), 0)) {
 		if (witness)
 			SET(witness, n);
 		return NONPRIME;

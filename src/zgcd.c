@@ -16,15 +16,15 @@ zgcd(z_t a, z_t b, z_t c)
 	zahl_char_t uv, bit;
 	int neg;
 
-	if (!zcmp(b, c)) {
+	if (EXPECT(!zcmp(b, c), 0)) {
 		SET(a, b);
 		return;
 	}
-	if (zzero(b)) {
+	if (EXPECT(zzero(b), 0)) {
 		SET(a, c);
 		return;
 	}
-	if (zzero(c)) {
+	if (EXPECT(zzero(c), 0)) {
 		SET(a, b);
 		return;
 	}

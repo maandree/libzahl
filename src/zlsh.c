@@ -8,11 +8,11 @@ zlsh(z_t a, z_t b, size_t bits)
 	size_t i, chars, cbits;
 	zahl_char_t carry[] = {0, 0};
 
-	if (zzero(b)) {
+	if (EXPECT(zzero(b), 0)) {
 		SET_SIGNUM(a, 0);
 		return;
 	}
-	if (!bits) {
+	if (EXPECT(!bits, 0)) {
 		SET(a, b);
 		return;
 	}
@@ -22,14 +22,14 @@ zlsh(z_t a, z_t b, size_t bits)
 	cbits = BITS_PER_CHAR - bits;
 
 	ENSURE_SIZE(a, b->used + chars);
-	if (a == b)
+	if (EXPECT(a == b, 1))
 		zmemmove(a->chars + chars, b->chars, b->used);
 	else
 		zmemcpy(a->chars + chars, b->chars, b->used);
 	zmemset(a->chars, 0, chars);
 	a->used = b->used + chars;
 
-	if (bits) { /* This if statement is very important in C. */
+	if (EXPECT(bits, 1)) { /* This if statement is very important in C. */
 		for (i = chars; i < a->used; i++) {
 			carry[~i & 1] = a->chars[i] >> cbits;
 			a->chars[i] <<= bits;

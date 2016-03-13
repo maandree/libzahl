@@ -12,7 +12,7 @@ zmodpow(z_t a, z_t b, z_t c, z_t d)
 	size_t i, j, n, bits;
 	zahl_char_t x;
 
-	if (zsignum(c) <= 0) {
+	if (EXPECT(zsignum(c) <= 0, 0)) {
 		if (zzero(c)) {
 			if (zzero(b))
 				FAILURE(EDOM); /* Indeterminate form: 0:th power of 0 */
@@ -25,9 +25,9 @@ zmodpow(z_t a, z_t b, z_t c, z_t d)
 			SET_SIGNUM(a, 0);
 		}
 		return;
-	} else if (zzero(d)) {
+	} else if (EXPECT(zzero(d), 0)) {
 		FAILURE(EDOM); /* Undefined form: Division by 0 */
-	} else if (zzero(b)) {
+	} else if (EXPECT(zzero(b), 0)) {
 		SET_SIGNUM(a, 0);
 		return;
 	}

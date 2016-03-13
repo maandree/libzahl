@@ -5,7 +5,7 @@
 void
 zseti(z_t a, long long int b)
 {
-	if (b >= 0) {
+	if (EXPECT(b >= 0, 0)) {
 		zsetu(a, (unsigned long long int)b);
 	} else {
 		zsetu(a, (unsigned long long int)-b);

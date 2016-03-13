@@ -13,7 +13,7 @@ zsqr(z_t a, z_t b)
 	z_t z0, z1, z2, high, low;
 	int sign;
 
-	if (zzero(b)) {
+	if (EXPECT(zzero(b), 0)) {
 		SET_SIGNUM(a, 0);
 		return;
 	}

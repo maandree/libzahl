@@ -65,7 +65,7 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 		abort();
 	}
 
-	if (zzero(n)) {
+	if (EXPECT(zzero(n), 0)) {
 		SET_SIGNUM(r, 0);
 		return;
 	}
@@ -76,7 +76,7 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 
 	switch (dist) {
 	case QUASIUNIFORM:
-		if (zsignum(n) < 0)
+		if (EXPECT(zsignum(n) < 0, 0))
 			FAILURE(EDOM); /* n must be non-negative. */
 		bits = zbits(n);
 		zrand_get_random_bits(r, bits, fd);
@@ -86,7 +86,7 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 		break;
 
 	case UNIFORM:
-		if (zsignum(n) < 0)
+		if (EXPECT(zsignum(n) < 0, 0))
 			FAILURE(EDOM); /* n must be non-negative. */
 		bits = zbits(n);
 		do

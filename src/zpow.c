@@ -17,7 +17,7 @@ zpow(z_t a, z_t b, z_t c)
 	size_t i, j, n, bits;
 	zahl_char_t x;
 
-	if (zsignum(c) <= 0) {
+	if (EXPECT(zsignum(c) <= 0, 0)) {
 		if (zzero(c)) {
 			if (zzero(b))
 				FAILURE(EDOM); /* Indeterminate form: 0:th power of 0 */
@@ -28,7 +28,7 @@ zpow(z_t a, z_t b, z_t c)
 			SET_SIGNUM(a, 0);
 		}
 		return;
-	} else if (zzero(b)) {
+	} else if (EXPECT(zzero(b), 0)) {
 		SET_SIGNUM(a, 0);
 		return;
 	}

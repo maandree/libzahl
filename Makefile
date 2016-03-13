@@ -7,7 +7,6 @@ HDR =\
 FUN =\
 	zadd\
 	zand\
-	zbits\
 	zbset\
 	zbtest\
 	zcmp\
@@ -20,7 +19,6 @@ FUN =\
 	zfree\
 	zgcd\
 	zload\
-	zlsb\
 	zlsh\
 	zmod\
 	zmodmul\
@@ -61,7 +59,9 @@ INLINE_FUN =\
 	zzero\
 	zsignum\
 	zabs\
-	zneg
+	zneg\
+	zlsb\
+	zbits
 
 OBJ = $(FUN:=.o) allocator.o
 MAN3 = $(FUN:=.3) $(INLINE_FUN:=.3)

@@ -98,8 +98,6 @@ void zrsh(z_t, z_t, size_t);           /* a := b >> c */
 void ztrunc(z_t, z_t, size_t);         /* a := b & ((1 << c) - 1) */
 int zbtest(z_t, size_t);               /* (a >> b) & 1 */
 void zsplit(z_t, z_t, z_t, size_t);    /* a := c >> d, b := c - (a << d) */
-size_t zbits(z_t);                     /* ⌊log₂ |a|⌋ + 1, 1 if a = 0 */
-size_t zlsb(z_t);                      /* Index of first set bit, SIZE_MAX if none are set. */
 
 /* If d > 0: a := b | (1 << c), f d = 0: a := b & ~(1 << c), if d < 0: a := b ^ (1 << c) */
 void zbset(z_t, z_t, size_t, int);
@@ -147,3 +145,66 @@ static inline int zzero(z_t a)         { return !a->sign; }                     
 static inline int zsignum(z_t a)       { return a->sign; }                          /* a/|a|, 0 if a is zero. */
 static inline void zabs(z_t a, z_t b)  { if (a != b) zset(a, b); a->sign = !!a->sign; }  /* a := |b| */
 static inline void zneg(z_t a, z_t b)  { if (a != b) zset(a, b); a->sign = -a->sign; }   /* a := -b */
+
+
+/* Bitwise inline functions. */
+
+
+/* Index of first set bit, SIZE_MAX if none are set. */
+#if defined(__GNUC__) || defined(__clang__)
+static inline size_t
+zlsb(z_t a)
+{
+	size_t i = 0;
+	if (__builtin_expect(zzero(a), 0))
+		return SIZE_MAX;
+	for (; !a->chars[i]; i++);
+	i *= 8 * sizeof(zahl_char_t);
+	i += __builtin_ctzll(a->chars[i]);
+	return i;
+}
+#else
+static inline size_t
+zlsb(z_t a)
+{
+	size_t i = 0;
+	zahl_char_t x;
+	if (zzero(a))
+		return SIZE_MAX;
+	for (; !a->chars[i]; i++);
+	i *= 8 * sizeof(zahl_char_t);
+	x = ~(a->chars[i]);
+	for (; x & 1; x >>= 1, i++);
+	return i;
+}
+#endif
+
+
+/* ⌊log₂ |a|⌋ + 1, 1 if a = 0 */
+#if defined(__GNUC__) || defined(__clang__)
+static inline size_t
+zbits(z_t a)
+{
+	size_t rc;
+	if (__builtin_expect(zzero(a), 0))
+		return 1;
+	while (!a->chars[a->used - 1])  a->used--; /* TODO should not be necessary */
+	rc = a->used * 8 * sizeof(zahl_char_t);
+	rc -= __builtin_clzll(a->chars[a->used - 1]);
+	return rc;
+}
+#else
+static inline size_t
+zbits(z_t a)
+{
+	size_t rc;
+	zahl_char_t x;
+	if (zzero(a))
+		return 1;
+	while (!a->chars[a->used - 1])  a->used--; /* TODO should not be necessary */
+	x = a->chars[a->used - 1];
+	rc = (a->used - 1) * 8 * sizeof(zahl_char_t);
+	for (; x; x >>= 1, rc++);
+	return rc;
+}
+#endif

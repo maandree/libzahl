@@ -33,7 +33,7 @@ zunsetup(void)
 #define QUASIUNIFORM            0
 #define UNIFORM                 1
 
-#define zperror(x)              0
+#define zperror(x)              ((void)0)
 #define zinit(a)                mp_init(a)
 #define zfree(a)                mp_clear(a)
 

@@ -59,17 +59,34 @@ extern zahl_char_t **libzahl_pool[sizeof(size_t) * 8];
 extern size_t libzahl_pool_n[sizeof(size_t) * 8];
 extern size_t libzahl_pool_alloc[sizeof(size_t) * 8];
 
-#define FAILURE(error)               (libzahl_error = (error), longjmp(libzahl_jmp_buf, 1))
-#define zmemcpy(d, s, n)             memcpy(d, s, (n) * sizeof(zahl_char_t))
-#define zmemmove(d, s, n)            memmove(d, s, (n) * sizeof(zahl_char_t))
-#define zmemset(a, v, n)             memset(a, v, (n) * sizeof(zahl_char_t))
-#define zmemcmp(a, b, n)             memcmp(a, b, (n) * sizeof(zahl_char_t))
+#if defined(__GNUC__) || defined(__clang__)
+# define EXPECT(value, expected)     __builtin_expect(value, expected)
+#else
+# define EXPECT(value, expected)     (value)
+#endif
 
+#define FAILURE(error)               (libzahl_error = (error), longjmp(libzahl_jmp_buf, 1))
+#define zmemmove(d, s, n)            memmove((d), (s), (n) * sizeof(zahl_char_t))
 #define SET_SIGNUM(a, signum)        ((a)->sign = (signum))
 #define SET(a, b)                    do { if ((a) != (b)) zset(a, b); } while (0)
 #define ENSURE_SIZE(a, n)            do { if ((a)->alloced < (n)) libzahl_realloc(a, (n)); } while (0)
-
 #define MIN(a, b)                    ((a) < (b) ? (a) : (b))
 #define MAX(a, b)                    ((a) > (b) ? (a) : (b))
+#define TRIM(a)                      for (; (a)->used && !(a)->chars[(a)->used - 1]; (a)->used--)
+#define TRIM_NONZERO(a)              for (; !(a)->chars[(a)->used - 1]; (a)->used--)
 
 void libzahl_realloc(z_t a, size_t need);
+
+static inline void
+zmemcpy(zahl_char_t *restrict d, const zahl_char_t *restrict s, register size_t n)
+{
+	while (n--)
+		d[n] = s[n];
+}
+
+static inline void
+zmemset(zahl_char_t *a, register zahl_char_t v, register size_t n)
+{
+	while (n--)
+		a[n] = v;
+}

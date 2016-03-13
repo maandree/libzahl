@@ -15,7 +15,7 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 
 	sign = zsignum(c) * zsignum(d);
 
-	if (!sign) {
+	if (EXPECT(!sign, 0)) {
 		if (zzero(c)) {
 			if (zzero(d)) {
 				FAILURE(EDOM); /* Indeterminate form: 0 divided by 0 */
@@ -27,7 +27,7 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 			FAILURE(EDOM); /* Undefined form: Division by 0 */
 		}
 		return;
-	} else if ((cmpmag = zcmpmag(c, d)) <= 0) {
+	} else if (EXPECT((cmpmag = zcmpmag(c, d)) <= 0, 0)) {
 	  	if (cmpmag == 0) {
 			zseti(a, sign);
 			SET_SIGNUM(b, 0);

@@ -6,9 +6,9 @@ int
 zcmpmag(z_t a, z_t b)
 {
 	size_t i, j;
-	if (zzero(a))
+	if (EXPECT(zzero(a), 0))
 		return -!zzero(b);
-	if (zzero(b))
+	if (EXPECT(zzero(b), 0))
 		return 1;
 	i = a->used - 1;
 	j = b->used - 1;
