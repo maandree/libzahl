@@ -1,44 +1,27 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals.h"
-#include <stdio.h>
-
-
-/* Find r such that r is a minimal power of 2 ≥ n. */
-#define NEXT_2POW(n)\
-	do if (likely((n & (~n + 1)) != n)) {\
-		size_t x;\
-		n |= n >> 1;\
-		n |= n >> 2;\
-		n |= n >> 4;\
-		for (i = sizeof(n), x = 8; i; i >>= 1, x <<= 1)\
-			n |= n >> x;\
-		n += 1;\
-	} while (0)
-
-
-#if defined(__clang__)
-static inline __attribute__((optnone)) size_t
-clang_warkaround_next_2pow(size_t need)
-{
-	size_t i;
-	NEXT_2POW(need);
-	return need;
-}
-#endif
 
 
 void
 libzahl_realloc(z_t a, size_t need)
 {
-	size_t i;
+#if defined(__clang__) /* https://llvm.org/bugs/show_bug.cgi?id=26930 */
+	volatile size_t j;
+#else
+# define j  i
+#endif
+	size_t i, x;
 	zahl_char_t *new;
 
-#if defined(__clang__)
-	/* https://llvm.org/bugs/show_bug.cgi?id=26930 */
-	need = clang_warkaround_next_2pow(need);
-#else
-	NEXT_2POW(need);
-#endif
+	/* Find n such that n is a minimal power of 2 ≥ need. */
+	if (likely((need & (~need + 1)) != need)) {
+		need |= need >> 1;
+		need |= need >> 2;
+		need |= need >> 4;
+		for (j = sizeof(need), x = 8; j; j >>= 1, x <<= 1)
+			need |= need >> x;
+		need += 1;
+	}
 
 	i = libzahl_msb_nz_zu(need);
 
