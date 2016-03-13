@@ -34,6 +34,7 @@ libzahl_realloc(z_t a, size_t need)
 	zahl_char_t *new;
 
 #if defined(__clang__)
+	/* https://llvm.org/bugs/show_bug.cgi?id=26930 */
 	need = clang_warkaround_next_2pow(need);
 #else
 	NEXT_2POW(need);
