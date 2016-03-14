@@ -19,8 +19,8 @@ zstr(z_t a, char *b)
 	size_t n, len, neg;
 	char overridden = 0;
 
-	if (zzero(a)) {
-		if (!b && !(b = malloc(2)))
+	if (unlikely(zzero(a))) {
+		if (unlikely(!b) && unlikely(!(b = malloc(2))))
 			libzahl_failure(errno);
 		b[0] = '0';
 		b[1] = 0;
@@ -29,7 +29,7 @@ zstr(z_t a, char *b)
 
 	n = zstr_length(a, 10);
 
-	if (!b && !(b = malloc(n + 1)))
+	if (unlikely(!b) && unlikely(!(b = malloc(n + 1))))
 		libzahl_failure(errno);
 
 	neg = znegative(a);
@@ -41,7 +41,7 @@ zstr(z_t a, char *b)
 
 	for (;;) {
 		zdivmod(num, rem, num, libzahl_const_1e19);
-		if (!zzero(num)) {
+		if (likely(!zzero(num))) {
 			sprintf(b + n, "%019llu", zzero(rem) ? 0ULL : (unsigned long long)(rem->chars[0]));
 			b[n + 19] = overridden;
 			overridden = b[n];

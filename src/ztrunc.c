@@ -29,7 +29,5 @@ ztrunc(z_t a, z_t b, size_t bits)
 		a->chars[a->used - 1] &= mask;
 	}
 
-	TRIM(a);
-	if (!a->used)
-		SET_SIGNUM(a, 0);
+	TRIM_AND_ZERO(a);
 }

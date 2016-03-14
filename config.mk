@@ -1,4 +1,4 @@
-VERSION = 0.0
+VERSION = 1.1
 
 PREFIX = /usr/local
 EXECPREFIX = $(PREFIX)

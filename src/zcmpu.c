@@ -3,7 +3,7 @@
 
 
 int
-zcmpu(z_t a, unsigned long long int b)
+zcmpu(z_t a, uint64_t b)
 {
 	if (unlikely(!b))
 		return zsignum(a);

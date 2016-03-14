@@ -3,6 +3,10 @@
 
 #include <ctype.h>
 
+#ifdef __GNUC__
+# pragma GCC diagnostic ignored "-Wswitch-default"
+#endif
+
 
 int
 zsets(z_t a, const char *str)
@@ -44,7 +48,7 @@ zsets(z_t a, const char *str)
 		}
 	}
 
-	if (neg)
+	if (unlikely(neg))
 		SET_SIGNUM(a, -zsignum(a));
 	return 0;
 }

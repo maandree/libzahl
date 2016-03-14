@@ -3,7 +3,7 @@
 
 
 int
-zcmpi(z_t a, long long int b)
+zcmpi(z_t a, int64_t b)
 {
 	if (unlikely(!b))
 		return zsignum(a);

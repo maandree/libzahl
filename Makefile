@@ -36,7 +36,6 @@ FUN =\
 	zrsh\
 	zsave\
 	zset\
-	zseti\
 	zsets\
 	zsetu\
 	zsetup\
@@ -61,7 +60,8 @@ INLINE_FUN =\
 	zabs\
 	zneg\
 	zlsb\
-	zbits
+	zbits\
+	zseti
 
 OBJ = $(FUN:=.o) allocator.o
 MAN3 = $(FUN:=.3) $(INLINE_FUN:=.3)

@@ -304,7 +304,7 @@ main(void)
 	zneg(b, _1);
 	zneg(c, _2);
 
-	assert((zadd_unsigned(a, b, c), zcmp(a, _3)), == 0);
+	assert((zadd_unsigned(a, _1, _2), zcmp(a, _3)), == 0);
 	assert((zadd_unsigned(a, b, c), zcmp(a, _3)), == 0);
 	assert((zadd_unsigned(a, b, _2), zcmp(a, _3)), == 0);
 	assert((zadd_unsigned(a, _1, c), zcmp(a, _3)), == 0);

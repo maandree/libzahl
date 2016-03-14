@@ -28,7 +28,7 @@ libzahl_realloc(z_t a, size_t need)
 		a->chars = new;
 	} else {
 		a->chars = realloc(a->chars, need * sizeof(zahl_char_t));
-		if (!a->chars) {
+		if (unlikely(!a->chars)) {
 			if (!errno) /* sigh... */
 				errno = ENOMEM;
 			libzahl_failure(errno);

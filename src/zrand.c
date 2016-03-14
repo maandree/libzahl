@@ -26,7 +26,7 @@ zrand_get_random_bits(z_t r, size_t bits, int fd)
 
 	for (n = chars * sizeof(zahl_char_t); n;) {
 		read_just = read(fd, buf + read_total, n);
-		if (read_just < 0)
+		if (unlikely(read_just < 0))
 			libzahl_failure(errno);
 		read_total += (size_t)read_just;
 		n -= (size_t)read_just;
@@ -38,7 +38,7 @@ zrand_get_random_bits(z_t r, size_t bits, int fd)
 
 	r->chars[chars - 1] &= mask;
 	for (n = chars; n--;) {
-		if (r->chars[n]) {
+		if (likely(r->chars[n])) {
 			r->used = n + 1;
 			SET_SIGNUM(r, 1);
 			return;
@@ -71,7 +71,7 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 	}
 
 	fd = open(pathname, O_RDONLY);
-	if (fd < 0)
+	if (unlikely(fd < 0))
 		libzahl_failure(errno);
 
 	switch (dist) {
@@ -91,7 +91,7 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 		bits = zbits(n);
 		do
 			zrand_get_random_bits(r, bits, fd);
-		while (zcmpmag(r, n) > 0);
+		while (unlikely(zcmpmag(r, n) > 0));
 		break;
 
 	default:

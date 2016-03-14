@@ -4,7 +4,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <limits.h>
+
+/* clang pretends to be GCC... */
+#if defined(__GNUC__) && defined(__clang__)
+# undef __GNUC__
+#endif
 
 #define BITS_PER_CHAR                64
 #define LB_BITS_PER_CHAR             6
@@ -13,6 +17,32 @@
 #define FLOOR_BITS_TO_CHARS(bits)    ((bits) >> LB_BITS_PER_CHAR)
 #define CEILING_BITS_TO_CHARS(bits)  (((bits) + (BITS_PER_CHAR - 1)) >> LB_BITS_PER_CHAR)
 #define BITS_IN_LAST_CHAR(bits)      ((bits) & (BITS_PER_CHAR - 1))
+
+#if defined(__GNUC__)
+# define O0     __attribute__((optimize("O0")))
+# define O1     __attribute__((optimize("O1")))
+# define O2     __attribute__((optimize("O2")))
+# define O3     __attribute__((optimize("O3")))
+# define Ofast  __attribute__((optimize("Ofast")))
+# define Os     __attribute__((optimize("Os")))
+# define Oz     __attribute__((optimize("Os")))
+#elif defined(__clang__)
+# define O0     __attribute__((optnone))
+# define O1     /* Don't know how. */
+# define O2     /* Don't know how. */
+# define O3     /* Don't know how. */
+# define Ofast  /* Don't know how. */
+# define Os     /* Don't know how. */
+# define Oz     /* Don't know how. */
+#else
+# define O0     /* Don't know how. */
+# define O1     /* Don't know how. */
+# define O2     /* Don't know how. */
+# define O3     /* Don't know how. */
+# define Ofast  /* Don't know how. */
+# define Os     /* Don't know how. */
+# define Oz     /* Don't know how. */
+#endif
 
 #define LIST_TEMPS\
 	X(libzahl_tmp_cmp)\
@@ -77,13 +107,14 @@ extern size_t libzahl_pool_alloc[sizeof(size_t) * 8];
 #define TRIM(a)                      for (; (a)->used && !(a)->chars[(a)->used - 1]; (a)->used--)
 #define TRIM_NONZERO(a)              for (; !(a)->chars[(a)->used - 1]; (a)->used--)
 #define TRIM_AND_ZERO(a)             do { TRIM(a); if (!(a)->used) SET_SIGNUM(a, 0); } while (0)
+#define TRIM_AND_SIGN(a, s)          do { TRIM(a); SET_SIGNUM(a, (a)->used ? (s) : 0); } while (0)
 #define znegative(a)                 (zsignum(a) < 0)
 #define znegative1(a, b)             ((zsignum(a) | zsignum(b)) < 0)
 #define znegative2(a, b)             ((zsignum(a) & zsignum(b)) < 0)
 #define zpositive(a)                 (zsignum(a) > 0)
 #define zpositive1(a, b)             (zpositive(a) + zpositive(b) > 0)
 #define zpositive2(a, b)             (zsignum(a) + zsignum(b) == 2)
-#define zzero1(a, b)                 (zzero(a) + zzero(b) > 0)
+#define zzero1(a, b)                 (zzero(a) || zzero(b))
 #define zzero2(a, b)                 (!(zsignum(a) | zsignum(b)))
 #define zmemmove(d, s, n)            memmove((d), (s), (n) * sizeof(zahl_char_t))
 
@@ -136,5 +167,21 @@ libzahl_msb_nz_llu(unsigned long long int x)
 	size_t r = 0;
 	for (; x; x >>= 1, r++);
 	return r;
+}
+#endif
+
+#if defined(__GNUC__) || defined(__clang__)
+# if INT64_MAX == LONG_MAX
+#  define libzahl_add_overflow(rp, a, b)  __builtin_uaddl_overflow(a, b, rp)
+# else
+#  define libzahl_add_overflow(rp, a, b)  __builtin_uaddll_overflow(a, b, rp)
+# endif
+#else
+static inline int
+libzahl_add_overflow(zahl_char_t *rp, zahl_char_t a, zahl_char_t b)
+{
+	int carry = ZAHL_CHAR_MAX - a < b;
+	*rp = a + b;
+	return carry;
 }
 #endif

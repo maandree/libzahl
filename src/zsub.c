@@ -2,13 +2,34 @@
 #include "internals.h"
 
 
-void
+static inline void
+zsub_impl(z_t a, z_t b, size_t n)
+{
+	zahl_char_t carry = 0, tcarry;
+	size_t i;
+
+	for (i = 0; i < n; i++) {
+		tcarry = carry ? (a->chars[i] <= b->chars[i]) : (a->chars[i] < b->chars[i]);
+		a->chars[i] -= b->chars[i];
+		a->chars[i] -= carry;
+		carry = tcarry;
+	}
+
+	if (carry) {
+		while (!a->chars[i])
+			a->chars[i++] = ZAHL_CHAR_MAX;
+		if (a->chars[i] == 1)
+			a->used--;
+		else
+			a->chars[i] -= 1;
+	}
+}
+
+inline void
 zsub_unsigned(z_t a, z_t b, z_t c)
 {
-	zahl_char_t carry[] = {0, 0};
-	zahl_char_t *s;
-	size_t i, n;
 	int magcmp;
+	size_t n;
 
 	if (unlikely(zzero(b))) {
 		zabs(a, c);
@@ -20,64 +41,51 @@ zsub_unsigned(z_t a, z_t b, z_t c)
 	}
 
 	magcmp = zcmpmag(b, c);
-	if (magcmp <= 0) {
-		if (magcmp == 0) {
+	if (unlikely(magcmp <= 0)) {
+		if (unlikely(magcmp == 0)) {
 			SET_SIGNUM(a, 0);
 			return;
 		}
 		n = MIN(b->used, c->used);
 		if (a == b) {
 			zset(libzahl_tmp_sub, b);
-			s = libzahl_tmp_sub->chars;
+			SET(a, c);
+			zsub_impl(a, libzahl_tmp_sub, n);
 		} else {
-			s = b->chars;
+			SET(a, c);
+			zsub_impl(a, b, n);
 		}
-		SET(a, c);
 	} else {
 		n = MIN(b->used, c->used);
-		if (a == c) {
+		if (unlikely(a == c)) {
 			zset(libzahl_tmp_sub, c);
-			s = libzahl_tmp_sub->chars;
+			SET(a, b);
+			zsub_impl(a, libzahl_tmp_sub, n);
 		} else {
-			s = c->chars;
+			SET(a, b);
+			zsub_impl(a, c, n);
 		}
-		SET(a, b);
 	}
 
-	for (i = 0; i < n; i++) {
-		carry[~i & 1] = carry[i & 1] ? (a->chars[i] <= s[i]) : (a->chars[i] < s[i]);
-		a->chars[i] -= s[i];
-		a->chars[i] -= carry[i & 1];
-	}
-
-	if (carry[i & 1]) {
-		while (!a->chars[i])
-			a->chars[i++] = ZAHL_CHAR_MAX;
-		a->chars[i] -= 1;
-	}
 	SET_SIGNUM(a, magcmp);
 }
 
 void
 zsub(z_t a, z_t b, z_t c)
 {
-	if (unlikely(b == c)) {
-		SET_SIGNUM(a, 0);
-	} else if (unlikely(zzero(b))) {
+	if (unlikely(zzero(b))) {
 		zneg(a, c);
 	} else if (unlikely(zzero(c))) {
 		SET(a, b);
-	} else if (unlikely(znegative1(b, c))) {
-		if (znegative(b)) {
-			if (znegative(c)) {
-				zsub_unsigned(a, c, b);
-			} else {
-				zadd_unsigned(a, b, c);
-				SET_SIGNUM(a, -zsignum(a));
-			}
+	} else if (unlikely(znegative(b))) {
+		if (znegative(c)) {
+			zsub_unsigned(a, c, b);
 		} else {
 			zadd_unsigned(a, b, c);
+			SET_SIGNUM(a, -zsignum(a));
 		}
+	} else if (znegative(c)) {
+		zadd_unsigned(a, b, c);
 	} else {
 		zsub_unsigned(a, b, c);
 	}

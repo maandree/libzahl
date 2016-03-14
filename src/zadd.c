@@ -2,12 +2,29 @@
 #include "internals.h"
 
 
-void
+static inline void
+zadd_impl(z_t a, z_t b, size_t n)
+{
+	zahl_char_t carry = 0, tcarry;
+	size_t i;
+
+	for (i = 0; i < n; i++) {
+		tcarry = libzahl_add_overflow(a->chars + i, a->chars[i], b->chars[i]);
+		carry = tcarry | libzahl_add_overflow(a->chars + i, a->chars[i], carry);
+	}
+	while (carry) {
+		carry = libzahl_add_overflow(a->chars + i, a->chars[i], 1);
+		i++;
+	}
+
+	if (a->used < i)
+		a->used = i;
+}
+
+inline void
 zadd_unsigned(z_t a, z_t b, z_t c)
 {
-	size_t i, size, n;
-	uint32_t carry[] = {0, 0};
-	zahl_char_t *addend;
+	size_t size, n;
 
 	if (unlikely(zzero(b))) {
 		zabs(a, c);
@@ -28,41 +45,25 @@ zadd_unsigned(z_t a, z_t b, z_t c)
 			n = c->used;
 			zmemset(a->chars + a->used, 0, n - a->used);
 		}
-		addend = c->chars;
+		zadd_impl(a, c, n);
 	} else if (unlikely(a == c)) {
 		if (a->used < b->used) {
 			n = b->used;
 			zmemset(a->chars + a->used, 0, n - a->used);
 		}
-		addend = b->chars;
-	} else if (b->used > c->used) {
+		zadd_impl(a, b, n);
+	} else if (likely(b->used > c->used)) {
 		zmemcpy(a->chars, b->chars, b->used);
 		a->used = b->used;
-		addend = c->chars;
+		zadd_impl(a, c, n);
 	} else {
 		zmemcpy(a->chars, c->chars, c->used);
 		a->used = c->used;
-		addend = b->chars;
+		zadd_impl(a, b, n);
 	}
 
-	for (i = 0; i < n; i++) {
-		if (carry[i & 1])
-			carry[~i & 1] = (ZAHL_CHAR_MAX - a->chars[i] <= addend[i]);
-		else
-			carry[~i & 1] = (ZAHL_CHAR_MAX - a->chars[i] < addend[i]);
-		a->chars[i] += addend[i] + carry[i & 1];
-	}
-
-	while (carry[i & 1]) {
-		carry[~i & 1] = a->chars[i] == ZAHL_CHAR_MAX;
-		a->chars[i++] += 1;
-	}
-
-	if (a->used < i)
-		a->used = i;
 	SET_SIGNUM(a, 1);
 }
-
 
 void
 zadd(z_t a, z_t b, z_t c)
@@ -71,19 +72,15 @@ zadd(z_t a, z_t b, z_t c)
 		SET(a, c);
 	} else if (unlikely(zzero(c))) {
 		SET(a, b);
-	} else if (unlikely(b == c)) {
-		zlsh(a, b, 1);
-	} else if (unlikely(znegative1(b, c))) {
-		if (znegative(b)) {
-			if (znegative(c)) {
-				zadd_unsigned(a, b, c);
-				SET_SIGNUM(a, -zsignum(a));
-			} else {
-				zsub_unsigned(a, c, b);
-			}
+	} else if (unlikely(znegative(b))) {
+		if (znegative(c)) {
+			zadd_unsigned(a, b, c);
+			SET_SIGNUM(a, -zsignum(a));
 		} else {
-			zsub_unsigned(a, b, c);
+			zsub_unsigned(a, c, b);
 		}
+	} else if (unlikely(znegative(c))) {
+		zsub_unsigned(a, b, c);
 	} else {
 		zadd_unsigned(a, b, c);
 	}
