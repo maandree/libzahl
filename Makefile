@@ -8,11 +8,6 @@ FUN =\
 	zadd\
 	zand\
 	zbset\
-	zbtest\
-	zcmp\
-	zcmpi\
-	zcmpmag\
-	zcmpu\
 	zdiv\
 	zdivmod\
 	zerror\
@@ -61,7 +56,12 @@ INLINE_FUN =\
 	zneg\
 	zlsb\
 	zbits\
-	zseti
+	zseti\
+	zcmp\
+	zcmpi\
+	zcmpmag\
+	zcmpu\
+	zbtest
 
 OBJ = $(FUN:=.o) allocator.o
 MAN3 = $(FUN:=.3) $(INLINE_FUN:=.3)

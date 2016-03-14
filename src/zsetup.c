@@ -31,7 +31,7 @@ zsetup(jmp_buf env)
 		memset(libzahl_pool_alloc, 0, sizeof(libzahl_pool_alloc));
 
 #define X(x)\
-		zinit(x);
+		zinit(x), zsetu(x, 1);
 		LIST_TEMPS;
 #undef X
 #define X(x, f, v)\

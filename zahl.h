@@ -92,10 +92,10 @@ ZAHL_INLINE void zseti(z_t, int64_t);   /* a := b */
 
 /* Comparison functions. */
 
-int zcmp(z_t, z_t);                     /* signum (a - b) */
-int zcmpu(z_t, uint64_t);               /* signum (a - b) */
-int zcmpi(z_t, int64_t);                /* signum (a - b) */
-int zcmpmag(z_t, z_t);                  /* signum (|a| - |b|) */
+ZAHL_INLINE int zcmp(z_t, z_t);         /* signum (a - b) */
+ZAHL_INLINE int zcmpu(z_t, uint64_t);   /* signum (a - b) */
+ZAHL_INLINE int zcmpi(z_t, int64_t);    /* signum (a - b) */
+ZAHL_INLINE int zcmpmag(z_t, z_t);      /* signum (|a| - |b|) */
 
 
 /* Arithmetic functions. */
@@ -130,13 +130,13 @@ void znot(z_t, z_t);                    /* a := ~b */
 void zlsh(z_t, z_t, size_t);            /* a := b << c */
 void zrsh(z_t, z_t, size_t);            /* a := b >> c */
 void ztrunc(z_t, z_t, size_t);          /* a := b & ((1 << c) - 1) */
-int zbtest(z_t, size_t);                /* (a >> b) & 1 */
 void zsplit(z_t, z_t, z_t, size_t);     /* a := c >> d, b := c - (a << d) */
+ZAHL_INLINE int zbtest(z_t, size_t);    /* (a >> b) & 1 */
 ZAHL_INLINE size_t zlsb(z_t);           /* Index of first set bit, SIZE_MAX if none are set. */
 ZAHL_INLINE size_t zbits(z_t);          /* ⌊log₂ |a|⌋ + 1, 1 if a = 0 */
 
 /* If d > 0: a := b | (1 << c), if d = 0: a := b & ~(1 << c), if d < 0: a := b ^ (1 << c) */
-void zbset(z_t, z_t, size_t, int);
+ZAHL_INLINE void zbset(z_t, z_t, size_t, int);
 
 
 /* Number theory. */
@@ -279,6 +279,139 @@ zbits(z_t a)
 #endif
 }
 
+
+ZAHL_INLINE int
+zcmpmag(z_t a, z_t b)
+{
+	size_t i, j;
+	if (ZAHL_UNLIKELY(zzero(a)))
+		return -!zzero(b);
+	if (ZAHL_UNLIKELY(zzero(b)))
+		return 1;
+	i = a->used - 1;
+	j = b->used - 1;
+#if 0 /* TODO this should be sufficient. */
+	if (i != j)
+		return (i > j) * 2 - 1;
+#else
+	for (; i > j; i--) {
+		if (a->chars[i])
+			return +1;
+		a->used--;
+	}
+	for (; j > i; j--) {
+		if (b->chars[j])
+			return -1;
+		b->used--;
+	}
+#endif
+	for (; i && a->chars[i] == b->chars[i]; i--);
+	return a->chars[i] < b->chars[i] ? -1 : a->chars[i] > b->chars[i];
+}
+
+
+ZAHL_INLINE int
+zcmp(z_t a, z_t b)
+{
+	if (zsignum(a) != zsignum(b))
+		return zsignum(a) < zsignum(b) ? -1 : zsignum(a) > zsignum(b);
+	return zsignum(a) * zcmpmag(a, b);
+}
+
+
+ZAHL_INLINE int
+zcmpu(z_t a, uint64_t b)
+{
+	extern z_t libzahl_tmp_cmp;
+	if (ZAHL_UNLIKELY(!b))
+		return zsignum(a);
+	if (ZAHL_UNLIKELY(zsignum(a) <= 0))
+		return -1;
+	libzahl_tmp_cmp->chars[0] = b;
+	return zcmpmag(a, libzahl_tmp_cmp);
+}
+
+
+ZAHL_INLINE int
+zcmpi(z_t a, int64_t b)
+{
+	extern z_t libzahl_tmp_cmp;
+	if (ZAHL_UNLIKELY(!b))
+		return zsignum(a);
+	if (ZAHL_UNLIKELY(zzero(a)))
+		return ZAHL_LIKELY(b < 0) ? 1 : -1;
+	if (ZAHL_LIKELY(b < 0)) {
+		if (zsignum(a) > 0)
+			return +1;
+		libzahl_tmp_cmp->chars[0] = (uint64_t)-b;
+		return -zcmpmag(a, libzahl_tmp_cmp);
+	} else {
+		if (zsignum(a) < 0)
+			return -1;
+		libzahl_tmp_cmp->chars[0] = b;
+		return +zcmpmag(a, libzahl_tmp_cmp);
+	}
+}
+
+
+void zbset_impl_set(z_t a, z_t b, size_t bit);
+void zbset_impl_clear(z_t a, z_t b, size_t bit);
+void zbset_impl_flip(z_t a, z_t b, size_t bit);
+ZAHL_INLINE void
+zbset(z_t a, z_t b, size_t bit, int action)
+{
+	if (ZAHL_UNLIKELY(a != b))
+		zset(a, b);
+
+#if defined(__GNUC__) || defined(__clang__)
+	if (__builtin_constant_p(action) && __builtin_constant_p(bit)) {
+		zahl_char_t mask = 1;
+		if (zzero(a) || bit >> 6 >= a->used) {
+			if (!action)
+				return;
+			goto fallback;
+		}
+		mask <<= bit & 63;
+		if (action > 0) {
+			a->chars[bit >> 6] |= mask;
+			return;
+		} else if (action < 0) {
+			a->chars[bit >> 6] ^= mask;
+		} else {
+			a->chars[bit >> 6] &= ~mask;
+		}
+		for (; a->used && !a->chars[a->used - 1]; a->used--);
+		if (!a->used)
+			a->sign = 0;
+		return;
+	}
+fallback:
+#endif
+
+	if (action > 0) {
+		zbset_impl_set(a, b, bit);
+	} else if (action < 0) {
+		zbset_impl_flip(a, b, bit);
+	} else {
+		zbset_impl_clear(a, b, bit);
+	}
+}
+
+
+ZAHL_INLINE int
+zbtest(z_t a, size_t bit)
+{
+	size_t chars;
+	if (ZAHL_UNLIKELY(zzero(a)))
+		return 0;
+
+	chars = bit >> 6;
+	if (ZAHL_UNLIKELY(chars >= a->used))
+		return 0;
+
+	bit &= 63;
+	return (a->chars[chars] >> bit) & 1;
+}
 
 
 #endif

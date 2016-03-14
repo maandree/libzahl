@@ -25,8 +25,8 @@ zsub_impl(z_t a, z_t b, size_t n)
 	}
 }
 
-inline void
-zsub_unsigned(z_t a, z_t b, z_t c)
+static inline void
+libzahl_zsub_unsigned(z_t a, z_t b, z_t c)
 {
 	int magcmp;
 	size_t n;
@@ -71,6 +71,12 @@ zsub_unsigned(z_t a, z_t b, z_t c)
 }
 
 void
+zsub_unsigned(z_t a, z_t b, z_t c)
+{
+	libzahl_zsub_unsigned(a, b, c);
+}
+
+void
 zsub(z_t a, z_t b, z_t c)
 {
 	if (unlikely(zzero(b))) {
@@ -79,7 +85,7 @@ zsub(z_t a, z_t b, z_t c)
 		SET(a, b);
 	} else if (unlikely(znegative(b))) {
 		if (znegative(c)) {
-			zsub_unsigned(a, c, b);
+			libzahl_zsub_unsigned(a, c, b);
 		} else {
 			zadd_unsigned(a, b, c);
 			SET_SIGNUM(a, -zsignum(a));
@@ -87,6 +93,6 @@ zsub(z_t a, z_t b, z_t c)
 	} else if (znegative(c)) {
 		zadd_unsigned(a, b, c);
 	} else {
-		zsub_unsigned(a, b, c);
+		libzahl_zsub_unsigned(a, b, c);
 	}
 }

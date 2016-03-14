@@ -21,8 +21,8 @@ zadd_impl(z_t a, z_t b, size_t n)
 		a->used = i;
 }
 
-inline void
-zadd_unsigned(z_t a, z_t b, z_t c)
+static inline void
+libzahl_zadd_unsigned(z_t a, z_t b, z_t c)
 {
 	size_t size, n;
 
@@ -66,6 +66,12 @@ zadd_unsigned(z_t a, z_t b, z_t c)
 }
 
 void
+zadd_unsigned(z_t a, z_t b, z_t c)
+{
+	libzahl_zadd_unsigned(a, b, c);
+}
+
+void
 zadd(z_t a, z_t b, z_t c)
 {
 	if (unlikely(zzero(b))) {
@@ -74,7 +80,7 @@ zadd(z_t a, z_t b, z_t c)
 		SET(a, b);
 	} else if (unlikely(znegative(b))) {
 		if (znegative(c)) {
-			zadd_unsigned(a, b, c);
+			libzahl_zadd_unsigned(a, b, c);
 			SET_SIGNUM(a, -zsignum(a));
 		} else {
 			zsub_unsigned(a, c, b);
@@ -82,6 +88,6 @@ zadd(z_t a, z_t b, z_t c)
 	} else if (unlikely(znegative(c))) {
 		zsub_unsigned(a, b, c);
 	} else {
-		zadd_unsigned(a, b, c);
+		libzahl_zadd_unsigned(a, b, c);
 	}
 }
