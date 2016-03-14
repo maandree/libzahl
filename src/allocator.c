@@ -5,11 +5,6 @@
 void
 libzahl_realloc(z_t a, size_t need)
 {
-#if defined(__clang__) /* https://llvm.org/bugs/show_bug.cgi?id=26930 */
-	volatile size_t j;
-#else
-# define j  i
-#endif
 	size_t i, x;
 	zahl_char_t *new;
 
@@ -18,7 +13,7 @@ libzahl_realloc(z_t a, size_t need)
 		need |= need >> 1;
 		need |= need >> 2;
 		need |= need >> 4;
-		for (j = sizeof(need), x = 8; j; j >>= 1, x <<= 1)
+		for (i = sizeof(need), x = 8; (i >>= 1); x <<= 1)
 			need |= need >> x;
 		need += 1;
 	}
