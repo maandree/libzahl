@@ -189,7 +189,6 @@ void zperror(const char *);             /* Identical to perror(3p) except it sup
 
 
 ZAHL_INLINE void zinit(z_t a)         { a->alloced = 0; a->chars = 0; }
-ZAHL_INLINE void zswap(z_t a, z_t b)  { z_t t; *t = *a; *a = *b; *b = *t; }
 ZAHL_INLINE int zeven(z_t a)          { return !a->sign || !(a->chars[0] & 1); }
 ZAHL_INLINE int zodd(z_t a)           { return a->sign && (a->chars[0] & 1); }
 ZAHL_INLINE int zeven_nonzero(z_t a)  { return !(a->chars[0] & 1); }
@@ -198,6 +197,25 @@ ZAHL_INLINE int zzero(z_t a)          { return !a->sign; }
 ZAHL_INLINE int zsignum(z_t a)        { return a->sign; }
 ZAHL_INLINE void zabs(z_t a, z_t b)   { if (a != b) zset(a, b); a->sign = !!a->sign; }
 ZAHL_INLINE void zneg(z_t a, z_t b)   { if (a != b) zset(a, b); a->sign = -a->sign; }
+
+
+ZAHL_INLINE void
+zswap(z_t a, z_t b)
+{
+	z_t t;
+	t->sign = a->sign;
+	a->sign = b->sign;
+	b->sign = t->sign;
+	t->used = b->used;
+	b->used = a->used;
+	a->used = t->used;
+	t->alloced = a->alloced;
+	a->alloced = b->alloced;
+	b->alloced = t->alloced;
+	t->chars = b->chars;
+	b->chars = a->chars;
+	a->chars = t->chars;
+}
 
 
 ZAHL_INLINE void
