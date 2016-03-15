@@ -12,14 +12,11 @@ zgcd(z_t a, z_t b, z_t c)
 	 * Binary GCD algorithm.
 	 */
 
-	size_t shifts = 0, i = 0, min;
-	zahl_char_t uv, bit;
-	int neg;
+	size_t shifts;
+	zahl_char_t *u_orig, *v_orig;
+	size_t u_lsb, v_lsb;
+	int neg, cmpmag;
 
-	if (unlikely(!zcmp(b, c))) {
-		SET(a, b);
-		return;
-	}
 	if (unlikely(zzero(b))) {
 		SET(a, c);
 		return;
@@ -29,37 +26,30 @@ zgcd(z_t a, z_t b, z_t c)
 		return;
 	}
 
-	zabs(u, b);
-	zabs(v, c);
 	neg = znegative2(b, c);
 
-	min = MIN(u->used, v->used);
-	for (; i < min; i++) {
-		uv = u->chars[i] | v->chars[i];
-		for (bit = 1; bit; bit <<= 1, shifts++)
-			if (uv & bit)
-				goto loop_done;
-	}
-	for (; i < u->used; i++)
-		for (bit = 1; bit; bit <<= 1, shifts++)
-			if (u->chars[i] & bit)
-				goto loop_done;
-	for (; i < v->used; i++)
-		for (bit = 1; bit; bit <<= 1, shifts++)
-			if (v->chars[i] & bit)
-				goto loop_done;
-loop_done:
-	zrsh(u, u, shifts);
-	zrsh(v, v, shifts);
+	u_lsb = zlsb(b);
+	v_lsb = zlsb(c);
+	shifts = MIN(u_lsb, v_lsb);
+	zrsh(u, b, u_lsb);
+	zrsh(v, c, v_lsb);
 
-	zrsh(u, u, zlsb(u));
-	do {
-		zrsh(v, v, zlsb(v));
-		if (zcmpmag(u, v) > 0) /* Both are non-negative. */
-			zswap(u, v);
-		zsub_unsigned(v, v, u);
-	} while (!zzero(v));
+	u_orig = u->chars;
+	v_orig = v->chars;
+
+	for (;;) {
+		if (likely((cmpmag = zcmpmag(u, v)) >= 0)) {
+			if (unlikely(cmpmag == 0))
+				break;
+			zswap_tainted_unsigned(u, v);
+		}
+		zsub_positive_assign(v, u);
+		zrsh_taint(v, zlsb(v));
+	}
 
 	zlsh(a, u, shifts);
 	SET_SIGNUM(a, neg ? -1 : 1);
+
+	u->chars = u_orig;
+	v->chars = v_orig;
 }

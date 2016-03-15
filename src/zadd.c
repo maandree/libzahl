@@ -72,6 +72,33 @@ zadd_unsigned(z_t a, z_t b, z_t c)
 }
 
 void
+zadd_unsigned_assign(z_t a, z_t b)
+{
+	size_t size, n;
+
+	if (unlikely(zzero(a))) {
+		zabs(a, b);
+		return;
+	} else if (unlikely(zzero(b))) {
+		return;
+	}
+
+	size = MAX(a->used, b->used);
+	n = a->used + b->used - size;
+
+	ENSURE_SIZE(a, size + 1);
+	a->chars[size] = 0;
+
+	if (a->used < b->used) {
+		n = b->used;
+		zmemset(a->chars + a->used, 0, n - a->used);
+	}
+	zadd_impl(a, b, n);
+
+	SET_SIGNUM(a, 1);
+}
+
+void
 zadd(z_t a, z_t b, z_t c)
 {
 	if (unlikely(zzero(b))) {

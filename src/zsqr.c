@@ -42,32 +42,17 @@ zsqr(z_t a, z_t b)
 
 	zsplit(high, low, b, m2);
 
-#if 1
+
 	zsqr(z0, low);
 	zsqr(z2, high);
 	zmul(z1, low, high);
 
 	zlsh(z1, z1, m2 + 1);
 	m2 <<= 1;
-	zlsh(z2, z2, m2);
-
-	zadd(a, z2, z1);
-	zadd(a, a, z0);
-#else
-	zsqr(z0, low);
-	zsqr(z2, high);
-	zmul(z1, low, low);
-
-	zlsh(z0, z0, m2 + 1);
-	zlsh(z1, z1, m2 + 1);
 	zlsh(a, z2, m2);
-	m2 <<= 1;
-	zlsh(z2, z2, m2);
-	zadd(z2, z2, a);
+	zadd_unsigned_assign(a, z1);
+	zadd_unsigned_assign(a, z0);
 
-	zsub(a, z2, z1);
-	zadd(a, a, z0);
-#endif
 
 	zfree(z0);
 	zfree(z1);

@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "internals.h"
 
-#define X(x)  z_t x;
+#define X(x, s)  z_t x;
 LIST_TEMPS
 #undef X
 #define X(x, f, v)  z_t x;
@@ -30,8 +30,8 @@ zsetup(jmp_buf env)
 		memset(libzahl_pool_n, 0, sizeof(libzahl_pool_n));
 		memset(libzahl_pool_alloc, 0, sizeof(libzahl_pool_alloc));
 
-#define X(x)\
-		zinit(x), zsetu(x, 1);
+#define X(x, s)\
+		zinit(x); if (s) zsetu(x, 1);
 		LIST_TEMPS;
 #undef X
 #define X(x, f, v)\

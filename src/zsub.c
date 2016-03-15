@@ -46,7 +46,7 @@ libzahl_zsub_unsigned(z_t a, z_t b, z_t c)
 			SET_SIGNUM(a, 0);
 			return;
 		}
-		n = MIN(b->used, c->used);
+		n = b->used;
 		if (a == b) {
 			zset(libzahl_tmp_sub, b);
 			SET(a, c);
@@ -56,7 +56,7 @@ libzahl_zsub_unsigned(z_t a, z_t b, z_t c)
 			zsub_impl(a, b, n);
 		}
 	} else {
-		n = MIN(b->used, c->used);
+		n = c->used;
 		if (unlikely(a == c)) {
 			zset(libzahl_tmp_sub, c);
 			SET(a, b);
@@ -74,6 +74,24 @@ void
 zsub_unsigned(z_t a, z_t b, z_t c)
 {
 	libzahl_zsub_unsigned(a, b, c);
+}
+
+void
+zsub_nonnegative_assign(z_t a, z_t b)
+{
+	if (unlikely(zzero(b))) {
+		zabs(a, a);
+	} else if (unlikely(!zcmpmag(a, b))) {
+		SET_SIGNUM(a, 0);
+	} else {
+		zsub_impl(a, b, b->used);
+	}
+}
+
+void
+zsub_positive_assign(z_t a, z_t b)
+{
+	zsub_impl(a, b, b->used);
 }
 
 void

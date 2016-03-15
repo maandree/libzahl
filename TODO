@@ -8,3 +8,10 @@ Add zranddist value based on % for fitness to bound
 Test big endian
 Test always having used > 0 for zero
   Test negative/non-negative instead of sign
+
+Test optimisation of zmul:
+  bc = [(Hb * Hc) << (m2 << 1)]
+     + [(Hb * Hc) << m2]
+     - [(Hb - Lb)(Hc - Lc) << m2]
+     + [(Lb * Lc) << m2]
+     + (Lb * Lc)

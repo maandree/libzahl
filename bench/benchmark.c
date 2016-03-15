@@ -85,14 +85,18 @@ main(int argc, char *argv[])
 	BENCHMARK(zlsh(c, a, 76), 1);
 	BENCHMARK(zrsh(c, a, 76), 1);
 	BENCHMARK(ztrunc(c, a, 76), 1);
+	BENCHMARK(ztrunc(c, c, 76), 1);
 	BENCHMARK(zsplit(c, d, a, 76), 1);
 	BENCHMARK(zcmpmag(a, b), 1);
 	BENCHMARK(zcmp(a, b), 1);
 	BENCHMARK(zcmpi(a, 1000000000LL), 1);
 	BENCHMARK(zcmpu(a, 1000000000ULL), 1);
 	BENCHMARK(zbset(c, a, 76, 1), 1);
+	BENCHMARK(zbset(a, a, 76, 1), 1);
 	BENCHMARK(zbset(c, a, 76, 0), 1);
+	BENCHMARK(zbset(c, c, 76, 0), 1);
 	BENCHMARK(zbset(c, a, 76, -1), 1);
+	BENCHMARK(zbset(a, a, 76, -1), 1);
 	BENCHMARK(zbtest(a, 76), 1);
 	BENCHMARK(zgcd(c, a, b), 0);
 	BENCHMARK(zmul(c, a, b), 0);

@@ -45,29 +45,29 @@
 #endif
 
 #define LIST_TEMPS\
-	X(libzahl_tmp_cmp)\
-	X(libzahl_tmp_str_num)\
-	X(libzahl_tmp_str_mag)\
-	X(libzahl_tmp_str_div)\
-	X(libzahl_tmp_str_rem)\
-	X(libzahl_tmp_gcd_u)\
-	X(libzahl_tmp_gcd_v)\
-	X(libzahl_tmp_sub)\
-	X(libzahl_tmp_modmul)\
-	X(libzahl_tmp_div)\
-	X(libzahl_tmp_mod)\
-	X(libzahl_tmp_pow_b)\
-	X(libzahl_tmp_pow_c)\
-	X(libzahl_tmp_pow_d)\
-	X(libzahl_tmp_modsqr)\
-	X(libzahl_tmp_divmod_a)\
-	X(libzahl_tmp_divmod_b)\
-	X(libzahl_tmp_divmod_d)\
-	X(libzahl_tmp_ptest_x)\
-	X(libzahl_tmp_ptest_a)\
-	X(libzahl_tmp_ptest_d)\
-	X(libzahl_tmp_ptest_n1)\
-	X(libzahl_tmp_ptest_n4)
+	X(libzahl_tmp_cmp, 1)\
+	X(libzahl_tmp_str_num, 0)\
+	X(libzahl_tmp_str_mag, 0)\
+	X(libzahl_tmp_str_div, 0)\
+	X(libzahl_tmp_str_rem, 0)\
+	X(libzahl_tmp_gcd_u, 0)\
+	X(libzahl_tmp_gcd_v, 0)\
+	X(libzahl_tmp_sub, 0)\
+	X(libzahl_tmp_modmul, 0)\
+	X(libzahl_tmp_div, 0)\
+	X(libzahl_tmp_mod, 0)\
+	X(libzahl_tmp_pow_b, 0)\
+	X(libzahl_tmp_pow_c, 0)\
+	X(libzahl_tmp_pow_d, 0)\
+	X(libzahl_tmp_modsqr, 0)\
+	X(libzahl_tmp_divmod_a, 0)\
+	X(libzahl_tmp_divmod_b, 0)\
+	X(libzahl_tmp_divmod_d, 0)\
+	X(libzahl_tmp_ptest_x, 0)\
+	X(libzahl_tmp_ptest_a, 0)\
+	X(libzahl_tmp_ptest_d, 0)\
+	X(libzahl_tmp_ptest_n1, 0)\
+	X(libzahl_tmp_ptest_n4, 0)
 
 #define LIST_CONSTS\
 	X(libzahl_const_1e19, zsetu, 10000000000000000000ULL) /* The largest power of 10 < 2⁶⁴. */\
@@ -75,7 +75,7 @@
 	X(libzahl_const_2,    zsetu, 2)\
 	X(libzahl_const_4,    zsetu, 4)
 
-#define X(x)  extern z_t x;
+#define X(x, s)  extern z_t x;
 LIST_TEMPS
 #undef X
 #define X(x, f, v)  extern z_t x;
@@ -185,3 +185,50 @@ libzahl_add_overflow(zahl_char_t *rp, zahl_char_t a, zahl_char_t b)
 	return carry;
 }
 #endif
+
+static inline void
+zrsh_taint(z_t a, size_t bits)
+{
+	size_t i, chars, cbits;
+
+	if (unlikely(!bits))
+		return;
+	if (unlikely(zzero(a)))
+		return;
+
+	chars = FLOOR_BITS_TO_CHARS(bits);
+
+	if (unlikely(chars >= a->used || zbits(a) <= bits)) {
+		SET_SIGNUM(a, 0);
+		return;
+	}
+
+	bits = BITS_IN_LAST_CHAR(bits);
+	cbits = BITS_PER_CHAR - bits;
+
+	if (likely(chars)) {
+		a->used -= chars;
+		a->chars += chars;
+	}
+
+	if (unlikely(bits)) { /* This if statement is very important in C. */
+		a->chars[0] >>= bits;
+		for (i = 1; i < a->used; i++) {
+			a->chars[i - 1] |= a->chars[i] << cbits;
+			a->chars[i] >>= bits;
+		}
+		TRIM_NONZERO(a);
+	}
+}
+
+static inline void
+zswap_tainted_unsigned(z_t a, z_t b)
+{
+	z_t t;
+	t->used = b->used;
+	b->used = a->used;
+	a->used = t->used;
+	t->chars = b->chars;
+	b->chars = a->chars;
+	a->chars = t->chars;
+}

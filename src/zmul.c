@@ -57,39 +57,22 @@ zmul(z_t a, z_t b, z_t c)
 	zsplit(b_high, b_low, b, m2);
 	zsplit(c_high, c_low, c, m2);
 
-#if 1
+
 	zmul(z0, b_low, c_low);
 	zmul(z2, b_high, c_high);
-	zadd(b_low, b_low, b_high);
-	zadd(c_low, c_low, c_high);
+	zadd_unsigned_assign(b_low, b_high);
+	zadd_unsigned_assign(c_low, c_high);
 	zmul(z1, b_low, c_low);
 
-	zsub(z1, z1, z0);
-	zsub(z1, z1, z2);
+	zsub_nonnegative_assign(z1, z0);
+	zsub_nonnegative_assign(z1, z2);
 
 	zlsh(z1, z1, m2);
 	m2 <<= 1;
-	zlsh(z2, z2, m2);
-
-	zadd(a, z2, z1);
-	zadd(a, a, z0);
-#else
-	zmul(z0, b_low, c_low);
-	zmul(z2, b_high, c_high);
-	zsub(b_low, b_high, b_low);
-	zsub(c_low, c_high, c_low);
-	zmul(z1, b_low, c_low);
-
-	zlsh(z0, z0, m2 + 1);
-	zlsh(z1, z1, m2);
 	zlsh(a, z2, m2);
-	m2 <<= 1;
-	zlsh(z2, z2, m2);
-	zadd(z2, z2, a);
+	zadd_unsigned_assign(a, z1);
+	zadd_unsigned_assign(a, z0);
 
-	zsub(a, z2, z1);
-	zadd(a, a, z0);
-#endif
 
 	zfree(z0);
 	zfree(z1);

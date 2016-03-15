@@ -119,6 +119,9 @@ void zmodpowu(z_t, z_t, unsigned long long int, z_t);
 /* These are used internally and may be removed in a future version. */
 void zadd_unsigned(z_t, z_t, z_t);      /* a := |b| + |c| */
 void zsub_unsigned(z_t, z_t, z_t);      /* a := |b| - |c| */
+void zadd_unsigned_assign(z_t, z_t);    /* a := |a| + |b| */
+void zsub_nonnegative_assign(z_t, z_t); /* a := a - b, assuming a ≥ b ≥ 0 */
+void zsub_positive_assign(z_t, z_t);    /* a := a - b, assuming a > b > 0 */
 
 
 /* Bitwise operations. */

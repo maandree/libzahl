@@ -14,5 +14,5 @@ RANLIB = ranlib
 # you have to add -DSECURE_RANDOM_PATHNAME=... to CPPFLAGS.
 
 CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700
-CFLAGS   = -std=c99 -O3 -Wall -pedantic
+CFLAGS   = -std=c99 -flto -O3 -Wall -pedantic
 LDFLAGS  = -s

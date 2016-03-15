@@ -8,7 +8,7 @@ zunsetup(void)
 	size_t i;
 	if (libzahl_set_up) {
 		libzahl_set_up = 0;
-#define X(x)\
+#define X(x, s)\
 		free(x->chars);
 		LIST_TEMPS;
 #undef X
