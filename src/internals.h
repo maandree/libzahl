@@ -244,7 +244,6 @@ zsplit_fast_large_taint(z_t high, z_t low, z_t a, size_t n)
 	low->used = n;
 	low->chars = a->chars;
 	TRIM_AND_ZERO(low);
-	TRIM_AND_ZERO(high);
 }
 
 static inline void
