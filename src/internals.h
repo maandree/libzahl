@@ -150,15 +150,15 @@ zmemset(zahl_char_t *a, register zahl_char_t v, register size_t n)
 #endif
 
 #if defined(__GNUC__) || defined(__clang__)
-# define libzahl_msb_nz_lu(x)        (8 * sizeof(unsigned long int) - (size_t)__builtin_clzl(x));
-# define libzahl_msb_nz_llu(x)       (8 * sizeof(unsigned long long int) - (size_t)__builtin_clzll(x));
+# define libzahl_msb_nz_lu(x)        (8 * sizeof(unsigned long int) - 1 - (size_t)__builtin_clzl(x))
+# define libzahl_msb_nz_llu(x)       (8 * sizeof(unsigned long long int) - 1 - (size_t)__builtin_clzll(x))
 #else
 static inline size_t
 libzahl_msb_nz_lu(unsigned long int x)
 {
 	size_t r = 0;
 	for (; x; x >>= 1, r++);
-	return r;
+	return r - 1;
 }
 
 static inline size_t
@@ -166,7 +166,7 @@ libzahl_msb_nz_llu(unsigned long long int x)
 {
 	size_t r = 0;
 	for (; x; x >>= 1, r++);
-	return r;
+	return r - 1;
 }
 #endif
 

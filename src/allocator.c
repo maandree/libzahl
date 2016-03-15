@@ -5,20 +5,14 @@
 void
 libzahl_realloc(z_t a, size_t need)
 {
-	size_t i, x;
+	size_t i, new_size = 1;
 	zahl_char_t *new;
 
-	/* Find n such that n is a minimal power of 2 ≥ need. */
-	if (likely((need & (~need + 1)) != need)) {
-		need |= need >> 1;
-		need |= need >> 2;
-		need |= need >> 4;
-		for (i = sizeof(need), x = 8; (i >>= 1); x <<= 1)
-			need |= need >> x;
-		need += 1;
+	new_size <<= i = libzahl_msb_nz_zu(need);
+	if (likely(new_size != need)) {
+		i += 1;
+		new_size <<= 1;
 	}
-
-	i = libzahl_msb_nz_zu(need);
 
 	if (likely(libzahl_pool_n[i])) {
 		libzahl_pool_n[i]--;
@@ -27,12 +21,12 @@ libzahl_realloc(z_t a, size_t need)
 		zfree(a);
 		a->chars = new;
 	} else {
-		a->chars = realloc(a->chars, need * sizeof(zahl_char_t));
+		a->chars = realloc(a->chars, new_size * sizeof(zahl_char_t));
 		if (unlikely(!a->chars)) {
 			if (!errno) /* sigh... */
 				errno = ENOMEM;
 			libzahl_failure(errno);
 		}
 	}
-	a->alloced = need;
+	a->alloced = new_size;
 }
