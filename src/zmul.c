@@ -2,8 +2,17 @@
 #include "internals.h"
 
 
-void
-zmul(z_t a, z_t b, z_t c)
+static inline void
+zmul_impl_single_char(z_t a, z_t b, z_t c)
+{
+	ENSURE_SIZE(a, 1);
+	a->used = 1;
+	a->chars[0] = b->chars[0] * c->chars[0];
+	SET_SIGNUM(a, 1);
+}
+
+static void
+zmul_impl(z_t a, z_t b, z_t c)
 {
 	/*
 	 * Karatsuba algorithm
@@ -17,12 +26,8 @@ zmul(z_t a, z_t b, z_t c)
 
 	size_t m, m2;
 	z_t z0, z1, z2, b_high, b_low, c_high, c_low;
-	int b_sign, c_sign;
 
-	b_sign = zsignum(b);
-	c_sign = zsignum(c);
-
-	if (unlikely(!b_sign || !c_sign)) {
+	if (unlikely(zzero1(b, c))) {
 		SET_SIGNUM(a, 0);
 		return;
 	}
@@ -31,17 +36,9 @@ zmul(z_t a, z_t b, z_t c)
 	m2 = b == c ? m : zbits(c);
 
 	if (m + m2 <= BITS_PER_CHAR) {
-		/* zsetu(a, b->chars[0] * c->chars[0]); { */
-		ENSURE_SIZE(a, 1);
-		a->used = 1;
-		a->chars[0] = b->chars[0] * c->chars[0];
-		/* } */
-		SET_SIGNUM(a, b_sign * c_sign);
+		zmul_impl_single_char(a, b, c);
 		return;
 	}
-
-	SET_SIGNUM(b, 1);
-	SET_SIGNUM(c, 1);
 
         m = MAX(m, m2);
 	m2 = m >> 1;
@@ -58,11 +55,11 @@ zmul(z_t a, z_t b, z_t c)
 	zsplit(c_high, c_low, c, m2);
 
 
-	zmul(z0, b_low, c_low);
-	zmul(z2, b_high, c_high);
+	zmul_impl(z0, b_low, c_low);
 	zadd_unsigned_assign(b_low, b_high);
 	zadd_unsigned_assign(c_low, c_high);
-	zmul(z1, b_low, c_low);
+	zmul_impl(z1, b_low, c_low);
+	zmul_impl(z2, b_high, c_high);
 
 	zsub_nonnegative_assign(z1, z0);
 	zsub_nonnegative_assign(z1, z2);
@@ -81,8 +78,16 @@ zmul(z_t a, z_t b, z_t c)
 	zfree(b_low);
 	zfree(c_high);
 	zfree(c_low);
+}
 
-	SET_SIGNUM(b, b_sign);
-	SET_SIGNUM(c, c_sign);
-	SET_SIGNUM(a, b_sign * c_sign);
+void
+zmul(z_t a, z_t b, z_t c)
+{
+	int b_sign, c_sign;
+	b_sign = b->sign, b->sign *= b_sign;
+	c_sign = c->sign, c->sign *= c_sign;
+	zmul_impl(a, b, c);
+	c->sign *= c_sign;
+	b->sign *= b_sign;
+	SET_SIGNUM(a, zsignum(b) * zsignum(c));
 }
