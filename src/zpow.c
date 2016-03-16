@@ -5,6 +5,9 @@
 #define tc  libzahl_tmp_pow_c
 
 
+extern void zmul_impl(z_t a, z_t b, z_t c);
+extern void zsqr_impl(z_t a, z_t b);
+
 void
 zpow(z_t a, z_t b, z_t c)
 {
@@ -16,6 +19,7 @@ zpow(z_t a, z_t b, z_t c)
 
 	size_t i, j, n, bits;
 	zahl_char_t x;
+	int neg;
 
 	if (unlikely(zsignum(c) <= 0)) {
 		if (zzero(c)) {
@@ -36,7 +40,8 @@ zpow(z_t a, z_t b, z_t c)
 	bits = zbits(c);
 	n = FLOOR_BITS_TO_CHARS(bits);
 
-	zset(tb, b);
+	neg = znegative(b) && zodd(c);
+	zabs(tb, b);
 	zset(tc, c);
 	zsetu(a, 1);
 
@@ -44,14 +49,17 @@ zpow(z_t a, z_t b, z_t c)
 		x = tc->chars[i];
 		for (j = BITS_PER_CHAR; j--; x >>= 1) {
 			if (x & 1)
-				zmul(a, a, tb);
-			zsqr(tb, tb);
+				zmul_impl(a, a, tb);
+			zsqr_impl(tb, tb);
 		}
 	}
 	x = tc->chars[i];
 	for (; x; x >>= 1) {
 		if (x & 1)
-			zmul(a, a, tb);
-		zsqr(tb, tb);
+			zmul_impl(a, a, tb);
+		zsqr_impl(tb, tb);
 	}
+
+	if (neg)
+		zneg(a, a);
 }

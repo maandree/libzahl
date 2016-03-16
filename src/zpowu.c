@@ -4,9 +4,14 @@
 #define tb  libzahl_tmp_pow_b
 
 
+extern void zmul_impl(z_t a, z_t b, z_t c);
+extern void zsqr_impl(z_t a, z_t b);
+
 void
 zpowu(z_t a, z_t b, unsigned long long int c)
 {
+	int neg;
+
 	if (unlikely(!c)) {
 		if (zzero(b))
 			libzahl_failure(-ZERROR_0_POW_0);
@@ -17,12 +22,16 @@ zpowu(z_t a, z_t b, unsigned long long int c)
 		return;
 	}
 
-	zset(tb, b);
+	neg = znegative(b) && (c & 1);
+	zabs(tb, b);
 	zsetu(a, 1);
 
 	for (; c; c >>= 1) {
 		if (c & 1)
-			zmul(a, a, tb);
-		zsqr(tb, tb);
+			zmul_impl(a, a, tb);
+		zsqr_impl(tb, tb);
 	}
+
+	if (neg)
+		zneg(a, a);
 }

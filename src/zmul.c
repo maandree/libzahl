@@ -11,7 +11,7 @@ zmul_impl_single_char(z_t a, z_t b, z_t c)
 	SET_SIGNUM(a, 1);
 }
 
-static void
+void
 zmul_impl(z_t a, z_t b, z_t c)
 {
 	/*
@@ -19,13 +19,18 @@ zmul_impl(z_t a, z_t b, z_t c)
 	 * 
 	 * Basically, this is how you were taught to multiply large numbers
 	 * by hand in school: 4010⋅3020 = (4000 + 10)(3000 + 20) =
-	 = 40⋅30⋅10⁴ + (40⋅20 + 30⋅10)⋅10² + 10⋅20, but the middle is
+	 * = 40⋅30⋅10⁴ + (40⋅20 + 30⋅10)⋅10² + 10⋅20, but the middle is
 	 * optimised to only one multiplication:
 	 * 40⋅20 + 30⋅10 = (40 + 10)(30 + 20) − 40⋅30 − 10⋅20.
+	 * This optimisation is crucial. Without it, the algorithm with
+	 * run in O(n²).
 	 */
 
+#define z2 c_low
+#define z1 b_low
+#define z0 a
 	size_t m, m2;
-	z_t z0, z1, z2, b_high, b_low, c_high, c_low;
+	z_t b_high, b_low, c_high, c_low;
 
 	if (unlikely(zzero1(b, c))) {
 		SET_SIGNUM(a, 0);
@@ -43,9 +48,6 @@ zmul_impl(z_t a, z_t b, z_t c)
         m = MAX(m, m2);
 	m2 = m >> 1;
 
-	zinit(z0);
-	zinit(z1);
-	zinit(z2);
 	zinit(b_high);
 	zinit(b_low);
 	zinit(c_high);
@@ -66,14 +68,11 @@ zmul_impl(z_t a, z_t b, z_t c)
 
 	zlsh(z1, z1, m2);
 	m2 <<= 1;
-	zlsh(a, z2, m2);
+	zlsh(z2, z2, m2);
 	zadd_unsigned_assign(a, z1);
-	zadd_unsigned_assign(a, z0);
+	zadd_unsigned_assign(a, z2);
 
 
-	zfree(z0);
-	zfree(z1);
-	zfree(z2);
 	zfree(b_high);
 	zfree(b_low);
 	zfree(c_high);

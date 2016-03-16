@@ -15,3 +15,7 @@ Test optimisation of zmul:
      - [(Hb - Lb)(Hc - Lc) << m2]
      + [(Lb * Lc) << m2]
      + (Lb * Lc)
+
+Would zmul be faster if we split only one of the
+factors until they are both approximately the same
+size?

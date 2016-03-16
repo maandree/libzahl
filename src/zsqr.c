@@ -11,16 +11,19 @@ zsqr_impl_single_char(z_t a, z_t b)
 	SET_SIGNUM(a, 1);
 }
 
-static void
+extern void zmul_impl(z_t a, z_t b, z_t c);
+
+void
 zsqr_impl(z_t a, z_t b)
 {
 	/*
 	 * Karatsuba algorithm, optimised for equal factors.
 	 */
 
-	z_t z0, z1, z2, high, low;
-	size_t bits;
+#define z2 a
+	z_t z0, z1, high, low;
 	zahl_char_t auxchars[3];
+	size_t bits;
 
 	bits = zbits(b);
 
@@ -31,39 +34,41 @@ zsqr_impl(z_t a, z_t b)
 
 	bits >>= 1;
 
-	zinit(z0);
-	zinit(z1);
-	zinit(z2);
-
+	/* Try to split only at a character level rather than a bit level.
+	 * Such splits are faster, even if bit-level is required, and do
+	 * not require auxiliary memory except for the bit-level split
+	 * which require constant auxiliary memory. */
 	if (bits < BITS_PER_CHAR) {
 		low->chars = auxchars;
 		high->chars = auxchars + 1;
-		zsplit_fast_small_tainted(high, low, b, bits);
+		zsplit_unsigned_fast_small_tainted(high, low, b, bits);
 	} else {
 		bits &= ~(BITS_PER_CHAR - 1);
-		zsplit_fast_large_taint(high, low, b, bits);
+		zsplit_unsigned_fast_large_taint(high, low, b, bits);
 	}
 
 
-	zsqr_impl(z2, high);
 	if (unlikely(zzero(low))) {
-		SET_SIGNUM(z0, 0);
-		SET_SIGNUM(z1, 0);
+		zsqr_impl(z2, high);
+		zlsh(a, z2, bits << 1);
 	} else {
+		zinit(z0);
+		zinit(z1);
+
 		zsqr_impl(z0, low);
-		zmul(z1, low, high);
+
+		zmul_impl(z1, low, high);
+		zlsh(z1, z1, bits + 1);
+
+		zsqr_impl(z2, high);
+		zlsh(a, z2, bits << 1);
+
+		zadd_unsigned_assign(a, z1);
+		zadd_unsigned_assign(a, z0);
+
+		zfree(z0);
+		zfree(z1);
 	}
-
-	zlsh(z1, z1, bits + 1);
-	bits <<= 1;
-	zlsh(a, z2, bits);
-	zadd_unsigned_assign(a, z1);
-	zadd_unsigned_assign(a, z0);
-
-
-	zfree(z0);
-	zfree(z1);
-	zfree(z2);
 }
 
 void

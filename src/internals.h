@@ -234,25 +234,28 @@ zswap_tainted_unsigned(z_t a, z_t b)
 }
 
 static inline void
-zsplit_fast_large_taint(z_t high, z_t low, z_t a, size_t n)
+zsplit_unsigned_fast_large_taint(z_t high, z_t low, z_t a, size_t n)
 {
 	n >>= LB_BITS_PER_CHAR;
-	high->sign = a->sign;
+	high->sign = 1;
 	high->used = a->used - n;
 	high->chars = a->chars + n;
-	low->sign = a->sign;
+#if 0
+	TRIM_AND_ZERO(high);
+#endif
+	low->sign = 1;
 	low->used = n;
 	low->chars = a->chars;
 	TRIM_AND_ZERO(low);
 }
 
 static inline void
-zsplit_fast_small_tainted(z_t high, z_t low, z_t a, size_t n)
+zsplit_unsigned_fast_small_tainted(z_t high, z_t low, z_t a, size_t n)
 {
 	zahl_char_t mask = 1;
 	mask = (mask << n) - 1;
 
-	high->sign = a->sign;
+	high->sign = 1;
 	high->used = 1;
 	high->chars[0] = a->chars[0] >> n;
 	if (a->used == 2) {
@@ -261,10 +264,12 @@ zsplit_fast_small_tainted(z_t high, z_t low, z_t a, size_t n)
 		n = BITS_PER_CHAR - n;
 		high->chars[0] |= (a->chars[1] & mask) << n;
 	}
+#if 0
 	if (unlikely(!high->chars[high->used - 1]))
 		high->sign = 0;
+#endif
 
-	low->sign = a->sign;
+	low->sign = 1;
 	low->used = 1;
 	low->chars[0] = a->chars[0] & mask;
 	if (unlikely(!low->chars[0]))
