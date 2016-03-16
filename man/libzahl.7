@@ -25,6 +25,21 @@ them for reuse.
 .P
 With the exception of functions working with strings,
 all output parameters are before the input parameters.
+.P
+Like any self-respecting big number library, libzahl
+supports assign values to variables that are also
+input variables. However, keep in mind that commutative
+functions are optimised for the first operand to also
+be the output over the second operand to also be the
+input. For example, \fIzadd(a,a,b)\fP should be faster
+than \fIzadd(a,b,a)\fP, although both are supported.
+Whether or not the function believe that it is more
+likely to occur that the input variables are different
+that the output variable than the output variable
+being the first input variable depends on the function.
+Some functions are implemented to believe that the
+first is more likely, other fucntions are implemented
+to believe that the latter is more likely.
 .SH RATIONALE
 GMP MP cannot be used for rubust programs. LibTomMath
 is too slow, probably because of all memory allocations,
