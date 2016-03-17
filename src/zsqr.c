@@ -41,7 +41,7 @@ zsqr_impl(z_t a, z_t b)
 	if (bits < BITS_PER_CHAR) {
 		low->chars = auxchars;
 		high->chars = auxchars + 1;
-		zsplit_unsigned_fast_small_tainted(high, low, b, bits);
+		zsplit_unsigned_fast_small_auto(high, low, b, bits);
 	} else {
 		bits &= ~(BITS_PER_CHAR - 1);
 		zsplit_unsigned_fast_large_taint(high, low, b, bits);

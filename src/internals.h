@@ -250,7 +250,7 @@ zsplit_unsigned_fast_large_taint(z_t high, z_t low, z_t a, size_t n)
 }
 
 static inline void
-zsplit_unsigned_fast_small_tainted(z_t high, z_t low, z_t a, size_t n)
+zsplit_unsigned_fast_small_auto(z_t high, z_t low, z_t a, size_t n)
 {
 	zahl_char_t mask = 1;
 	mask = (mask << n) - 1;
