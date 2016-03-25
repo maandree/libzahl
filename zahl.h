@@ -53,7 +53,8 @@ enum zranddev {
 
 enum zranddist {
 	QUASIUNIFORM = 0,               /* Almost uniformly random, per the usual recommendation. */
-	UNIFORM                         /* Actually uniformly random. */
+	UNIFORM,                        /* Actually uniformly random. */
+	MODUNIFORM                      /* Almost uniformly random, using the naïve approach of modulation. */
 };
 
 enum zerror {

@@ -738,6 +738,34 @@ main(void)
 	assert(zcmp(a, c), != 0);
 	assert(zcmp(b, c), != 0);
 
+	zsetu(d, 100000UL);
+	zrand(a, FAST_RANDOM, QUASIUNIFORM, d);
+	assert(zcmp(a, _0), >= 0);
+	assert(zcmp(a, d), <= 0);
+	zrand(b, FAST_RANDOM, QUASIUNIFORM, d);
+	assert(zcmp(b, _0), >= 0);
+	assert(zcmp(b, d), <= 0);
+	zrand(c, FAST_RANDOM, QUASIUNIFORM, d);
+	assert(zcmp(c, _0), >= 0);
+	assert(zcmp(c, d), <= 0);
+	assert(zcmp(a, b), != 0);
+	assert(zcmp(a, c), != 0);
+	assert(zcmp(b, c), != 0);
+
+	zsetu(d, 100000UL);
+	zrand(a, FAST_RANDOM, MODUNIFORM, d);
+	assert(zcmp(a, _0), >= 0);
+	assert(zcmp(a, d), <= 0);
+	zrand(b, FAST_RANDOM, MODUNIFORM, d);
+	assert(zcmp(b, _0), >= 0);
+	assert(zcmp(b, d), <= 0);
+	zrand(c, FAST_RANDOM, MODUNIFORM, d);
+	assert(zcmp(c, _0), >= 0);
+	assert(zcmp(c, d), <= 0);
+	assert(zcmp(a, b), != 0);
+	assert(zcmp(a, c), != 0);
+	assert(zcmp(b, c), != 0);
+
 	assert((zseti(a, -5), zptest(0, a, 100)), == NONPRIME);
 	assert((zseti(a, -4), zptest(0, a, 100)), == NONPRIME);
 	assert((zseti(a, -3), zptest(0, a, 100)), == NONPRIME);

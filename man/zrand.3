@@ -48,6 +48,25 @@ range [0,
 Generate a integer in the range [0,
 .IR max ]
 uniformally random.
+.TP
+.B MODUNIFORM
+Slightly faster alternative to
+.BR UNIFORM .
+
+It is not truly uniform. It is biased
+to the lower numbers, but the probably
+if any number is either
+.I p
+or
+.I 2p
+for some parameter-dependent number
+.IR p .
+
+It uses the naïve approach of generating
+a random number and modulation with the maximum
+number. However, this implementation this
+modulation by subtracting with the maximum number
+if the generated number is greater.
 .P
 It is safe to call
 .B zrand

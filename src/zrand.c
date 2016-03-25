@@ -94,6 +94,14 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 		while (unlikely(zcmpmag(r, n) > 0));
 		break;
 
+	case MODUNIFORM:
+		if (unlikely(znegative(n)))
+			libzahl_failure(-ZERROR_NEGATIVE);
+		zrand_get_random_bits(r, zbits(n), fd);
+		if (unlikely(zcmpmag(r, n) > 0))
+		        zsub(r, r, n);
+		break;
+
 	default:
 		libzahl_failure(EINVAL);
 	}
