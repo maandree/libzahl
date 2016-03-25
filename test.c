@@ -731,7 +731,7 @@ main(void)
 	zrand(b, SECURE_RANDOM, UNIFORM, d);
 	assert(zcmp(b, _0), >= 0);
 	assert(zcmp(b, d), <= 0);
-	zrand(c, FAST_RANDOM, UNIFORM, d);
+	zrand(c, FASTEST_RANDOM, UNIFORM, d);
 	assert(zcmp(c, _0), >= 0);
 	assert(zcmp(c, d), <= 0);
 	assert(zcmp(a, b), != 0);
@@ -739,13 +739,13 @@ main(void)
 	assert(zcmp(b, c), != 0);
 
 	zsetu(d, 100000UL);
-	zrand(a, FAST_RANDOM, QUASIUNIFORM, d);
+	zrand(a, DEFAULT_RANDOM, QUASIUNIFORM, d);
 	assert(zcmp(a, _0), >= 0);
 	assert(zcmp(a, d), <= 0);
-	zrand(b, FAST_RANDOM, QUASIUNIFORM, d);
+	zrand(b, DEFAULT_RANDOM, QUASIUNIFORM, d);
 	assert(zcmp(b, _0), >= 0);
 	assert(zcmp(b, d), <= 0);
-	zrand(c, FAST_RANDOM, QUASIUNIFORM, d);
+	zrand(c, DEFAULT_RANDOM, QUASIUNIFORM, d);
 	assert(zcmp(c, _0), >= 0);
 	assert(zcmp(c, d), <= 0);
 	assert(zcmp(a, b), != 0);
@@ -753,13 +753,13 @@ main(void)
 	assert(zcmp(b, c), != 0);
 
 	zsetu(d, 100000UL);
-	zrand(a, FAST_RANDOM, MODUNIFORM, d);
+	zrand(a, DEFAULT_RANDOM, MODUNIFORM, d);
 	assert(zcmp(a, _0), >= 0);
 	assert(zcmp(a, d), <= 0);
-	zrand(b, FAST_RANDOM, MODUNIFORM, d);
+	zrand(b, DEFAULT_RANDOM, MODUNIFORM, d);
 	assert(zcmp(b, _0), >= 0);
 	assert(zcmp(b, d), <= 0);
-	zrand(c, FAST_RANDOM, MODUNIFORM, d);
+	zrand(c, DEFAULT_RANDOM, MODUNIFORM, d);
 	assert(zcmp(c, _0), >= 0);
 	assert(zcmp(c, d), <= 0);
 	assert(zcmp(a, b), != 0);

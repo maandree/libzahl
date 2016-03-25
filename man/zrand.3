@@ -18,6 +18,29 @@ selects the device
 uses to generate random bits.
 This value may be either of:
 .TP
+.B DEFAULT_RANDOM
+This is a version-dependent alias for the
+default random number generator. That is,
+using this option will cause
+.B zrand
+to select the default random number generator.
+Which random number generator is actually
+selected may change between versions of
+.B zrand.
+
+The selection will be a balance between randomness
+and performance.
+.TP
+.B FASTEST_RANDOM
+This is a version-dependent alias for the
+fastest random number generator. That is,
+using this option will cause
+.B zrand
+to select the fastest random number generator.
+Which random number generator is actually
+selected may change between versions of
+.B zrand.
+.TP
 .B FAST_RANDOM
 The fast, non-blocking random number generator.
 This is /dev/urandom on Linux.

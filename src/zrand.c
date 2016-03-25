@@ -55,6 +55,8 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 	int fd;
 
         switch (dev) {
+	case DEFAULT_RANDOM:
+	case FASTEST_RANDOM:
 	case FAST_RANDOM:
 		pathname = FAST_RANDOM_PATHNAME;
 		break;

@@ -48,7 +48,9 @@ enum zprimality {
 
 enum zranddev {
 	FAST_RANDOM = 0,                /* Random numbers are generated directly from /dev/urandom. */
-	SECURE_RANDOM                   /* Random numbers are generated directly from /dev/random. */
+	SECURE_RANDOM,                  /* Random numbers are generated directly from /dev/random. */
+	DEFAULT_RANDOM,                 /* Select the default random number generator. */
+	FASTEST_RANDOM                  /* Select the fastest random number generator. */
 };
 
 enum zranddist {
