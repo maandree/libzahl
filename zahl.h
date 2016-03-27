@@ -50,7 +50,10 @@ enum zranddev {
 	FAST_RANDOM = 0,                /* Random numbers are generated directly from /dev/urandom. */
 	SECURE_RANDOM,                  /* Random numbers are generated directly from /dev/random. */
 	DEFAULT_RANDOM,                 /* Select the default random number generator. */
-	FASTEST_RANDOM                  /* Select the fastest random number generator. */
+	FASTEST_RANDOM,                 /* Select the fastest random number generator. */
+	LIBC_RAND_RANDOM,               /* Use rand(3). */
+	LIBC_RANDOM_RANDOM,             /* Use random(3). */
+	LIBC_RAND48_RANDOM              /* Use lrand48(3). */
 };
 
 enum zranddist {

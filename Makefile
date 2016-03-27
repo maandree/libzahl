@@ -94,6 +94,9 @@ benchmark: bench/benchmark.c bench/$(BENCHMARK_LIB).h
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark.c $(BENCHMARK_$(BENCHMARK_LIB))
 endif
 
+benchmark-zrand: bench/benchmark-zrand.c libzahl.a
+	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ $^
+
 check: test
 	./test
 

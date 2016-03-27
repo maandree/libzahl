@@ -2,6 +2,8 @@
 #include "internals.h"
 
 #include <fcntl.h>
+#include <stdlib.h>
+#include <time.h>
 #include <unistd.h>
 
 #ifndef FAST_RANDOM_PATHNAME
@@ -14,23 +16,110 @@
 
 
 static void
-zrand_get_random_bits(z_t r, size_t bits, int fd)
+zrand_libc_rand(void *out, size_t n, void *statep)
 {
-	size_t read_total = 0, n, chars = CEILING_BITS_TO_CHARS(bits);
+	static char inited = 0;
+
+	unsigned int ri;
+	double rd;
+	unsigned char *buf = out;
+
+	if (!inited) {
+		inited = 1;
+		srand((intptr_t)out | time(NULL));
+	}
+
+	while (n--) {
+		ri = rand();
+		rd = (double)ri / ((double)RAND_MAX + 1);
+#ifdef GOOD_RAND
+		rd *= 256 * 256;
+		ri = (unsigned int)rd;
+		buf[n] = (unsigned char)((ri >> 0) & 255);
+		if (!n--) break;
+		buf[n] = (unsigned char)((ri >> 8) & 255);
+#else
+		rd *= 256;
+		buf[n] = (unsigned char)rd;
+#endif
+	}
+
+	(void) statep;
+}
+
+static void
+zrand_libc_rand48(void *out, size_t n, void *statep)
+{
+	static char inited = 0;
+
+	long int r0, r1;
+	unsigned char *buf = out;
+
+	if (!inited) {
+		inited = 1;
+		srand48((intptr_t)out | time(NULL));
+	}
+
+	while (n--) {
+		r0 = lrand48() & 15;
+		r1 = lrand48() & 15;
+		buf[n] = (r0 << 4) | r1;
+	}
+
+	(void) statep;
+}
+
+static void
+zrand_libc_random(void *out, size_t n, void *statep)
+{
+	static char inited = 0;
+
+	long int ri;
+	unsigned char *buf = out;
+
+	if (!inited) {
+		inited = 1;
+		srandom((intptr_t)out | time(NULL));
+	}
+
+	while (n--) {
+		ri = random();
+		buf[n] = (unsigned char)((ri >>  0) & 255);
+		if (!n--) break;
+		buf[n] = (unsigned char)((ri >>  8) & 255);
+		if (!n--) break;
+		buf[n] = (unsigned char)((ri >> 16) & 255);
+	}
+
+	(void) statep;
+}
+
+static void
+zrand_fd(void *out, size_t n, void *statep)
+{
+	int fd = *(int *)statep;
 	ssize_t read_just;
-	zahl_char_t mask = 1;
-	char *buf;
+	size_t read_total = 0;
+	char *buf = out;
 
-	ENSURE_SIZE(r, chars);
-	buf = (char *)(r->chars);
-
-	for (n = chars * sizeof(zahl_char_t); n;) {
+	while (n) {
 		read_just = read(fd, buf + read_total, n);
 		if (unlikely(read_just < 0))
 			libzahl_failure(errno);
 		read_total += (size_t)read_just;
 		n -= (size_t)read_just;
 	}
+}
+
+static void
+zrand_get_random_bits(z_t r, size_t bits, void (*fun)(void *, size_t, void *), void *statep)
+{
+	size_t n, chars = CEILING_BITS_TO_CHARS(bits);
+	zahl_char_t mask = 1;
+
+	ENSURE_SIZE(r, chars);
+
+	fun(r->chars, chars * sizeof(zahl_char_t), statep);
 
 	bits = BITS_IN_LAST_CHAR(bits);
 	mask <<= bits;
@@ -50,18 +139,40 @@ zrand_get_random_bits(z_t r, size_t bits, int fd)
 void
 zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 {
+#define RANDOM_UNIFORM(RETRY)\
+	do {\
+		if (unlikely(znegative(n)))\
+			libzahl_failure(-ZERROR_NEGATIVE);\
+		bits = zbits(n);\
+		do\
+			zrand_get_random_bits(r, bits, random_fun, statep);\
+		while (RETRY && unlikely(zcmpmag(r, n) > 0));\
+	} while (0)
+
+
 	const char *pathname = 0;
 	size_t bits;
-	int fd;
+	int fd = -1;
+	void *statep = 0;
+	void (*random_fun)(void *, size_t, void *) = &zrand_fd;
 
         switch (dev) {
-	case DEFAULT_RANDOM:
-	case FASTEST_RANDOM:
 	case FAST_RANDOM:
 		pathname = FAST_RANDOM_PATHNAME;
 		break;
 	case SECURE_RANDOM:
 		pathname = SECURE_RANDOM_PATHNAME;
+		break;
+	case LIBC_RAND_RANDOM:
+		random_fun = &zrand_libc_rand;
+		break;
+	case DEFAULT_RANDOM:
+	case FASTEST_RANDOM:
+	case LIBC_RANDOM_RANDOM:
+		random_fun = &zrand_libc_random;
+		break;
+	case LIBC_RAND48_RANDOM:
+		random_fun = &zrand_libc_rand48;
 		break;
 	default:
 		libzahl_failure(EINVAL);
@@ -72,34 +183,27 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 		return;
 	}
 
-	fd = open(pathname, O_RDONLY);
-	if (unlikely(fd < 0))
-		libzahl_failure(errno);
+	if (pathname) {
+		fd = open(pathname, O_RDONLY);
+		if (unlikely(fd < 0))
+			libzahl_failure(errno);
+		statep = &fd;
+	}
 
 	switch (dist) {
 	case QUASIUNIFORM:
-		if (unlikely(znegative(n)))
-			libzahl_failure(-ZERROR_NEGATIVE);
-		bits = zbits(n);
-		zrand_get_random_bits(r, bits, fd);
+		RANDOM_UNIFORM(0);
 		zadd(r, r, libzahl_const_1);
 		zmul(r, r, n);
 		zrsh(r, r, bits);
 		break;
 
 	case UNIFORM:
-		if (unlikely(znegative(n)))
-			libzahl_failure(-ZERROR_NEGATIVE);
-		bits = zbits(n);
-		do
-			zrand_get_random_bits(r, bits, fd);
-		while (unlikely(zcmpmag(r, n) > 0));
+		RANDOM_UNIFORM(1);
 		break;
 
 	case MODUNIFORM:
-		if (unlikely(znegative(n)))
-			libzahl_failure(-ZERROR_NEGATIVE);
-		zrand_get_random_bits(r, zbits(n), fd);
+		RANDOM_UNIFORM(0);
 		if (unlikely(zcmpmag(r, n) > 0))
 		        zsub(r, r, n);
 		break;
@@ -108,5 +212,6 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 		libzahl_failure(EINVAL);
 	}
 
-	close(fd);
+	if (fd >= 0)
+		close(fd);
 }

@@ -19,3 +19,5 @@ Test optimisation of zmul:
 Would zmul be faster if we split only one of the
 factors until they are both approximately the same
 size?
+
+Add entropy test for zrand.
