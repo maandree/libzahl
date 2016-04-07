@@ -39,7 +39,7 @@ zptest(z_t witness, z_t n, int t)
 	zrsh(d, n1, r);
 
 	while (t--) {
-		zrand(a, FAST_RANDOM, UNIFORM, n4);
+		zrand(a, DEFAULT_RANDOM, UNIFORM, n4);
 		zadd_unsigned(a, a, libzahl_const_2);
 		zmodpow(x, a, d, n);
 
