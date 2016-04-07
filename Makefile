@@ -1,7 +1,11 @@
 include config.mk
 
-HDR =\
+HDR_PUBLIC =\
 	zahl.h\
+	zahl-internals.h\
+	zahl-inlines.h
+
+HDR_PRIVATE =\
 	src/internals.h
 
 FUN =\
@@ -63,6 +67,7 @@ INLINE_FUN =\
 	zcmpu\
 	zbtest
 
+HDR = $(HDR_PUBLIC) $(HDR_PRIVATE)
 OBJ = $(FUN:=.o) allocator.o
 MAN3 = $(FUN:=.3) $(INLINE_FUN:=.3)
 MAN7 = libzahl.7
@@ -106,15 +111,15 @@ install: libzahl.a
 	mkdir -p -- "$(DESTDIR)$(MANPREFIX)/man3"
 	mkdir -p -- "$(DESTDIR)$(MANPREFIX)/man7"
 	cp -- libzahl.a "$(DESTDIR)$(EXECPREFIX)/lib"
-	cp -- zahl.h "$(DESTDIR)$(PREFIX)/include"
+	cp -- $(HDR_PUBLIC) "$(DESTDIR)$(PREFIX)/include"
 	cp -- $(foreach M,$(MAN3),man/$(M)) "$(DESTDIR)$(MANPREFIX)/man3"
 	cp -- $(foreach M,$(MAN7),man/$(M)) "$(DESTDIR)$(MANPREFIX)/man7"
 
 uninstall:
-	rm -- "$(DESTDIR)$(EXECPREFIX)/lib/libzahl.a"
-	rm -- "$(DESTDIR)$(PREFIX)/include/zahl.h"
-	cd "$(DESTDIR)$(MANPREFIX)/man3" && rm $(MAN3)
-	cd "$(DESTDIR)$(MANPREFIX)/man7" && rm $(MAN7)
+	-rm -- "$(DESTDIR)$(EXECPREFIX)/lib/libzahl.a"
+	-cd -- "$(DESTDIR)$(PREFIX)/include" && rm $(HDR_PUBLIC)
+	-cd -- "$(DESTDIR)$(MANPREFIX)/man3" && rm $(MAN3)
+	-cd -- "$(DESTDIR)$(MANPREFIX)/man7" && rm $(MAN7)
 
 clean:
 	-rm -- *.o *.su *.a *.so test test-random.c 2>/dev/null

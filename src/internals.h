@@ -10,13 +10,12 @@
 # undef __GNUC__
 #endif
 
-#define BITS_PER_CHAR                64
-#define LB_BITS_PER_CHAR             6
-#define ZAHL_CHAR_MAX                UINT64_MAX
+#define BITS_PER_CHAR                ZAHL_BITS_PER_CHAR
+#define LB_BITS_PER_CHAR             ZAHL_LB_BITS_PER_CHAR
 
-#define FLOOR_BITS_TO_CHARS(bits)    ((bits) >> LB_BITS_PER_CHAR)
-#define CEILING_BITS_TO_CHARS(bits)  (((bits) + (BITS_PER_CHAR - 1)) >> LB_BITS_PER_CHAR)
-#define BITS_IN_LAST_CHAR(bits)      ((bits) & (BITS_PER_CHAR - 1))
+#define FLOOR_BITS_TO_CHARS(bits)    ZAHL_FLOOR_BITS_TO_CHARS(bits)
+#define CEILING_BITS_TO_CHARS(bits)  ZAHL_CEILING_BITS_TO_CHARS(bits)
+#define BITS_IN_LAST_CHAR(bits)      ZAHL_BITS_IN_LAST_CHAR(bits)
 
 #if defined(__GNUC__)
 # define O0     __attribute__((optimize("O0")))
@@ -90,24 +89,19 @@ extern zahl_char_t **libzahl_pool[sizeof(size_t) * 8];
 extern size_t libzahl_pool_n[sizeof(size_t) * 8];
 extern size_t libzahl_pool_alloc[sizeof(size_t) * 8];
 
-#if defined(__GNUC__) || defined(__clang__)
-# define likely(value)               __builtin_expect(!!(value), 1)
-# define unlikely(value)             __builtin_expect(!!(value), 0)
-#else
-# define likely(value)               (value)
-# define unlikely(value)             (value)
-#endif
+#define likely(expr)                 ZAHL_LIKELY(expr)
+#define unlikely(expr)               ZAHL_UNLIKELY(expr)
 
 #define libzahl_failure(error)       (libzahl_error = (error), longjmp(libzahl_jmp_buf, 1))
-#define SET_SIGNUM(a, signum)        ((a)->sign = (signum))
-#define SET(a, b)                    do { if ((a) != (b)) zset(a, b); } while (0)
+#define SET_SIGNUM(a, signum)        ZAHL_SET_SIGNUM(a, signum)
+#define SET(a, b)                    ZAHL_SET(a, b)
 #define ENSURE_SIZE(a, n)            do { if ((a)->alloced < (n)) libzahl_realloc(a, (n)); } while (0)
+#define TRIM(a)                      ZAHL_TRIM(a)
+#define TRIM_NONZERO(a)              ZAHL_TRIM_NONZERO(a)
+#define TRIM_AND_ZERO(a)             ZAHL_TRIM_AND_ZERO(a)
+#define TRIM_AND_SIGN(a, s)          ZAHL_TRIM_AND_SIGN(a, s)
 #define MIN(a, b)                    ((a) < (b) ? (a) : (b))
 #define MAX(a, b)                    ((a) > (b) ? (a) : (b))
-#define TRIM(a)                      for (; (a)->used && !(a)->chars[(a)->used - 1]; (a)->used--)
-#define TRIM_NONZERO(a)              for (; !(a)->chars[(a)->used - 1]; (a)->used--)
-#define TRIM_AND_ZERO(a)             do { TRIM(a); if (!(a)->used) SET_SIGNUM(a, 0); } while (0)
-#define TRIM_AND_SIGN(a, s)          do { TRIM(a); SET_SIGNUM(a, (a)->used ? (s) : 0); } while (0)
 #define znegative(a)                 (zsignum(a) < 0)
 #define znegative1(a, b)             ((zsignum(a) | zsignum(b)) < 0)
 #define znegative2(a, b)             ((zsignum(a) & zsignum(b)) < 0)
