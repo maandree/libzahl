@@ -30,8 +30,15 @@ zunsetup(void)
 }
 
 #define FAST_RANDOM             0
+#define SECURE_RANDOM           0
+#define DEFAULT_RANDOM          0
+#define FASTEST_RANDOM          0
+#define LIBC_RAND_RANDOM        0
+#define LIBC_RANDOM_RANDOM      0
+#define LIBC_RAND48_RANDOM      0
 #define QUASIUNIFORM            0
 #define UNIFORM                 1
+#define MODUNIFORM              2
 
 #define zperror(x)              ((void)0)
 #define zinit(a)                mp_init(a)
@@ -76,11 +83,17 @@ zunsetup(void)
 #define zstr_length(a, b)       (mp_radix_size(a, b, &_tmp), _tmp)
 #define zstr(a, s)              mp_toradix(a, s, 10)
 #define zptest(w, a, t)         (mp_prime_is_prime(a, t, &_tmp), _tmp) /* Note, the witness is not returned. */
-#define zsave(a, s)             ((_tmp = ((s) ? mp_signed_bin_size(a) : mp_to_signed_bin(a, s))))
-#define zload(a, s)             mp_read_signed_bin(a, s, _tmp)
+#define zload(a, s)             mp_read_signed_bin(a, (unsigned char *)s, _tmp)
 #define zdiv(r, a, b)           mp_div(a, b, r, 0)
 #define zmod(r, a, b)           mp_mod(a, b, r)
 #define zdivmod(q, r, a, b)     mp_div(a, b, q, r)
+
+static int
+zsave(z_t a, char *buf)
+{
+	_tmp = buf ? mp_signed_bin_size(a) : mp_to_signed_bin(a, (unsigned char *)buf);
+	return _tmp;
+}
 
 static void
 zsetu(z_t r, unsigned long long int val)
@@ -181,6 +194,12 @@ zrand(z_t r, int dev, int dist, z_t n)
 			gave_up = 1;
 			printf("I'm sorry, this is too difficult, I give up.\n");
 		}
+		break;
+
+	case MODUNIFORM:
+		mp_rand(r, bits);
+		if (zcmp(r, n) > 0)
+			zsub(r, r, n);
 		break;
 
 	default:

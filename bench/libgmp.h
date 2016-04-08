@@ -37,8 +37,15 @@ zunsetup(void)
 }
 
 #define FAST_RANDOM             0
+#define SECURE_RANDOM           0
+#define DEFAULT_RANDOM          0
+#define FASTEST_RANDOM          0
+#define LIBC_RAND_RANDOM        0
+#define LIBC_RANDOM_RANDOM      0
+#define LIBC_RAND48_RANDOM      0
 #define QUASIUNIFORM            0
 #define UNIFORM                 1
+#define MODUNIFORM              2
 
 #define zperror(x)              ((void)0)
 #define zinit                   mpz_init
@@ -195,6 +202,13 @@ zrand(z_t r, int dev, int dist, z_t n)
 
 	case UNIFORM: /* Note, n is exclusive in this implementation. */
 		mpz_urandomm(r, _randstate, n);
+		break;
+
+	case MODUNIFORM:
+		bits = zbits(n);
+		mpz_urandomb(r, _randstate, bits);
+		if (zcmp(r, n) > 0)
+			zsub(r, r, n);
 		break;
 
 	default:

@@ -67,14 +67,42 @@ INLINE_FUN =\
 	zcmpu\
 	zbtest
 
-HDR = $(HDR_PUBLIC) $(HDR_PRIVATE)
-OBJ = $(FUN:=.o) allocator.o
+HDR  = $(HDR_PUBLIC) $(HDR_PRIVATE)
+OBJ  = $(FUN:=.o) allocator.o
 MAN3 = $(FUN:=.3) $(INLINE_FUN:=.3)
 MAN7 = libzahl.7
 
+VPATH = src
+
+BENCHMARK_LIB_           = libzahl.a
+BENCHMARK_LIB_zahl       = libzahl.a
+BENCHMARK_LIB_libzahl    = libzahl.a
+BENCHMARK_LIB_tommath    = -ltommath
+BENCHMARK_LIB_libtommath = -ltommath
+BENCHMARK_LIB_gmp        = -lgmp
+BENCHMARK_LIB_libgmp     = -lgmp
+
+BENCHMARK_DEP_           = libzahl.a
+BENCHMARK_DEP_zahl       = libzahl.a
+BENCHMARK_DEP_libzahl    = libzahl.a
+BENCHMARK_DEP_tommath    = bench/libtommath.h
+BENCHMARK_DEP_libtommath = bench/libtommath.h
+BENCHMARK_DEP_gmp        = bench/libgmp.h
+BENCHMARK_DEP_libgmp     = bench/libgmp.h
+
+BENCHMARK_CPP_tommath    = '-DBENCHMARK_LIB="libtommath.h"'
+BENCHMARK_CPP_libtommath = '-DBENCHMARK_LIB="libtommath.h"'
+BENCHMARK_CPP_gmp        = '-DBENCHMARK_LIB="libgmp.h"'
+BENCHMARK_CPP_libgmp     = '-DBENCHMARK_LIB="libgmp.h"'
+
+CPPFLAGS += $(BENCHMARK_CPP_$(BENCHMARK_LIB))
+
+CFLAGS_WITHOUT_O = $$(printf '%s\n' $(CFLAGS) | sed '/^-O.*$$/d')
+
+
 all: libzahl.a
 
-%.o: src/%.c $(HDR) config.mk
+.o: .c $(HDR) config.mk
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 libzahl.a: $(OBJ)
@@ -85,19 +113,10 @@ test-random.c: test-generate.py
 	./test-generate.py > test-random.c
 
 test: test.c libzahl.a test-random.c
-	$(CC) $(LDFLAGS) $(CFLAGS:--O*) -O0 $(CPPFLAGS) -o $@ test.c libzahl.a
+	$(CC) $(LDFLAGS) $(CFLAGS_WITHOUT_O) -O0 $(CPPFLAGS) -o $@ test.c libzahl.a
 
-ifndef BENCHMARK_LIB
-benchmark: bench/benchmark.c libzahl.a
-	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ $^
-endif
-ifdef BENCHMARK_LIB
-CPPFLAGS += -DBENCHMARK_LIB='"$(BENCHMARK_LIB).h"'
-BENCHMARK_libtommath = -ltommath
-BENCHMARK_libgmp = -lgmp
-benchmark: bench/benchmark.c bench/$(BENCHMARK_LIB).h
-	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark.c $(BENCHMARK_$(BENCHMARK_LIB))
-endif
+benchmark: bench/benchmark.c $(BENCHMARK_DEP_$(BENCHMARK_LIB))
+	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark.c $(BENCHMARK_LIB_$(BENCHMARK_LIB))
 
 benchmark-zrand: bench/benchmark-zrand.c libzahl.a
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ $^
@@ -110,10 +129,14 @@ install: libzahl.a
 	mkdir -p -- "$(DESTDIR)$(PREFIX)/include"
 	mkdir -p -- "$(DESTDIR)$(MANPREFIX)/man3"
 	mkdir -p -- "$(DESTDIR)$(MANPREFIX)/man7"
+	@if test -n "$(DESTDIR)"; then \
+		cd man && test -d "$(DESTDIR)$(MANPREFIX)/man7" || \
+		(printf '\n\n!!  DESTDIR must be an absolute path.  !!\n\n\n' ; exit 1) \
+	fi
 	cp -- libzahl.a "$(DESTDIR)$(EXECPREFIX)/lib"
 	cp -- $(HDR_PUBLIC) "$(DESTDIR)$(PREFIX)/include"
-	cp -- $(foreach M,$(MAN3),man/$(M)) "$(DESTDIR)$(MANPREFIX)/man3"
-	cp -- $(foreach M,$(MAN7),man/$(M)) "$(DESTDIR)$(MANPREFIX)/man7"
+	cd man && cp -- $(MAN3) "$(DESTDIR)$(MANPREFIX)/man3"
+	cd man && cp -- $(MAN7) "$(DESTDIR)$(MANPREFIX)/man7"
 
 uninstall:
 	-rm -- "$(DESTDIR)$(EXECPREFIX)/lib/libzahl.a"

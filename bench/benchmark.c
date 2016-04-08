@@ -18,7 +18,7 @@
 		i = FAST ? 1000000L : 1000L;\
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start);\
 		while (i--) {\
-			INSTRUCTION;\
+			(void)INSTRUCTION;\
 		}\
 		clock_gettime(CLOCK_MONOTONIC_RAW, &end);\
 		end.tv_sec -= start.tv_sec;\
