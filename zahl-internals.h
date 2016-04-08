@@ -27,6 +27,7 @@
 #define ZAHL_FLOOR_BITS_TO_CHARS(bits)    ((bits) >> ZAHL_LB_BITS_PER_CHAR)
 #define ZAHL_CEILING_BITS_TO_CHARS(bits)  (((bits) + (ZAHL_BITS_PER_CHAR - 1)) >> ZAHL_LB_BITS_PER_CHAR)
 #define ZAHL_BITS_IN_LAST_CHAR(bits)      ((bits) & (ZAHL_BITS_PER_CHAR - 1))
+#define ZAHL_TRUNCATE_TO_CHAR(bits)       ((bits) & ~(size_t)(ZAHL_BITS_PER_CHAR - 1))
 
 
 #define ZAHL_SET_SIGNUM(a, signum)        ((a)->sign = (signum))

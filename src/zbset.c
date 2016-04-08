@@ -23,14 +23,14 @@
 
 
 void
-zbset_impl_set(z_t a, z_t b, size_t bit)
+zbset_impl_set(z_t a, size_t bit)
 {
 	PROLOGUE(1);
 	a->chars[chars] |= mask;
 }
 
 void
-zbset_impl_clear(z_t a, z_t b, size_t bit)
+zbset_impl_clear(z_t a, size_t bit)
 {
 	PROLOGUE(0);
 	a->chars[chars] &= ~mask;
@@ -38,7 +38,7 @@ zbset_impl_clear(z_t a, z_t b, size_t bit)
 }
 
 void
-zbset_impl_flip(z_t a, z_t b, size_t bit)
+zbset_impl_flip(z_t a, size_t bit)
 {
 	PROLOGUE(1);
 	a->chars[chars] ^= mask;

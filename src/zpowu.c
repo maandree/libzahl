@@ -4,9 +4,6 @@
 #define tb  libzahl_tmp_pow_b
 
 
-extern void zmul_impl(z_t a, z_t b, z_t c);
-extern void zsqr_impl(z_t a, z_t b);
-
 void
 zpowu(z_t a, z_t b, unsigned long long int c)
 {

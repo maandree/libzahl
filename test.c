@@ -297,7 +297,7 @@ main(void)
 	zsetu(b, 0);
 	assert(zcmp(a, b), != 0);
 	n = zsave(a, buf);
-	assert(n, > 0);
+	assert(n > 0, > 0);
 	assert_zu(zload(b, buf), n);
 	assert(zcmp(a, b), == 0);
 

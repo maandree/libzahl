@@ -11,8 +11,6 @@ zsqr_impl_single_char(z_t a, z_t b)
 	SET_SIGNUM(a, 1);
 }
 
-extern void zmul_impl(z_t a, z_t b, z_t c);
-
 void
 zsqr_impl(z_t a, z_t b)
 {
@@ -43,7 +41,7 @@ zsqr_impl(z_t a, z_t b)
 		high->chars = auxchars + 1;
 		zsplit_unsigned_fast_small_auto(high, low, b, bits);
 	} else {
-		bits &= ~(BITS_PER_CHAR - 1);
+		bits = TRUNCATE_TO_CHAR(bits);
 		zsplit_unsigned_fast_large_taint(high, low, b, bits);
 	}
 

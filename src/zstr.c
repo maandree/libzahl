@@ -22,16 +22,16 @@ sprintint_fix(char *buf, zahl_char_t v)
 	const char *partials = S2("");
 	uint16_t *buffer = (uint16_t *)(buf + 1);
 
-	buffer[8] = *(uint16_t *)(partials + 2 * (v % 100)), v /= 100;
-	buffer[7] = *(uint16_t *)(partials + 2 * (v % 100)), v /= 100;
-	buffer[6] = *(uint16_t *)(partials + 2 * (v % 100)), v /= 100;
-	buffer[5] = *(uint16_t *)(partials + 2 * (v % 100)), v /= 100;
-	buffer[4] = *(uint16_t *)(partials + 2 * (v % 100)), v /= 100;
-	buffer[3] = *(uint16_t *)(partials + 2 * (v % 100)), v /= 100;
-	buffer[2] = *(uint16_t *)(partials + 2 * (v % 100)), v /= 100;
-	buffer[1] = *(uint16_t *)(partials + 2 * (v % 100)), v /= 100;
-	buffer[0] = *(uint16_t *)(partials + 2 * (v % 100)), v /= 100;
-	*buf = '0' + v;
+	buffer[8] = *(const uint16_t *)(partials + 2 * (v % 100)), v /= 100;
+	buffer[7] = *(const uint16_t *)(partials + 2 * (v % 100)), v /= 100;
+	buffer[6] = *(const uint16_t *)(partials + 2 * (v % 100)), v /= 100;
+	buffer[5] = *(const uint16_t *)(partials + 2 * (v % 100)), v /= 100;
+	buffer[4] = *(const uint16_t *)(partials + 2 * (v % 100)), v /= 100;
+	buffer[3] = *(const uint16_t *)(partials + 2 * (v % 100)), v /= 100;
+	buffer[2] = *(const uint16_t *)(partials + 2 * (v % 100)), v /= 100;
+	buffer[1] = *(const uint16_t *)(partials + 2 * (v % 100)), v /= 100;
+	buffer[0] = *(const uint16_t *)(partials + 2 * (v % 100)), v /= 100;
+	*buf = (char)('0' + v);
 	buf[19] = 0;
 }
 
@@ -50,7 +50,7 @@ sprintint_min(char *buf, zahl_char_t v)
 	for (; buf[i] == '0'; i++);
 	cmemmove(buf, buf + i, j = 19 - i);
 	buf[j] = 0;
-	return j;
+	return (size_t)j;
 }
 
 

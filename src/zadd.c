@@ -10,7 +10,7 @@ zadd_impl(z_t a, z_t b, size_t n)
 
 	for (i = 0; i < n; i++) {
 		tcarry = libzahl_add_overflow(a->chars + i, a->chars[i], b->chars[i]);
-		carry = tcarry | libzahl_add_overflow(a->chars + i, a->chars[i], carry);
+		carry = tcarry | (zahl_char_t)libzahl_add_overflow(a->chars + i, a->chars[i], carry);
 	}
 	while (carry) {
 		carry = libzahl_add_overflow(a->chars + i, a->chars[i], 1);

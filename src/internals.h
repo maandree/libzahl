@@ -16,6 +16,7 @@
 #define FLOOR_BITS_TO_CHARS(bits)    ZAHL_FLOOR_BITS_TO_CHARS(bits)
 #define CEILING_BITS_TO_CHARS(bits)  ZAHL_CEILING_BITS_TO_CHARS(bits)
 #define BITS_IN_LAST_CHAR(bits)      ZAHL_BITS_IN_LAST_CHAR(bits)
+#define TRUNCATE_TO_CHAR(bits)       ZAHL_TRUNCATE_TO_CHAR(bits)
 
 #if defined(__GNUC__)
 # define O0     __attribute__((optimize("O0")))
@@ -113,6 +114,8 @@ extern size_t libzahl_pool_alloc[sizeof(size_t) * 8];
 #define zmemmove(d, s, n)            memmove((d), (s), (n) * sizeof(zahl_char_t))
 
 void libzahl_realloc(z_t a, size_t need);
+void zmul_impl(z_t a, z_t b, z_t c);
+void zsqr_impl(z_t a, z_t b);
 
 static inline void
 zmemcpy(zahl_char_t *restrict d, const zahl_char_t *restrict s, register size_t n)

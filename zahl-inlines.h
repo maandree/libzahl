@@ -134,15 +134,15 @@ zcmpi(z_t a, int64_t b)
 	} else {
 		if (zsignum(a) < 0)
 			return -1;
-		libzahl_tmp_cmp->chars[0] = b;
+		libzahl_tmp_cmp->chars[0] = (zahl_char_t)b;
 		return +zcmpmag(a, libzahl_tmp_cmp);
 	}
 }
 
 
-void zbset_impl_set(z_t a, z_t b, size_t bit);
-void zbset_impl_clear(z_t a, z_t b, size_t bit);
-void zbset_impl_flip(z_t a, z_t b, size_t bit);
+void zbset_impl_set(z_t a, size_t bit);
+void zbset_impl_clear(z_t a, size_t bit);
+void zbset_impl_flip(z_t a, size_t bit);
 
 ZAHL_INLINE void
 zbset(z_t a, z_t b, size_t bit, int action)
@@ -174,11 +174,11 @@ fallback:
 #endif
 
 	if (action > 0)
-		zbset_impl_set(a, b, bit);
+		zbset_impl_set(a, bit);
 	else if (action < 0)
-		zbset_impl_flip(a, b, bit);
+		zbset_impl_flip(a, bit);
 	else
-		zbset_impl_clear(a, b, bit);
+		zbset_impl_clear(a, bit);
 }
 
 

@@ -26,11 +26,11 @@ zrand_libc_rand(void *out, size_t n, void *statep)
 
 	if (!inited) {
 		inited = 1;
-		srand((intptr_t)out | time(NULL));
+		srand((unsigned)((intptr_t)out | time(NULL)));
 	}
 
 	while (n--) {
-		ri = rand();
+		ri = (unsigned)rand();
 		rd = (double)ri / ((double)RAND_MAX + 1);
 #ifdef GOOD_RAND
 		rd *= 256 * 256;
@@ -63,7 +63,7 @@ zrand_libc_rand48(void *out, size_t n, void *statep)
 	while (n--) {
 		r0 = lrand48() & 15;
 		r1 = lrand48() & 15;
-		buf[n] = (r0 << 4) | r1;
+		buf[n] = (unsigned char)((r0 << 4) | r1);
 	}
 
 	(void) statep;
@@ -79,7 +79,7 @@ zrand_libc_random(void *out, size_t n, void *statep)
 
 	if (!inited) {
 		inited = 1;
-		srandom((intptr_t)out | time(NULL));
+		srandom((unsigned)((intptr_t)out | time(NULL)));
 	}
 
 	while (n--) {
