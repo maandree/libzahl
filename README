@@ -26,8 +26,11 @@ DESCRIPTION
 RATIONALE
 	GMP MP cannot be used for rubust programs. LibTomMath
 	is too slow, probably because of all memory allocations,
-	and has an nonintuitive API. Hebimath is promising, but
-	I think it can be done better.
+	and has a nonintuitive API. TomsFastMath has an a
+	nonintuitive API, has limited precision (selected at
+	compile-time), and has limited functionality. All the
+	above are also bloated. Hebimath is promising, but I
+	think it can be done better.
 
 NOTES
 	libzahl is currently not thread-safe.

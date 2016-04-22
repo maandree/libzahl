@@ -81,6 +81,8 @@ BENCHMARK_LIB_tommath    = -ltommath
 BENCHMARK_LIB_libtommath = -ltommath
 BENCHMARK_LIB_gmp        = -lgmp
 BENCHMARK_LIB_libgmp     = -lgmp
+BENCHMARK_LIB_tfm        = libtfm.a
+BENCHMARK_LIB_libtfm     = libtfm.a
 
 BENCHMARK_DEP_           = libzahl.a
 BENCHMARK_DEP_zahl       = libzahl.a
@@ -89,11 +91,15 @@ BENCHMARK_DEP_tommath    = bench/libtommath.h
 BENCHMARK_DEP_libtommath = bench/libtommath.h
 BENCHMARK_DEP_gmp        = bench/libgmp.h
 BENCHMARK_DEP_libgmp     = bench/libgmp.h
+BENCHMARK_DEP_tfm        = bench/libtfm.h
+BENCHMARK_DEP_libtfm     = bench/libtfm.h
 
 BENCHMARK_CPP_tommath    = '-DBENCHMARK_LIB="libtommath.h"'
 BENCHMARK_CPP_libtommath = '-DBENCHMARK_LIB="libtommath.h"'
 BENCHMARK_CPP_gmp        = '-DBENCHMARK_LIB="libgmp.h"'
 BENCHMARK_CPP_libgmp     = '-DBENCHMARK_LIB="libgmp.h"'
+BENCHMARK_CPP_tfm        = '-DBENCHMARK_LIB="libtfm.h"'
+BENCHMARK_CPP_libtfm     = '-DBENCHMARK_LIB="libtfm.h"'
 
 CPPFLAGS += $(BENCHMARK_CPP_$(BENCHMARK_LIB))
 
@@ -145,6 +151,6 @@ uninstall:
 	-cd -- "$(DESTDIR)$(MANPREFIX)/man7" && rm $(MAN7)
 
 clean:
-	-rm -- *.o *.su *.a *.so test test-random.c 2>/dev/null
+	-rm -- *.o *.su *.a *.so test test-random.c config.mk 2>/dev/null
 
 .PHONY: all check clean install uninstall
