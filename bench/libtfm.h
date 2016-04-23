@@ -273,21 +273,14 @@ zrand(z_t r, int dev, int dist, z_t n)
 static void
 zpowu(z_t r, z_t a, unsigned long long int b)
 {
-	z_t product, factor;
 	int neg = zsignum(a) < 0;
-
-	zinit(product);
-	zinit(factor);
-	zsetu(product, 1);
-	zset(factor, a);
-
+	zset(_a, a);
+	zsetu(r, 1);
 	for (; b; b >>= 1) {
 		if (b & 1)
-			zmul(product, product, factor);
-		zsqr(factor, factor);
+			zmul(r, r, _a);
+		zsqr(_a, _a);
 	}
-
-	zset(r, product);
 	if (neg)
 		zneg(r, r);
 }
