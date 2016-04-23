@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #ifdef BENCHMARK_LIB
 # include BENCHMARK_LIB
@@ -120,9 +121,8 @@ gettime(size_t m)
 			PREINSTRUCTION;\
 			k = f->measurements;\
 			while (k--) {\
-				for (j = f->runs / 10; j--;) {\
-					INSTRUCTION;\
-				}\
+				INSTRUCTION;\
+				INSTRUCTION;\
 				j = f->runs;\
 				start = rdtsc();\
 				while (j--) {\
@@ -137,58 +137,58 @@ gettime(size_t m)
 		(void) bs;\
 	}
 
-FUNCTION_2D(bench_zset,          zset(temp, *a),)
-FUNCTION_2D(bench_zneg,          zneg(temp, *a),)
-FUNCTION_2D(bench_zabs,          zabs(temp, *a),)
-FUNCTION_2D(bench_self_zneg,     zneg(*a, *a),)
-FUNCTION_2D(bench_self_zabs,     zabs(*a, *a),)
-FUNCTION_2D(bench_zadd_unsigned, zadd_unsigned(temp, *a, temp2),)
-FUNCTION_2D(bench_zsub_unsigned, zsub_unsigned(temp, *a, temp2),)
-FUNCTION_2D(bench_zadd,          zadd(temp, *a, temp2),)
-FUNCTION_2D(bench_zsub,          zsub(temp, *a, temp2),)
-FUNCTION_2D(bench_zand,          zand(temp, *a, temp2),)
-FUNCTION_2D(bench_zor,           zor(temp, *a, temp2),)
-FUNCTION_2D(bench_zxor,          zxor(temp, *a, temp2),)
-FUNCTION_2D(bench_znot,          znot(temp, *a),)
-FUNCTION_2D(bench_zeven,         zeven(*a),)
-FUNCTION_2D(bench_zodd,          zodd(*a),)
-FUNCTION_2D(bench_zeven_nonzero, zeven_nonzero(*a),)
-FUNCTION_2D(bench_zodd_nonzero,  zodd_nonzero(*a),)
-FUNCTION_2D(bench_zzero,         zzero(*a),)
-FUNCTION_2D(bench_zsignum,       zsignum(*a),)
-FUNCTION_2D(bench_zbits,         zbits(*a),)
-FUNCTION_2D(bench_zlsb,          zlsb(*a),)
-FUNCTION_2D(bench_zswap,         zswap(temp, *a),)
-FUNCTION_2D(bench_zcmpmag,       zcmpmag(temp2, *a),)
-FUNCTION_2D(bench_zcmp,          zcmp(temp2, *a),)
-FUNCTION_2D(bench_sqr_zmul,      zmul(temp, *a, temp2),)
-FUNCTION_2D(bench_zsqr,          zsqr(temp, *a),)
-FUNCTION_2D(bench_zstr_length,   zstr_length(*a, 10),)
-FUNCTION_2D(bench_zstr,          zstr(*a, buf),)
-FUNCTION_2D(bench_zsave,         zsave(*a, buf),)
-FUNCTION_2D(bench_zload,         zload(temp, buf), zsave(*a, buf))
+FUNCTION_2D(bench_zset,             zset(temp, *a),)
+FUNCTION_2D(bench_zneg,             zneg(temp, *a),)
+FUNCTION_2D(bench_zabs,             zabs(temp, *a),)
+FUNCTION_2D(bench_self_zneg,        zneg(*a, *a),)
+FUNCTION_2D(bench_self_zabs,        zabs(*a, *a),)
+FUNCTION_2D(bench_zadd_unsigned,    zadd_unsigned(temp, *a, temp2),)
+FUNCTION_2D(bench_zsub_unsigned,    zsub_unsigned(temp, *a, temp2),)
+FUNCTION_2D(bench_zadd,             zadd(temp, *a, temp2),)
+FUNCTION_2D(bench_zsub,             zsub(temp, *a, temp2),)
+FUNCTION_2D(bench_zand,             zand(temp, *a, temp2),)
+FUNCTION_2D(bench_zor,              zor(temp, *a, temp2),)
+FUNCTION_2D(bench_zxor,             zxor(temp, *a, temp2),)
+FUNCTION_2D(bench_znot,             znot(temp, *a),)
+FUNCTION_2D(bench_zeven,            zeven(*a),)
+FUNCTION_2D(bench_zodd,             zodd(*a),)
+FUNCTION_2D(bench_zeven_nonzero,    zeven_nonzero(*a),)
+FUNCTION_2D(bench_zodd_nonzero,     zodd_nonzero(*a),)
+FUNCTION_2D(bench_zzero,            zzero(*a),)
+FUNCTION_2D(bench_zsignum,          zsignum(*a),)
+FUNCTION_2D(bench_zbits,            zbits(*a),)
+FUNCTION_2D(bench_zlsb,             zlsb(*a),)
+FUNCTION_2D(bench_zswap,            zswap(temp, *a),)
+FUNCTION_2D(bench_zcmpmag,          zcmpmag(temp2, *a),)
+FUNCTION_2D(bench_zcmp,             zcmp(temp2, *a),)
+FUNCTION_2D(bench_sqr_zmul,         zmul(temp, *a, temp2),)
+FUNCTION_2D(bench_zsqr,             zsqr(temp, *a),)
+FUNCTION_2D(bench_zstr_length,      zstr_length(*a, 10),)
+FUNCTION_2D(bench_zstr,             zstr(*a, buf),)
+FUNCTION_2D(bench_zsave,            zsave(*a, buf),)
+FUNCTION_2D(bench_zload,            zload(temp, buf), zsave(*a, buf))
+FUNCTION_2D(bench_zbset_set,        zbset(temp, *a, 2, 1),)
+FUNCTION_2D(bench_zbset_clear,      zbset(temp, *a, 2, 0),)
+FUNCTION_2D(bench_zbset_flip,       zbset(temp, *a, 2, -1),)
+FUNCTION_2D(bench_self_zbset_set,   zbset(temp2, temp2, 2, 1),)
+FUNCTION_2D(bench_self_zbset_clear, zbset(temp2, temp2, 2, 0),)
+FUNCTION_2D(bench_self_zbset_flip,  zbset(temp2, temp2, 2, -1),)
+FUNCTION_2D(bench_zbtest,           zbtest(*a, 2),)
+FUNCTION_2D(bench_zptest,           zptest(temp, *a, 5),)
+FUNCTION_2D(bench_zsets,            zsets(temp, buf), zstr(*a, buf))
+FUNCTION_2D(bench_zlsh,             zlsh(temp, *a, 1),)
+FUNCTION_2D(bench_zrsh,             zrsh(temp, *a, 1),)
 
 /* TODO
-	zlsh
-	zrsh
 	ztrunc
 	self_ztrunc
 	zsplit
-	zbset_set
-	zbset_clear
-	zbset_flip
-	self_zbset_set
-	self_zbset_clear
-	self_zbset_flip
-	zbtest
 	zgcd
-	zsets
 	zpow
 	zpowu
 	zmodpow
 	zmodpowu
 	zrand
-	zptest
 	zdiv
 	zmod
 	zdivmod
