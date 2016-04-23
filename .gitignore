@@ -13,3 +13,4 @@
 /test-random.c
 /benchmark
 /benchmark-zrand
+/benchmark-func

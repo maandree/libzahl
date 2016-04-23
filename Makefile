@@ -130,6 +130,9 @@ test: test.c libzahl.a test-random.c
 benchmark: bench/benchmark.c $(BENCHMARK_DEP_$(BENCHMARK_LIB))
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark.c $(BENCHMARK_LIB_$(BENCHMARK_LIB))
 
+benchmark-func: bench/benchmark-func.c $(BENCHMARK_DEP_$(BENCHMARK_LIB))
+	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark-func.c $(BENCHMARK_LIB_$(BENCHMARK_LIB))
+
 benchmark-zrand: bench/benchmark-zrand.c libzahl.a
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ $^
 
@@ -158,5 +161,6 @@ uninstall:
 
 clean:
 	-rm -- *.o *.su *.a *.so test test-random.c 2>/dev/null
+	-rm -- benchmark benchmark-zrand benchmark-func 2>/dev/null
 
 .PHONY: all check clean install uninstall

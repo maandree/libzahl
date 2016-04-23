@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define BIGINT_LIBRARY "hebimath"
+
 typedef hebi_int z_t[1];
 
 static z_t _0, _1, _a, _b, _m;

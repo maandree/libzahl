@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define BIGINT_LIBRARY "TomsFastMath"
+
 typedef fp_int z_t[1];
 
 static z_t _0, _1, _a, _b;

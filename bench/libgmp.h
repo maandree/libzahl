@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define BIGINT_LIBRARY "GMP"
+
 typedef mpz_t z_t;
 
 static z_t _0, _1, _a, _b;
