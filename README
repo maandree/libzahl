@@ -3,8 +3,8 @@ NAME
 
 ETYMOLOGY
 	The bold uppercase 'Z' which represents the set of
-	all integers is derived from the german word 'zahlen',
-	whose singular is 'zahl'.
+	all integers is derived from the german word 'Zahlen',
+	whose singular is 'Zahl'.
 
 DESCRIPTION
 	libzahl is a C library for arbitrary size integers,
