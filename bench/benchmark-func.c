@@ -178,11 +178,11 @@ FUNCTION_2D(bench_zptest,           zptest(temp, *a, 5),)
 FUNCTION_2D(bench_zsets,            zsets(temp, buf), zstr(*a, buf))
 FUNCTION_2D(bench_zlsh,             zlsh(temp, *a, 1),)
 FUNCTION_2D(bench_zrsh,             zrsh(temp, *a, 1),)
+FUNCTION_2D(bench_ztrunc,           ztrunc(temp, *a, i / 2),)
+FUNCTION_2D(bench_self_ztrunc,      ztrunc(*a, *a, i),)
+FUNCTION_2D(bench_zsplit,           zsplit(temp, temp2, *a, i / 2),)
 
 /* TODO
-	ztrunc
-	self_ztrunc
-	zsplit
 	zgcd
 	zpow
 	zpowu
