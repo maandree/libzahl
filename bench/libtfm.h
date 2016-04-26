@@ -83,7 +83,7 @@ zunsetup(void)
 #define zmodpowu(r, a, b, m)    (fp_set_int(_b, b), fp_exptmod(a, _b, m, r))
 #define zsets(a, s)             fp_read_radix(a, s, 10)
 #define zstr_length(a, b)       (fp_radix_size(a, b, &_tmp), _tmp)
-#define zstr(a, s, n)           ((void)n, fp_toradix(a, s, 10))
+#define zstr(a, s, n)           (fp_toradix(a, s, 10))
 #define zptest(w, a, t)         fp_isprime_ex(a, t) /* Note, the witness is not returned. */
 #define zload(a, s)             fp_read_signed_bin(a, (unsigned char *)s, _tmp)
 #define zdiv(r, a, b)           fp_div(a, b, r, 0)
