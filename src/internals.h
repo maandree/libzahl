@@ -89,11 +89,13 @@ extern int libzahl_error;
 extern zahl_char_t **libzahl_pool[sizeof(size_t) * 8];
 extern size_t libzahl_pool_n[sizeof(size_t) * 8];
 extern size_t libzahl_pool_alloc[sizeof(size_t) * 8];
+extern struct zahl **libzahl_temp_stack;
+extern struct zahl **libzahl_temp_stack_head;
+extern struct zahl **libzahl_temp_stack_end;
 
 #define likely(expr)                 ZAHL_LIKELY(expr)
 #define unlikely(expr)               ZAHL_UNLIKELY(expr)
 
-#define libzahl_failure(error)       (libzahl_error = (error), longjmp(libzahl_jmp_buf, 1))
 #define SET_SIGNUM(a, signum)        ZAHL_SET_SIGNUM(a, signum)
 #define SET(a, b)                    ZAHL_SET(a, b)
 #define ENSURE_SIZE(a, n)            do { if ((a)->alloced < (n)) libzahl_realloc(a, (n)); } while (0)
@@ -116,6 +118,16 @@ extern size_t libzahl_pool_alloc[sizeof(size_t) * 8];
 void libzahl_realloc(z_t a, size_t need);
 void zmul_impl(z_t a, z_t b, z_t c);
 void zsqr_impl(z_t a, z_t b);
+
+static void
+libzahl_failure(int error)
+{
+	libzahl_error = (error);
+	if (libzahl_temp_stack)
+		while (libzahl_temp_stack_head != libzahl_temp_stack)
+			zfree(*--libzahl_temp_stack_head);
+	longjmp(libzahl_jmp_buf, 1);
+}
 
 static inline void
 zmemcpy(zahl_char_t *restrict d, const zahl_char_t *restrict s, register size_t n)
@@ -272,3 +284,54 @@ zsplit_unsigned_fast_small_auto(z_t high, z_t low, z_t a, size_t n)
 	if (unlikely(!low->chars[0]))
 		low->sign = 0;
 }
+
+/* Calls to these functions must be called in stack-order
+ * For example, 
+ * 
+ *   zinit_temp(a);
+ *   zinit_temp(b);
+ *   zfree_temp(b);
+ *   zinit_temp(c);
+ *   zfree_temp(c);
+ *   zfree_temp(a);
+ * 
+ * 
+ * And not (swap the two last lines)
+ * 
+ *   zinit_temp(a);
+ *   zinit_temp(b);
+ *   zfree_temp(b);
+ *   zinit_temp(c);
+ *   zfree_temp(a);
+ *   zfree_temp(c);
+ * 
+ * { */
+
+static inline void
+zinit_temp(z_t a)
+{
+	zinit(a);
+	if (unlikely(libzahl_temp_stack_head == libzahl_temp_stack_end)) {
+		size_t n = (size_t)(libzahl_temp_stack_end - libzahl_temp_stack);
+		void* old = libzahl_temp_stack;
+		libzahl_temp_stack = realloc(old, 2 * n * sizeof(*libzahl_temp_stack));
+		if (unlikely(!libzahl_temp_stack)) {
+			libzahl_temp_stack = old;
+			if (!errno) /* sigh... */
+				errno = ENOMEM;
+			libzahl_failure(errno);
+		}
+		libzahl_temp_stack_head = libzahl_temp_stack + n;
+		libzahl_temp_stack_end = libzahl_temp_stack_head + n;
+	}
+	*libzahl_temp_stack_head++ = a;
+}
+
+static inline void
+zfree_temp(z_t a)
+{
+	zfree(a);
+	libzahl_temp_stack_head--;
+}
+
+/* } */

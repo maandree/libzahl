@@ -15,6 +15,9 @@ int libzahl_error;
 zahl_char_t **libzahl_pool[sizeof(size_t) * 8];
 size_t libzahl_pool_n[sizeof(size_t) * 8];
 size_t libzahl_pool_alloc[sizeof(size_t) * 8];
+struct zahl **libzahl_temp_stack;
+struct zahl **libzahl_temp_stack_head;
+struct zahl **libzahl_temp_stack_end;
 
 
 void
@@ -23,7 +26,7 @@ zsetup(jmp_buf env)
 	size_t i;
 	*libzahl_jmp_buf = *env;
 
-	if (!libzahl_set_up) {
+	if (likely(!libzahl_set_up)) {
 		libzahl_set_up = 1;
 
 		memset(libzahl_pool, 0, sizeof(libzahl_pool));
@@ -40,5 +43,14 @@ zsetup(jmp_buf env)
 #undef X
 		for (i = BITS_PER_CHAR; i--;)
 			zinit(libzahl_tmp_divmod_ds[i]);
+
+		libzahl_temp_stack = malloc(256 * sizeof(*libzahl_temp_stack));
+		if (unlikely(!libzahl_temp_stack)) {
+			if (!errno) /* sigh... */
+				errno = ENOMEM;
+			libzahl_failure(errno);
+		}
+		libzahl_temp_stack_head = libzahl_temp_stack;
+		libzahl_temp_stack_end = libzahl_temp_stack + 256;
 	}
 }

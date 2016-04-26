@@ -24,5 +24,7 @@ zunsetup(void)
 				free(libzahl_pool[i][libzahl_pool_n[i]]);
 			free(libzahl_pool[i]);
 		}
+
+		free(libzahl_temp_stack);
 	}
 }

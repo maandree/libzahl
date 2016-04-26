@@ -16,16 +16,7 @@
 
 
 
-/* This structure should be considered opaque. */
-typedef struct {
-        int sign;
-#if INT_MAX != LONG_MAX
-	int padding__;
-#endif
-        size_t used;
-        size_t alloced;
-        zahl_char_t *chars;
-} z_t[1];
+typedef struct zahl z_t[1];
 
 
 

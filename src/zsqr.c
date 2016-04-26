@@ -50,8 +50,8 @@ zsqr_impl(z_t a, z_t b)
 		zsqr_impl(z2, high);
 		zlsh(a, z2, bits << 1);
 	} else {
-		zinit(z0);
-		zinit(z1);
+		zinit_temp(z0);
+		zinit_temp(z1);
 
 		zsqr_impl(z0, low);
 
@@ -64,8 +64,8 @@ zsqr_impl(z_t a, z_t b)
 		zadd_unsigned_assign(a, z1);
 		zadd_unsigned_assign(a, z0);
 
-		zfree(z0);
-		zfree(z1);
+		zfree_temp(z1);
+		zfree_temp(z0);
 	}
 }
 

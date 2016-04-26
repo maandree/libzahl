@@ -48,10 +48,10 @@ zmul_impl(z_t a, z_t b, z_t c)
         m = MAX(m, m2);
 	m2 = m >> 1;
 
-	zinit(b_high);
-	zinit(b_low);
-	zinit(c_high);
-	zinit(c_low);
+	zinit_temp(b_high);
+	zinit_temp(b_low);
+	zinit_temp(c_high);
+	zinit_temp(c_low);
 
 	zsplit(b_high, b_low, b, m2);
 	zsplit(c_high, c_low, c, m2);
@@ -73,10 +73,10 @@ zmul_impl(z_t a, z_t b, z_t c)
 	zadd_unsigned_assign(a, z2);
 
 
-	zfree(b_high);
-	zfree(b_low);
-	zfree(c_high);
-	zfree(c_low);
+	zfree_temp(c_low);
+	zfree_temp(c_high);
+	zfree_temp(b_low);
+	zfree_temp(b_high);
 }
 
 void

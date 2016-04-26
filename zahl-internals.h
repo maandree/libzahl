@@ -62,3 +62,13 @@
 
 
 typedef uint64_t zahl_char_t;
+
+struct zahl {
+        int sign;
+#if INT_MAX != LONG_MAX
+	int padding__;
+#endif
+        size_t used;
+        size_t alloced;
+        zahl_char_t *chars;
+};
