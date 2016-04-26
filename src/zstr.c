@@ -63,7 +63,7 @@ zstr(z_t a, char *b)
 
 	if (unlikely(zzero(a))) {
 		if (unlikely(!b) && unlikely(!(b = malloc(2))))
-			libzahl_failure(errno);
+			libzahl_memfailure();
 		b[0] = '0';
 		b[1] = 0;
 		return b;
@@ -72,7 +72,7 @@ zstr(z_t a, char *b)
 	n = zstr_length(a, 10);
 
 	if (unlikely(!b) && unlikely(!(b = malloc(n + 1))))
-		libzahl_failure(errno);
+		libzahl_memfailure();
 
 	neg = znegative(a);
 	zabs(num, a);

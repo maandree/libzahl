@@ -135,6 +135,14 @@ libzahl_failure(int error)
 }
 
 static inline void
+libzahl_memfailure()
+{
+	if (!errno) /* sigh... */
+		errno = ENOENT;
+	libzahl_failure(errno);
+}
+
+static inline void
 zmemcpy(zahl_char_t *restrict d, const zahl_char_t *restrict s, register size_t n)
 {
 	while (n--)
@@ -322,9 +330,7 @@ zinit_temp(z_t a)
 		libzahl_temp_stack = realloc(old, 2 * n * sizeof(*libzahl_temp_stack));
 		if (unlikely(!libzahl_temp_stack)) {
 			libzahl_temp_stack = old;
-			if (!errno) /* sigh... */
-				errno = ENOMEM;
-			libzahl_failure(errno);
+			libzahl_memfailure();
 		}
 		libzahl_temp_stack_head = libzahl_temp_stack + n;
 		libzahl_temp_stack_end = libzahl_temp_stack_head + n;

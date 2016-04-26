@@ -45,11 +45,8 @@ zsetup(jmp_buf env)
 			zinit(libzahl_tmp_divmod_ds[i]);
 
 		libzahl_temp_stack = malloc(256 * sizeof(*libzahl_temp_stack));
-		if (unlikely(!libzahl_temp_stack)) {
-			if (!errno) /* sigh... */
-				errno = ENOMEM;
-			libzahl_failure(errno);
-		}
+		if (unlikely(!libzahl_temp_stack))
+			libzahl_memfailure();
 		libzahl_temp_stack_head = libzahl_temp_stack;
 		libzahl_temp_stack_end = libzahl_temp_stack + 256;
 	}
