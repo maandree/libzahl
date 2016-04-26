@@ -92,6 +92,7 @@ extern size_t libzahl_pool_alloc[sizeof(size_t) * 8];
 extern struct zahl **libzahl_temp_stack;
 extern struct zahl **libzahl_temp_stack_head;
 extern struct zahl **libzahl_temp_stack_end;
+extern void *libzahl_temp_allocation;
 
 #define likely(expr)                 ZAHL_LIKELY(expr)
 #define unlikely(expr)               ZAHL_UNLIKELY(expr)
@@ -131,6 +132,8 @@ libzahl_failure(int error)
 	if (libzahl_temp_stack)
 		while (libzahl_temp_stack_head != libzahl_temp_stack)
 			zfree(*--libzahl_temp_stack_head);
+	free(libzahl_temp_allocation);
+	libzahl_temp_allocation = 0;
 	longjmp(libzahl_jmp_buf, 1);
 }
 

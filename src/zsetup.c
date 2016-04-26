@@ -18,6 +18,7 @@ size_t libzahl_pool_alloc[sizeof(size_t) * 8];
 struct zahl **libzahl_temp_stack;
 struct zahl **libzahl_temp_stack_head;
 struct zahl **libzahl_temp_stack_end;
+void *libzahl_temp_allocation = 0;
 
 
 void

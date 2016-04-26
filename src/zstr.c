@@ -81,7 +81,7 @@ zstr(z_t a, char *b, size_t n)
 		n = zstr_length(a, 10);
 	}
 
-	if (unlikely(!b) && unlikely(!(b = malloc(n + 1))))
+	if (unlikely(!b) && unlikely(!(b = libzahl_temp_allocation = malloc(n + 1))))
 		libzahl_memfailure();
 
 	neg = znegative(a);
@@ -111,5 +111,6 @@ zstr(z_t a, char *b, size_t n)
 		}
 	}
 
+	libzahl_temp_allocation = 0;
 	return b - neg;
 }
