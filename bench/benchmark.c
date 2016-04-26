@@ -117,7 +117,8 @@ main(int argc, char *argv[])
 	BENCHMARK(zmodpowu(c, a, 12, b), 0);
 	BENCHMARK(zsets(c, "5495468234592964023447280368442884381000481887"), 0);
 	BENCHMARK(zstr_length(a, 10), 0);
-	BENCHMARK(zstr(a, buf), 0);
+	BENCHMARK(zstr(a, buf, 0), 0);
+	BENCHMARK(zstr(a, buf, sizeof(buf) - 1), 0);
 	BENCHMARK(zrand(c, DEFAULT_RANDOM, QUASIUNIFORM, a), 0);
 	BENCHMARK(zrand(c, DEFAULT_RANDOM, UNIFORM, a), 0);
 	BENCHMARK(zptest(d, a, 5), 0);

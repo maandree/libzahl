@@ -79,11 +79,11 @@ zunsetup(void)
 #define zpow(r, a, b)           zpowu(r, a, hebi_get_u(b))
 #define zmodpow(r, a, b, m)     zmodpowu(r, a, hebi_get_u(b), m)
 #define zsets(a, s)             hebi_set_str(a, s, 0, 10)
-#define zstr(a, s)              hebi_get_str(s, sizeof(s), a, 10) /* Assumes s is [], not * */
+#define zstr(a, s, n)           hebi_get_str(s, n ? n : zstr_length(a, 10) + 1, a, 10)
 #define zdiv(q, a, b)           hebi_div(q, 0, a, b)
 #define zmod(r, a, b)           hebi_div(_a, r, a, b)
 #define zdivmod(q, r, a, b)     hebi_div(q, r, a, b)
-#define zsave(a, s)             zstr(a, s)
+#define zsave(a, s)             zstr(a, s, sizeof(s) - 1)
 #define zload(a, s)             zsets(a, s)
 
 static size_t

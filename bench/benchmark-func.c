@@ -164,7 +164,8 @@ FUNCTION_2D(bench_zcmp,             zcmp(temp2, *a),)
 FUNCTION_2D(bench_sqr_zmul,         zmul(temp, *a, temp2),)
 FUNCTION_2D(bench_zsqr,             zsqr(temp, *a),)
 FUNCTION_2D(bench_zstr_length,      zstr_length(*a, 10),)
-FUNCTION_2D(bench_zstr,             zstr(*a, buf),)
+FUNCTION_2D(bench_zstr,             zstr(*a, buf, sizeof(buf) - 1),)
+FUNCTION_2D(bench_auto_zstr,        zstr(*a, buf, 0),)
 FUNCTION_2D(bench_zsave,            zsave(*a, buf),)
 FUNCTION_2D(bench_zload,            zload(temp, buf), zsave(*a, buf))
 FUNCTION_2D(bench_zbset_set,        zbset(temp, *a, 2, 1),)
@@ -175,7 +176,7 @@ FUNCTION_2D(bench_self_zbset_clear, zbset(temp2, temp2, 2, 0),)
 FUNCTION_2D(bench_self_zbset_flip,  zbset(temp2, temp2, 2, -1),)
 FUNCTION_2D(bench_zbtest,           zbtest(*a, 2),)
 FUNCTION_2D(bench_zptest,           zptest(temp, *a, 5),)
-FUNCTION_2D(bench_zsets,            zsets(temp, buf), zstr(*a, buf))
+FUNCTION_2D(bench_zsets,            zsets(temp, buf), zstr(*a, buf, sizeof(buf) - 1))
 FUNCTION_2D(bench_zlsh,             zlsh(temp, *a, 1),)
 FUNCTION_2D(bench_zrsh,             zrsh(temp, *a, 1),)
 FUNCTION_2D(bench_ztrunc,           ztrunc(temp, *a, i / 2),)
@@ -231,6 +232,7 @@ struct function functions[] = {
 	{F(zsqr),          1, 4097, 64, FULL,      0, 0, 0, 0, 10,   20},
 	{F(zstr_length),   1, 4097, 64, FULL,      0, 0, 0, 0, 10,   20},
 	{F(zstr),          1, 4097, 64, FULL,      0, 0, 0, 0, 10,   20},
+	{F(auto_zstr),     1, 4097, 64, FULL,      0, 0, 0, 0, 10,   20},
 	{F(zsave),         1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
 	{F(zload),         1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
 

@@ -91,7 +91,7 @@ zunsetup(void)
 #define zmodpowu                mpz_powm_ui
 #define zsets(a, s)             mpz_set_str(a, s, 10)
 #define zstr_length(a, b)       (mpz_sizeinbase(a, 10) + (zsignum(a) < 0))
-#define zstr(a, s)              mpz_get_str(s, 10, a)
+#define zstr(a, s, n)           ((void)n, mpz_get_str(s, 10, a))
 #define zptest(w, a, t)         mpz_probab_prime_p(a, t) /* Note, the witness is not returned. */
 #define zdiv                    mpz_tdiv_q
 #define zmod                    mpz_tdiv_r

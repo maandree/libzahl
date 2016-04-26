@@ -55,10 +55,10 @@ sprintint_min(char *buf, zahl_char_t v)
 
 
 char *
-zstr(z_t a, char *b)
+zstr(z_t a, char *b, size_t n)
 {
 	char buf[19 + 1];
-	size_t n, len, neg;
+	size_t len, neg, last, tot = 0;
 	char overridden = 0;
 
 	if (unlikely(zzero(a))) {
@@ -69,7 +69,17 @@ zstr(z_t a, char *b)
 		return b;
 	}
 
-	n = zstr_length(a, 10);
+	if (!n) {
+		/* This is not the most efficient way to handle this. It should
+		 * be faster to allocate buffers that sprintint_fix and
+		 * sprintint_min print to, and then allocate `b` and copy the
+		 * buffers in reverse order into `b`. However, that is an overly
+		 * complicated solution. You probably already know the maximum
+		 * length or do not care about performance. Another disadvantage
+		 * with calculating the length before-hand, means that it is not
+		 * possible to reallocate `b` if it is too small. */
+		n = zstr_length(a, 10);
+	}
 
 	if (unlikely(!b) && unlikely(!(b = malloc(n + 1))))
 		libzahl_memfailure();
@@ -79,7 +89,7 @@ zstr(z_t a, char *b)
 	b[0] = '-';
 	b += neg;
 	n -= neg;
-	n = n > 19 ? (n - 19) : 0;
+	n = (last = n) > 19 ? (n - 19) : 0;
 
 	for (;;) {
 		zdivmod(num, rem, num, libzahl_const_1e19);
@@ -87,12 +97,16 @@ zstr(z_t a, char *b)
 			sprintint_fix(b + n, zzero(rem) ? 0 : rem->chars[0]);
 			b[n + 19] = overridden;
 			overridden = b[n];
-			n = n > 19 ? (n - 19) : 0;
+			n = (last = n) > 19 ? (n - 19) : 0;
+			tot += 19;
 		} else {
 			len = sprintint_min(buf, rem->chars[0]);
-			if (overridden)
-				buf[len] = b[n + len];
-			memcpy(b + n, buf, len + 1);
+			if (tot) {
+				memcpy(b, buf, len);
+				memmove(b + len, b + last, tot + 1);
+			} else {
+				memcpy(b, buf, len + 1);
+			}
 			break;
 		}
 	}

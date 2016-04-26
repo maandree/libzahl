@@ -151,7 +151,7 @@ void zrand(z_t, enum zranddev, enum zranddist, z_t);
 
 /* String conversion. */
 
-char *zstr(z_t, char *);                /* Write a in decimal onto b. */
+char *zstr(z_t, char *, size_t);        /* Write a in decimal onto b. c is the output size or 0. */
 int zsets(z_t, const char *);           /* a := b */
 
 /* Length of a in radix b. */

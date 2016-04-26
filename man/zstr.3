@@ -5,7 +5,7 @@ zstr - Create a string representation of a big integer
 .nf
 #include <zahl.h>
 
-char *zstr(z_t \fIa\fP, char *\fIstr\fP);
+char *zstr(z_t \fIa\fP, char *\fIstr\fP, size_t \fIn\fP);
 .fi
 .SH DESCRIPTION
 .B zstr
@@ -19,6 +19,22 @@ is is
 .BR 0 ,
 .B zstr
 create a new allocation.
+.P
+.I n
+must be either be zero or a value at least
+as great as the length of the resulting string.
+If both
+.I n
+and
+.I str
+are nonzero,
+.I n
+must be at least the allocation size of
+.I str
+minus 1. Proper value for
+.I n
+can be calculated using
+.BR zstr_length (3).
 .SH RETURN VALUE
 .I str
 is returned unless
