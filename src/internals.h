@@ -111,13 +111,18 @@ extern struct zahl **libzahl_temp_stack_end;
 #define zpositive(a)                 (zsignum(a) > 0)
 #define zpositive1(a, b)             (zpositive(a) + zpositive(b) > 0)
 #define zpositive2(a, b)             (zsignum(a) + zsignum(b) == 2)
-#define zzero1(a, b)                 (zzero(a) || zzero(b))
 #define zzero2(a, b)                 (!(zsignum(a) | zsignum(b)))
 #define zmemmove(d, s, n)            memmove((d), (s), (n) * sizeof(zahl_char_t))
 
 void libzahl_realloc(z_t a, size_t need);
 void zmul_impl(z_t a, z_t b, z_t c);
 void zsqr_impl(z_t a, z_t b);
+
+static inline int
+zzero1(z_t a, z_t b)
+{
+	return zzero(a) || zzero(b);
+}
 
 static void
 libzahl_failure(int error)
