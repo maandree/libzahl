@@ -9,14 +9,14 @@ void
 zmodpowu(z_t a, z_t b, unsigned long long int c, z_t d)
 {
 	if (unlikely(!c)) {
-		if (zzero(b))
+		if (check(zzero(b)))
 			libzahl_failure(-ZERROR_0_POW_0);
-		else if (zzero(d))
+		else if (check(zzero(d)))
 			libzahl_failure(-ZERROR_DIV_0);
 		else
 			zsetu(a, 1);
 		return;
-	} else if (unlikely(zzero(d))) {
+	} else if (check(unlikely(zzero(d)))) {
 		libzahl_failure(-ZERROR_DIV_0);
 	} else if (unlikely(zzero(b))) {
 		SET_SIGNUM(a, 0);

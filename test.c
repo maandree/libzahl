@@ -787,6 +787,9 @@ main(void)
 	assert((zseti(a, 11), zptest(0, a, 100)), != NONPRIME);
 	assert((zseti(a, 101), zptest(0, a, 100)), != NONPRIME);
 
+#if defined(UNSAFE)
+	(void) env2;
+#else
 	assert_nr(zdivmod(a, b, _0, _0));
 	assert_nr(zdivmod(a, b, _1, _0));
 	zdivmod(a, b, _0, _1);
@@ -828,6 +831,7 @@ main(void)
 	assert_nr(zmodpowu(a, _0, 1, _0));
 	assert_nr(zmodpowu(a, _1, 0, _0));
 	assert_nr((zneg(_1, _1), zmodpowu(a, _1, 0, _0))); zneg(_1, _1);
+#endif
 
 	zsetu(a, 1LL);
 	assert_s(zstr(a, buf, 1), "1");

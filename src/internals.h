@@ -97,6 +97,12 @@ extern void *libzahl_temp_allocation;
 #define likely(expr)                 ZAHL_LIKELY(expr)
 #define unlikely(expr)               ZAHL_UNLIKELY(expr)
 
+#if defined(UNSAFE)
+# define check(expr)                 0
+#else
+# define check(expr)                 (expr)
+#endif
+
 #define SET_SIGNUM(a, signum)        ZAHL_SET_SIGNUM(a, signum)
 #define SET(a, b)                    ZAHL_SET(a, b)
 #define ENSURE_SIZE(a, n)            do { if ((a)->alloced < (n)) libzahl_realloc(a, (n)); } while (0)
@@ -331,7 +337,7 @@ zinit_temp(z_t a)
 		size_t n = (size_t)(libzahl_temp_stack_end - libzahl_temp_stack);
 		void* old = libzahl_temp_stack;
 		libzahl_temp_stack = realloc(old, 2 * n * sizeof(*libzahl_temp_stack));
-		if (unlikely(!libzahl_temp_stack)) {
+		if (check(unlikely(!libzahl_temp_stack))) {
 			libzahl_temp_stack = old;
 			libzahl_memfailure();
 		}

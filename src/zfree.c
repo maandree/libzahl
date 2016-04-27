@@ -17,7 +17,7 @@ zfree(z_t a)
 	if (j == libzahl_pool_alloc[i]) {
 		x = j ? ((j * 3) >> 1) : 128;
 		new = realloc(libzahl_pool[i], x * sizeof(zahl_char_t *));
-		if (!new) {
+		if (check(!new)) {
 			free(a->chars);
 			free(libzahl_pool[i]);
 			libzahl_pool_n[i] = 0;

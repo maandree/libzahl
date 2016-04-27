@@ -20,10 +20,10 @@ zpow(z_t a, z_t b, z_t c)
 
 	if (unlikely(zsignum(c) <= 0)) {
 		if (zzero(c)) {
-			if (zzero(b))
+			if (check(zzero(b)))
 				libzahl_failure(-ZERROR_0_POW_0);
 			zsetu(a, 1);
-		} else if (zzero(b)) {
+		} else if (check(zzero(b))) {
 			libzahl_failure(-ZERROR_DIV_0);
 		} else {
 			SET_SIGNUM(a, 0);

@@ -104,7 +104,7 @@ zrand_fd(void *out, size_t n, void *statep)
 
 	while (n) {
 		read_just = read(fd, buf + read_total, n);
-		if (unlikely(read_just < 0))
+		if (check(unlikely(read_just < 0)))
 			libzahl_failure(errno);
 		read_total += (size_t)read_just;
 		n -= (size_t)read_just;
@@ -141,7 +141,7 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 {
 #define RANDOM_UNIFORM(RETRY)\
 	do {\
-		if (unlikely(znegative(n)))\
+		if (check(unlikely(znegative(n))))\
 			libzahl_failure(-ZERROR_NEGATIVE);\
 		bits = zbits(n);\
 		do\
@@ -185,7 +185,7 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 
 	if (pathname) {
 		fd = open(pathname, O_RDONLY);
-		if (unlikely(fd < 0))
+		if (check(unlikely(fd < 0)))
 			libzahl_failure(errno);
 		statep = &fd;
 	}
@@ -209,7 +209,10 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 		break;
 
 	default:
+#if !defined(UNSAFE)
 		libzahl_failure(EINVAL);
+#endif
+		break;
 	}
 
 	if (fd >= 0)
