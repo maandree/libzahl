@@ -107,6 +107,9 @@ BENCHMARK_CPP_libtfm      = '-DBENCHMARK_LIB="libtfm.h"'
 BENCHMARK_CPP_hebimath    = '-DBENCHMARK_LIB="libhebimath.h"'
 BENCHMARK_CPP_libhebimath = '-DBENCHMARK_LIB="libhebimath.h"'
 
+BENCHMARK_C_hebimath      = -static
+BENCHMARK_C_libhebimath   = -static
+
 CPPFLAGS += $(BENCHMARK_CPP_$(BENCHMARK_LIB))
 
 CFLAGS_WITHOUT_O = $$(printf '%s\n' $(CFLAGS) | sed '/^-O.*$$/d')
@@ -128,10 +131,12 @@ test: test.c libzahl.a test-random.c
 	$(CC) $(LDFLAGS) $(CFLAGS_WITHOUT_O) -O0 $(CPPFLAGS) -o $@ test.c libzahl.a
 
 benchmark: bench/benchmark.c $(BENCHMARK_DEP_$(BENCHMARK_LIB))
-	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark.c $(BENCHMARK_LIB_$(BENCHMARK_LIB))
+	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark.c \
+		$(BENCHMARK_LIB_$(BENCHMARK_LIB)) $(BENCHMARK_C_$(BENCHMARK_LIB))
 
 benchmark-func: bench/benchmark-func.c $(BENCHMARK_DEP_$(BENCHMARK_LIB))
-	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark-func.c $(BENCHMARK_LIB_$(BENCHMARK_LIB))
+	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark-func.c \
+		$(BENCHMARK_LIB_$(BENCHMARK_LIB)) $(BENCHMARK_C_$(BENCHMARK_LIB))
 
 benchmark-zrand: bench/benchmark-zrand.c libzahl.a
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ $^

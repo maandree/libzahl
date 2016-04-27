@@ -64,8 +64,6 @@ zunsetup(void)
 #define zor                     mpz_ior
 #define zxor                    mpz_xor
 #define zbtest                  mpz_tstbit
-#define zeven                   mpz_even_p /* Note, must not have side effects. */
-#define zodd                    mpz_odd_p /* Note, must not have side effects. */
 #define zeven_nonzero           zeven
 #define zodd_nonzero            zodd
 #define zzero(a)                (!mpz_sgn(a))
@@ -96,6 +94,18 @@ zunsetup(void)
 #define zdiv                    mpz_tdiv_q
 #define zmod                    mpz_tdiv_r
 #define zdivmod                 mpz_tdiv_qr
+
+static inline int
+zeven(z_t a)
+{
+	return mpz_even_p(a);
+}
+
+static inline int
+zodd(z_t a)
+{
+	return mpz_odd_p(a);
+}
 
 static inline void
 zsetu(z_t r, unsigned long long int val)

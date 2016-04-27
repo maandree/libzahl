@@ -99,10 +99,13 @@ main(int argc, char *argv[])
 	BENCHMARK(zbset(c, a, 76, -1), 1);
 	BENCHMARK(zbset(a, a, 76, -1), 1);
 	BENCHMARK(zbtest(a, 76), 1);
+#ifndef HEBIMATH
 	BENCHMARK(zgcd(c, a, b), 0);
+#endif
 	BENCHMARK(zmul(c, a, b), 0);
 	BENCHMARK(zmul(c, a, a), 0);
 	BENCHMARK(zsqr(c, a), 0);
+#ifndef HEBIMATH
 	zsets(d, "1484298084218938358480511181388394862858002249");
 	BENCHMARK(zmodmul(c, a, b, d), 0);
 	BENCHMARK(zmodmul(c, a, a, d), 0);
@@ -111,10 +114,11 @@ main(int argc, char *argv[])
 	BENCHMARK(zmodmul(c, a, a, tiny), 0);
 	BENCHMARK(zmodsqr(c, a, tiny), 0);
 	zsets(d, "12");
-	BENCHMARK(zpow(c, a, d), 0);
-	BENCHMARK(zpowu(c, a, 12), 0);
+	BENCHMARK(zpow(c, a, d), 0);   /* Memory corruption when using hebimath */
+	BENCHMARK(zpowu(c, a, 12), 0); /* Memory corruption when using hebimath */
 	BENCHMARK(zmodpow(c, a, d, b), 0);
 	BENCHMARK(zmodpowu(c, a, 12, b), 0);
+#endif
 	BENCHMARK(zsets(c, "5495468234592964023447280368442884381000481887"), 0);
 	BENCHMARK(zstr_length(a, 10), 0);
 	BENCHMARK(zstr(a, buf, 0), 0);
@@ -127,9 +131,11 @@ main(int argc, char *argv[])
 	BENCHMARK(zdiv(c, a, b), 1);
 	BENCHMARK(zmod(c, a, b), 1);
 	BENCHMARK(zdivmod(c, d, a, b), 1);
+#ifndef HEBIMATH
 	BENCHMARK(zdiv(c, a, tiny), 0);
 	BENCHMARK(zmod(c, a, tiny), 0);
 	BENCHMARK(zdivmod(c, d, a, tiny), 0);
+#endif
 
 	zfree(a);
 	zfree(b);

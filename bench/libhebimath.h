@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 #define BIGINT_LIBRARY "hebimath"
+#define HEBIMATH
 
 typedef hebi_int z_t[1];
 
@@ -311,7 +312,15 @@ zmodsqr(z_t r, const z_t a, const z_t m)
 static inline void
 zpowu(z_t r, const z_t a, unsigned long long int b)
 {
-	int neg = zsignum(a) < 0;
+	if (!b) {
+		if (zzero(a)) {
+			error = hebi_badvalue;
+			longjmp(jbuf, 1);
+		}
+		zsetu(r, 1);
+		return;
+	}
+
 	zset(_pow_a, a);
 	zsetu(r, 1);
 	for (; b; b >>= 1) {
@@ -319,8 +328,6 @@ zpowu(z_t r, const z_t a, unsigned long long int b)
 			zmul(r, r, _pow_a);
 		zsqr(_pow_a, _pow_a);
 	}
-	if (neg)
-		zneg(r, r);
 }
 
 static inline void
@@ -332,8 +339,19 @@ zpow(z_t r, const z_t a, const z_t b)
 static inline void
 zmodpowu(z_t r, const z_t a, unsigned long long int b, const z_t m)
 {
-	int neg = zsignum(a) < 0;
-	zset(_pow_a, a);
+	if (!b) {
+		if (zzero(a) || zzero(m)) {
+			error = hebi_badvalue;
+			longjmp(jbuf, 1);
+		}
+		zsetu(r, 1);
+		return;
+	} else if (zzero(m)) {
+		error = hebi_badvalue;
+		longjmp(jbuf, 1);
+	}
+
+	zmod(_pow_a, a, m);
 	zset(_pow_m, m);
 	zsetu(r, 1);
 	for (; b; b >>= 1) {
@@ -341,8 +359,6 @@ zmodpowu(z_t r, const z_t a, unsigned long long int b, const z_t m)
 			zmodmul(r, r, _pow_a, _pow_m);
 		zmodsqr(_pow_a, _pow_a, _pow_m);
 	}
-	if (neg)
-		zneg(r, r);
 }
 
 static inline void
@@ -455,7 +471,7 @@ static inline char *
 zstr(const z_t a, char *s, size_t n)
 {
 	if (!n)
-		n = zstr_length(a, 10) + 1;
+		n = zstr_length(a, 10) * 2 + 1;
 	try(hebi_get_str(s, n, a, 10));
 	return s;
 }

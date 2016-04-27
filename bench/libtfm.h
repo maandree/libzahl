@@ -10,7 +10,8 @@
 typedef fp_int z_t[1];
 
 static z_t _0, _1, _a, _b;
-static int _tmp;
+static int _tmp, error;
+static jmp_buf jbuf;
 
 static inline void
 fp_set_int(z_t a, uint32_t d)
@@ -23,7 +24,7 @@ fp_set_int(z_t a, uint32_t d)
 static inline void
 zsetup(jmp_buf env)
 {
-	(void) env;
+	*jbuf = *env;
 	fp_init(_0);
 	fp_init(_1);
 	fp_init(_a);
@@ -275,7 +276,14 @@ zrand(z_t r, int dev, int dist, z_t n)
 static inline void
 zpowu(z_t r, z_t a, unsigned long long int b)
 {
-	int neg = zsignum(a) < 0;
+	if (!b) {
+		if (zzero(a)) {
+			error = FP_VAL;
+			longjmp(jbuf, 1);
+		}
+		zsetu(r, 1);
+		return;
+	}
 	zset(_a, a);
 	zsetu(r, 1);
 	for (; b; b >>= 1) {
@@ -283,6 +291,4 @@ zpowu(z_t r, z_t a, unsigned long long int b)
 			zmul(r, r, _a);
 		zsqr(_a, _a);
 	}
-	if (neg)
-		zneg(r, r);
 }

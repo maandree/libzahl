@@ -6,6 +6,7 @@ void
 zsplit(z_t high, z_t low, z_t a, size_t delim)
 {
 	if (unlikely(zzero(a))) {
+		/* This is for performance. */
 		SET_SIGNUM(high, 0);
 		SET_SIGNUM(low, 0);
 		return;
