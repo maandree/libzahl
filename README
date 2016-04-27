@@ -8,7 +8,7 @@ ETYMOLOGY
 
 DESCRIPTION
 	libzahl is a C library for arbitrary size integers,
-	that aims to be usable for rubust programs, and be
+	that aims to be usable for robust programs, and be
 	fast.
 
 	libzahl will accomplish this by using long jumps
@@ -24,7 +24,7 @@ DESCRIPTION
 	all output parameters are before the input parameters.
 
 RATIONALE
-	GMP MP cannot be used for rubust programs. LibTomMath
+	GMP MP cannot be used for robust programs. LibTomMath
 	is too slow, probably because of all memory allocations,
 	and has a nonintuitive API. TomsFastMath has an a
 	nonintuitive API, has limited precision (selected at
