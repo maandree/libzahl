@@ -7,10 +7,10 @@
 #define ZAHL_H 1
 
 
-#include <stddef.h>
-#include <setjmp.h>
-#include <stdint.h>
 #include <limits.h>
+#include <setjmp.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #include "zahl-internals.h"
 

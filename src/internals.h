@@ -1,9 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 #include "../zahl.h"
 
-#include <string.h>
-#include <stdlib.h>
 #include <errno.h>
+#include <stdlib.h>
+#include <string.h>
 
 /* clang pretends to be GCC... */
 #if defined(__GNUC__) && defined(__clang__)

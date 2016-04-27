@@ -1,17 +1,34 @@
 #include <tfm.h>
 
-#include <stddef.h>
 #include <setjmp.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 
 #define BIGINT_LIBRARY "TomsFastMath"
+
+#define FAST_RANDOM        0
+#define SECURE_RANDOM      0
+#define DEFAULT_RANDOM     0
+#define FASTEST_RANDOM     0
+#define LIBC_RAND_RANDOM   0
+#define LIBC_RANDOM_RANDOM 0
+#define LIBC_RAND48_RANDOM 0
+#define QUASIUNIFORM       0
+#define UNIFORM            1
+#define MODUNIFORM         2
 
 typedef fp_int z_t[1];
 
 static z_t _0, _1, _a, _b;
 static int _tmp, error;
 static jmp_buf jbuf;
+
+#ifdef UNSAFE
+# define try(expr) (expr)
+#else
+# define try(expr) do if ((error = (expr))) longjmp(jbuf, 1); while (0)
+#endif
 
 static inline void
 fp_set_int(z_t a, uint32_t d)
@@ -39,57 +56,192 @@ zunsetup(void)
 	/* Do nothing */
 }
 
-#define FAST_RANDOM             0
-#define SECURE_RANDOM           0
-#define DEFAULT_RANDOM          0
-#define FASTEST_RANDOM          0
-#define LIBC_RAND_RANDOM        0
-#define LIBC_RANDOM_RANDOM      0
-#define LIBC_RAND48_RANDOM      0
-#define QUASIUNIFORM            0
-#define UNIFORM                 1
-#define MODUNIFORM              2
+static inline void
+zperror(const char *str)
+{
+	const char *serr;
+	switch (error) {
+	case FP_VAL: serr = "FP_VAL";        break;
+	case FP_MEM: serr = "FP_MEM";        break;
+	default:     serr = "unknown error"; break;
+	}
+	if (str && *str)
+		fprintf(stderr, "%s: %s\n", str, serr);
+	else
+		fprintf(stderr, "%s\n", serr);
+}
 
-#define zperror(x)              ((void)0)
-#define zinit(a)                fp_init(a)
-#define zfree(a)                ((void)a)
+static inline void
+zinit(z_t a)
+{
+	fp_init(a);
+}
 
-#define zset(r, a)              fp_copy(a, r)
-#define zadd_unsigned(r, a, b)  (zabs(_a, a), zabs(_b, b), fp_add(_a, _b, r))
-#define zsub_unsigned(r, a, b)  (zabs(_a, a), zabs(_b, b), fp_sub(_a, _b, r))
-#define zadd(r, a, b)           fp_add(a, b, r)
-#define zsub(r, a, b)           fp_sub(a, b, r)
-#define zeven(a)                fp_iseven(a)
-#define zodd(a)                 fp_isodd(a)
-#define zeven_nonzero(a)        fp_iseven(a)
-#define zodd_nonzero(a)         fp_isodd(a)
-#define zzero(a)                fp_iszero(a)
-#define zsignum(a)              fp_cmp(a, _0)
-#define zbits(a)                fp_count_bits(a)
-#define zlsb(a)                 fp_cnt_lsb(a)
-#define zlsh(r, a, b)           fp_mul_2d(a, b, r)
-#define zrsh(r, a, b)           fp_div_2d(a, b, r, 0)
-#define ztrunc(r, a, b)         fp_mod_2d(a, b, r)
-#define zcmpmag(a, b)           fp_cmp_mag(a, b)
-#define zcmp(a, b)              fp_cmp(a, b)
-#define zcmpi(a, b)             (zseti(_b, b), fp_cmp(a, _b))
-#define zcmpu(a, b)             (zsetu(_b, b), fp_cmp(a, _b))
-#define zgcd(r, a, b)           fp_gcd(a, b, r)
-#define zmul(r, a, b)           fp_mul(a, b, r)
-#define zsqr(r, a)              fp_sqr(a, r)
-#define zmodmul(r, a, b, m)     fp_mulmod(a, b, m, r)
-#define zmodsqr(r, a, m)        fp_sqrmod(a, m, r)
-#define zpow(r, a, b)           zpowu(r, a, b->used ? b->dp[0] : 0)
-#define zmodpow(r, a, b, m)     fp_exptmod(a, b, m, r)
-#define zmodpowu(r, a, b, m)    (fp_set_int(_b, b), fp_exptmod(a, _b, m, r))
-#define zsets(a, s)             fp_read_radix(a, s, 10)
-#define zstr_length(a, b)       (fp_radix_size(a, b, &_tmp), _tmp)
-#define zstr(a, s, n)           (fp_toradix(a, s, 10))
-#define zptest(w, a, t)         fp_isprime_ex(a, t) /* Note, the witness is not returned. */
-#define zload(a, s)             fp_read_signed_bin(a, (unsigned char *)s, _tmp)
-#define zdiv(r, a, b)           fp_div(a, b, r, 0)
-#define zmod(r, a, b)           fp_mod(a, b, r)
-#define zdivmod(q, r, a, b)     fp_div(a, b, q, r)
+static inline void
+zfree(z_t a)
+{
+	(void) a;
+}
+
+static inline void
+zadd(z_t r, z_t a, z_t b)
+{
+	fp_add(a, b, r);
+}
+
+static inline void
+zsub(z_t r, z_t a, z_t b)
+{
+	fp_sub(a, b, r);
+}
+
+static inline void
+zset(z_t r, z_t a)
+{
+	fp_copy(a, r);
+}
+
+static inline int
+zeven(z_t a)
+{
+	return fp_iseven(a);
+}
+
+static inline int
+zodd(z_t a)
+{
+	return fp_isodd(a);
+}
+
+static inline int
+zeven_nonzero(z_t a)
+{
+	return fp_iseven(a);
+}
+
+static inline int
+zodd_nonzero(z_t a)
+{
+	return fp_isodd(a);
+}
+
+static inline int
+zzero(z_t a)
+{
+	return fp_iszero(a);
+}
+
+static inline int
+zsignum(z_t a)
+{
+	return fp_cmp(a, _0);
+}
+
+static inline size_t
+zbits(z_t a)
+{
+	return fp_count_bits(a);
+}
+
+static inline size_t
+zlsb(z_t a)
+{
+	return fp_cnt_lsb(a);
+}
+
+static inline void
+zlsh(z_t r, z_t a, size_t b)
+{
+	fp_mul_2d(a, b, r);
+}
+
+static inline void
+zrsh(z_t r, z_t a, size_t b)
+{
+	fp_div_2d(a, b, r, 0);
+}
+
+static inline void
+ztrunc(z_t r, z_t a, size_t b)
+{
+	fp_mod_2d(a, b, r);
+}
+
+static inline void
+zgcd(z_t r, z_t a, z_t b)
+{
+	fp_gcd(a, b, r);
+}
+
+static inline void
+zmul(z_t r, z_t a, z_t b)
+{
+	fp_mul(a, b, r);
+}
+
+static inline void
+zsqr(z_t r, z_t a)
+{
+	fp_sqr(a, r);
+}
+
+static inline void
+zmodmul(z_t r, z_t a, z_t b, z_t m)
+{
+	try(fp_mulmod(a, b, m, r));
+}
+
+static inline void
+zmodsqr(z_t r, z_t a, z_t m)
+{
+	try(fp_sqrmod(a, m, r));
+}
+
+static inline void
+zsets(z_t a, char *s)
+{
+	try(fp_read_radix(a, s, 10));
+}
+
+static inline size_t
+zstr_length(z_t a, unsigned long long int b)
+{
+	try(fp_radix_size(a, b, &_tmp));
+	return _tmp;
+}
+
+static inline char *
+zstr(z_t a, char *s, size_t n)
+{
+	try(fp_toradix(a, s, 10));
+	return s;
+	(void) n;
+}
+
+static inline int
+zptest(z_t w, z_t a, int t)
+{
+	return fp_isprime_ex(a, t);
+	(void) w; /* Note, the witness is not returned. */
+}
+
+static inline void
+zdivmod(z_t q, z_t r, z_t a, z_t b)
+{
+	try(fp_div(a, b, q, r));
+}
+
+static inline void
+zdiv(z_t q, z_t a, z_t b)
+{
+	zdivmod(q, 0, a, b);
+}
+
+static inline void
+zmod(z_t r, z_t a, z_t b)
+{
+	try(fp_mod(a, b, r));
+}
 
 static inline void
 zneg(z_t r, z_t a)
@@ -104,12 +256,28 @@ zabs(z_t r, z_t a)
 }
 
 static inline void
+zadd_unsigned(z_t r, z_t a, z_t b)
+{
+	zabs(_a, a);
+	zabs(_b, b);
+	zadd(r, _a, _b);
+}
+
+static inline void
+zsub_unsigned(z_t r, z_t a, z_t b)
+{
+	zabs(_a, a);
+	zabs(_b, b);
+	zsub(r, _a, _b);
+}
+
+static inline void
 zswap(z_t a, z_t b)
 {
 	z_t t;
-	fp_copy(a, t);
-	fp_copy(b, a);
-	fp_copy(t, b);
+	zset(t, a);
+	zset(a, b);
+	zset(b, t);
 }
 
 static inline void
@@ -154,10 +322,17 @@ zxor(z_t r, z_t a, z_t b)
 	r->sign = a->sign ^ b->sign;
 }
 
-static inline int
-zsave(z_t a, char *buf)
+static inline size_t
+zsave(z_t a, char *s)
 {
-	_tmp = buf ? fp_signed_bin_size(a) : (fp_to_signed_bin(a, (unsigned char *)buf), 0);
+	_tmp = s ? fp_signed_bin_size(a) : (fp_to_signed_bin(a, (unsigned char *)s), 0);
+	return _tmp;
+}
+
+static inline size_t
+zload(z_t a, const char *s)
+{
+	fp_read_signed_bin(a, (unsigned char *)s, _tmp);
 	return _tmp;
 }
 
@@ -189,6 +364,32 @@ zseti(z_t r, long long int val)
 	}
 }
 
+static inline int
+zcmpmag(z_t a, z_t b)
+{
+	return fp_cmp_mag(a, b);
+}
+
+static inline int
+zcmp(z_t a, z_t b)
+{
+	return fp_cmp(a, b);
+}
+
+static inline int
+zcmpi(z_t a, long long int b)
+{
+	zseti(_b, b);
+	return zcmp(a, _b);
+}
+
+static inline int
+zcmpu(z_t a, unsigned long long int b)
+{
+	zsetu(_b, b);
+	return zcmp(a, _b);
+}
+
 static inline void
 zsplit(z_t high, z_t low, z_t a, size_t brk)
 {
@@ -204,7 +405,7 @@ zsplit(z_t high, z_t low, z_t a, size_t brk)
 static inline void
 znot(z_t r, z_t a)
 {
-	fp_2expt(_a, (int)zbits(a));
+	fp_2expt(_a, zbits(a));
 	fp_sub_d(_a, 1, _a);
 	zand(r, a, _a);
 	zneg(r, r);
@@ -213,7 +414,7 @@ znot(z_t r, z_t a)
 static inline int
 zbtest(z_t a, size_t bit)
 {
-	fp_2expt(_b, (int)bit);
+	fp_2expt(_b, bit);
 	zand(_b, a, _b);
 	return !zzero(_b);
 }
@@ -222,10 +423,10 @@ static inline void
 zbset(z_t r, z_t a, size_t bit, int mode)
 {
 	if (mode > 0) {
-		fp_2expt(_b, (int)bit);
+		fp_2expt(_b, bit);
 		zor(r, a, _b);
 	} else if (mode < 0 || zbtest(a, bit)) {
-		fp_2expt(_b, (int)bit);
+		fp_2expt(_b, bit);
 		zxor(r, a, _b);
 	}
 }
@@ -291,4 +492,23 @@ zpowu(z_t r, z_t a, unsigned long long int b)
 			zmul(r, r, _a);
 		zsqr(_a, _a);
 	}
+}
+
+static inline void
+zpow(z_t r, z_t a, z_t b)
+{
+	zpowu(r, a, b->used ? b->dp[0] : 0);
+}
+
+static inline void
+zmodpow(z_t r, z_t a, z_t b, z_t m)
+{
+	try(fp_exptmod(a, b, m, r));
+}
+
+static inline void
+zmodpowu(z_t r, z_t a, unsigned long long int b, z_t m)
+{
+	fp_set_int(_b, b);
+	zmodpow(r, a, _b, m);
 }
