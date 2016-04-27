@@ -12,7 +12,7 @@ typedef fp_int z_t[1];
 static z_t _0, _1, _a, _b;
 static int _tmp;
 
-static void
+static inline void
 fp_set_int(z_t a, uint32_t d)
 {
 	a->dp[0] = d;
@@ -20,7 +20,7 @@ fp_set_int(z_t a, uint32_t d)
 	a->sign = 0;
 }
 
-static void
+static inline void
 zsetup(jmp_buf env)
 {
 	(void) env;
@@ -32,7 +32,7 @@ zsetup(jmp_buf env)
 	fp_set_int(_1, 1);
 }
 
-static void
+static inline void
 zunsetup(void)
 {
 	/* Do nothing */
@@ -102,7 +102,7 @@ zabs(z_t r, z_t a)
 	fp_abs(a, r);
 }
 
-static void
+static inline void
 zswap(z_t a, z_t b)
 {
 	z_t t;
@@ -111,7 +111,7 @@ zswap(z_t a, z_t b)
 	fp_copy(t, b);
 }
 
-static void
+static inline void
 zand(z_t r, z_t a, z_t b)
 {
 	int i;
@@ -123,7 +123,7 @@ zand(z_t r, z_t a, z_t b)
 	r->sign = a->sign & b->sign;
 }
 
-static void
+static inline void
 zor(z_t r, z_t a, z_t b)
 {
 	int i;
@@ -137,7 +137,7 @@ zor(z_t r, z_t a, z_t b)
 	r->sign = a->sign | b->sign;
 }
 
-static void
+static inline void
 zxor(z_t r, z_t a, z_t b)
 {
 	int i;
@@ -153,14 +153,14 @@ zxor(z_t r, z_t a, z_t b)
 	r->sign = a->sign ^ b->sign;
 }
 
-static int
+static inline int
 zsave(z_t a, char *buf)
 {
 	_tmp = buf ? fp_signed_bin_size(a) : (fp_to_signed_bin(a, (unsigned char *)buf), 0);
 	return _tmp;
 }
 
-static void
+static inline void
 zsetu(z_t r, unsigned long long int val)
 {
 	uint32_t high = (uint32_t)(val >> 32);
@@ -177,7 +177,7 @@ zsetu(z_t r, unsigned long long int val)
 	
 }
 
-static void
+static inline void
 zseti(z_t r, long long int val)
 {
 	if (val >= 0) {
@@ -188,7 +188,7 @@ zseti(z_t r, long long int val)
 	}
 }
 
-static void
+static inline void
 zsplit(z_t high, z_t low, z_t a, size_t brk)
 {
 	if (low == a) {
@@ -200,7 +200,7 @@ zsplit(z_t high, z_t low, z_t a, size_t brk)
 	}
 }
 
-static void
+static inline void
 znot(z_t r, z_t a)
 {
 	fp_2expt(_a, (int)zbits(a));
@@ -209,7 +209,7 @@ znot(z_t r, z_t a)
 	zneg(r, r);
 }
 
-static int
+static inline int
 zbtest(z_t a, size_t bit)
 {
 	fp_2expt(_b, (int)bit);
@@ -217,7 +217,7 @@ zbtest(z_t a, size_t bit)
 	return !zzero(_b);
 }
 
-static void
+static inline void
 zbset(z_t r, z_t a, size_t bit, int mode)
 {
 	if (mode > 0) {
@@ -229,7 +229,7 @@ zbset(z_t r, z_t a, size_t bit, int mode)
 	}
 }
 
-static void
+static inline void
 zrand(z_t r, int dev, int dist, z_t n)
 {
 	static int gave_up = 0;
@@ -272,7 +272,7 @@ zrand(z_t r, int dev, int dist, z_t n)
 	}
 }
 
-static void
+static inline void
 zpowu(z_t r, z_t a, unsigned long long int b)
 {
 	int neg = zsignum(a) < 0;

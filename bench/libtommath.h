@@ -30,7 +30,7 @@ static jmp_buf jbuf;
 # define try(expr) do if ((error = (expr))) longjmp(jbuf, 1); while (0)
 #endif
 
-static void
+static inline void
 zsetup(jmp_buf env)
 {
 	*jbuf = *env;
@@ -40,7 +40,7 @@ zsetup(jmp_buf env)
 	try(mp_init(_b));
 }
 
-static void
+static inline void
 zunsetup(void)
 {
 	mp_clear(_0);
@@ -176,7 +176,7 @@ zxor(z_t r, z_t a, z_t b)
 	try(mp_xor(a, b, r));
 }
 
-static void
+static inline void
 znot(z_t r, z_t a)
 {
 	try(mp_2expt(_a, (int)zbits(a)));
@@ -185,7 +185,7 @@ znot(z_t r, z_t a)
 	zneg(r, r);
 }
 
-static int
+static inline int
 zbtest(z_t a, size_t bit)
 {
 	try(mp_2expt(_b, (int)bit));
@@ -193,7 +193,7 @@ zbtest(z_t a, size_t bit)
 	return !zzero(_b);
 }
 
-static void
+static inline void
 zbset(z_t r, z_t a, size_t bit, int mode)
 {
 	if (mode > 0) {
@@ -229,7 +229,7 @@ ztrunc(z_t r, z_t a, size_t b)
 	try(mp_mod_2d(a, (int)b, r));
 }
 
-static void
+static inline void
 zsplit(z_t high, z_t low, z_t a, size_t brk)
 {
 	if (low == a) {
@@ -241,13 +241,13 @@ zsplit(z_t high, z_t low, z_t a, size_t brk)
 	}
 }
 
-static void
+static inline void
 zsetu(z_t r, unsigned long long int val)
 {
 	try(mp_set_long_long(r, val));
 }
 
-static void
+static inline void
 zseti(z_t r, long long int val)
 {
 	if (val >= 0) {
@@ -405,7 +405,7 @@ zdivmod(z_t q, z_t r, z_t a, z_t b)
 	try(mp_div(a, b, q, r));
 }
 
-static void
+static inline void
 zrand(z_t r, int dev, int dist, z_t n)
 {
 	static int gave_up = 0;

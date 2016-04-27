@@ -12,7 +12,7 @@ typedef hebi_int z_t[1];
 
 static z_t _0, _1, _a, _b, _m;
 
-static void
+static inline void
 zsetup(jmp_buf env)
 {
 	(void) env;
@@ -23,7 +23,7 @@ zsetup(jmp_buf env)
 	hebi_init(_m);
 }
 
-static void
+static inline void
 zunsetup(void)
 {
 	hebi_destroy(_0);
@@ -86,7 +86,7 @@ zunsetup(void)
 #define zsave(a, s)             zstr(a, s, sizeof(s) - 1)
 #define zload(a, s)             zsets(a, s)
 
-static size_t
+static inline size_t
 zbits(z_t a)
 {
 	hebi_uword x = x;
@@ -106,7 +106,7 @@ zbits(z_t a)
 	return rc;
 }
 
-static size_t
+static inline size_t
 zlsb(z_t a)
 {
 	hebi_uword x;
@@ -125,7 +125,7 @@ zlsb(z_t a)
 	return rc;
 }
 
-static void
+static inline void
 zptest(z_t w, z_t a, int t)
 {
 	static int gave_up = 0;
@@ -138,7 +138,7 @@ zptest(z_t w, z_t a, int t)
 	(void) t;
 }
 
-static void
+static inline void
 zpowu(z_t r, z_t a, unsigned long long int b)
 {
 	int neg = zsignum(a) < 0;
@@ -153,7 +153,7 @@ zpowu(z_t r, z_t a, unsigned long long int b)
 		zneg(r, r);
 }
 
-static void
+static inline void
 zmodpowu(z_t r, z_t a, unsigned long long int b, z_t m)
 {
 	int neg = zsignum(a) < 0;
@@ -169,7 +169,7 @@ zmodpowu(z_t r, z_t a, unsigned long long int b, z_t m)
 		zneg(r, r);
 }
 
-static size_t
+static inline size_t
 zstr_length(z_t a, unsigned long long int radix)
 {
 	size_t size_total = 1, size_temp;
@@ -190,7 +190,7 @@ zstr_length(z_t a, unsigned long long int radix)
 	return size_total + (zsignum(a) < 0);
 }
 
-static void
+static inline void
 zsplit(z_t high, z_t low, z_t a, size_t brk)
 {
 	if (low == a) {
@@ -202,7 +202,7 @@ zsplit(z_t high, z_t low, z_t a, size_t brk)
 	}
 }
 
-static void
+static inline void
 zbset(z_t r, z_t a, size_t bit, int mode)
 {
 	zrsh(_a, a, bit);
@@ -217,7 +217,7 @@ zbset(z_t r, z_t a, size_t bit, int mode)
 	}
 }
 
-static void
+static inline void
 zrand(z_t r, int dev, int dist, z_t n)
 {
 	static int gave_up[] = {0, 0, 0};
@@ -230,7 +230,7 @@ zrand(z_t r, int dev, int dist, z_t n)
 	(void) n;
 }
 
-static void
+static inline void
 zand(z_t r, z_t a, z_t b)
 {
 	int neg = hebi_sign(a) < 0 && hebi_sign(b) < 0;
@@ -251,7 +251,7 @@ zand(z_t r, z_t a, z_t b)
 		zneg(r, r);
 }
 
-static void
+static inline void
 zor(z_t r, z_t a, z_t b)
 {
 	int neg = hebi_sign(a) < 0 || hebi_sign(b) < 0;
@@ -272,7 +272,7 @@ zor(z_t r, z_t a, z_t b)
 		zneg(r, r);
 }
 
-static void
+static inline void
 zxor(z_t r, z_t a, z_t b)
 {
 	int neg = (hebi_sign(a) < 0) ^ (hebi_sign(b) < 0);
@@ -293,7 +293,7 @@ zxor(z_t r, z_t a, z_t b)
 		zneg(r, r);
 }
 
-void
+static inline void
 zgcd(z_t r, z_t a, z_t b)
 {
 	size_t shifts, a_lsb, b_lsb;
@@ -333,7 +333,7 @@ zgcd(z_t r, z_t a, z_t b)
 		zneg(r, r);
 }
 
-static void
+static inline void
 znot(z_t r, z_t a)
 {
 	size_t bits = zbits(a);
@@ -346,7 +346,9 @@ znot(z_t r, z_t a)
 	zneg(r, r);
 }
 
-int
+/* Prototype declared, but implementation missing, in hebimath */
+
+staint
 hebi_shl(hebi_int *r, const hebi_int *a, unsigned int b)
 {
 	zsetu(_a, 2);

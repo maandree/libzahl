@@ -14,7 +14,7 @@ static z_t _0, _1, _a, _b;
 static FILE *_fbuf;
 static gmp_randstate_t _randstate;
 
-static void
+static inline void
 zsetup(jmp_buf env)
 {
 	static char buf[1000];
@@ -27,7 +27,7 @@ zsetup(jmp_buf env)
 	gmp_randinit_mt(_randstate);
 }
 
-static void
+static inline void
 zunsetup(void)
 {
 	mpz_clear(_0);
@@ -97,7 +97,7 @@ zunsetup(void)
 #define zmod                    mpz_tdiv_r
 #define zdivmod                 mpz_tdiv_qr
 
-static void
+static inline void
 zsetu(z_t r, unsigned long long int val)
 {
 	uint32_t high = (uint32_t)(val >> 32);
@@ -114,7 +114,7 @@ zsetu(z_t r, unsigned long long int val)
 	
 }
 
-static void
+static inline void
 zseti(z_t r, long long int val)
 {
 	if (val >= 0) {
@@ -125,7 +125,7 @@ zseti(z_t r, long long int val)
 	}
 }
 
-static void
+static inline void
 znot(z_t r, z_t a)
 {
 	size_t bits = zbits(a);
@@ -136,7 +136,7 @@ znot(z_t r, z_t a)
 	zneg(r, r);
 }
 
-static void
+static inline void
 zsplit(z_t high, z_t low, z_t a, size_t brk)
 {
 	if (low == a) {
@@ -148,7 +148,7 @@ zsplit(z_t high, z_t low, z_t a, size_t brk)
 	}
 }
 
-static void
+static inline void
 zbset(z_t r, z_t a, size_t bit, int mode)
 {
 	if (r != a)
@@ -161,7 +161,7 @@ zbset(z_t r, z_t a, size_t bit, int mode)
 		mpz_combit(r, bit);
 }
 
-static size_t
+static inline size_t
 zsave(z_t a, void *buffer)
 {
 	size_t n = mpz_out_raw(_fbuf, a);
@@ -170,7 +170,7 @@ zsave(z_t a, void *buffer)
 	return n;
 }
 
-static size_t
+static inline size_t
 zload(z_t a, const void *buffer)
 {
 	size_t n = mpz_inp_raw(a, _fbuf);
@@ -179,7 +179,7 @@ zload(z_t a, const void *buffer)
 	return n;
 }
 
-static void
+static inline void
 zrand(z_t r, int dev, int dist, z_t n)
 {
 	size_t bits;
