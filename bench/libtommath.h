@@ -346,7 +346,7 @@ zmodpowu(z_t r, z_t a, unsigned long long int b, z_t m)
 }
 
 static inline void
-zsets(z_t a, char *s)
+zsets(z_t a, const char *s)
 {
 	try(mp_read_radix(a, s, 10));
 }
@@ -382,9 +382,9 @@ zsave(z_t a, char *b)
 }
 
 static inline size_t
-zload(z_t a, char *b) /* Note, requires that zsave was called directly prior. */
+zload(z_t a, const char *b) /* Note, requires that zsave was called directly prior. */
 {
-	return mp_read_signed_bin(a, (unsigned char *)b, _tmp);
+	return mp_read_signed_bin(a, (const unsigned char *)b, _tmp);
 }
 
 static inline void
