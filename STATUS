@@ -81,7 +81,7 @@ you would choose zadd_unsigned in libzahl, but if you are
 using a library that does not have the corrsponding function,
 you are better of with the regular addition (zadd).
 
-Also note, TomsFastMath does not allow arbitrarily large
+Also note, TomsFastMath does not support arbitrarily large
 integers, which gives is a significant performance advantage.
 Furthermore, not failure check is done with GMP. Additionally,
 hebimath is some functions that are not working correctly;
