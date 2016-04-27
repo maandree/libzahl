@@ -114,51 +114,55 @@ gettime(size_t m)
 		(void) bs;\
 	}
 
-FUNCTION_2D(bench_zset,             zset(temp, *a),)
-FUNCTION_2D(bench_zneg,             zneg(temp, *a),)
-FUNCTION_2D(bench_zabs,             zabs(temp, *a),)
-FUNCTION_2D(bench_self_zneg,        zneg(*a, *a),)
-FUNCTION_2D(bench_self_zabs,        zabs(*a, *a),)
-FUNCTION_2D(bench_zadd_unsigned,    zadd_unsigned(temp, *a, temp2),)
-FUNCTION_2D(bench_zsub_unsigned,    zsub_unsigned(temp, *a, temp2),)
-FUNCTION_2D(bench_zadd,             zadd(temp, *a, temp2),)
-FUNCTION_2D(bench_zsub,             zsub(temp, *a, temp2),)
-FUNCTION_2D(bench_zand,             zand(temp, *a, temp2),)
-FUNCTION_2D(bench_zor,              zor(temp, *a, temp2),)
-FUNCTION_2D(bench_zxor,             zxor(temp, *a, temp2),)
-FUNCTION_2D(bench_znot,             znot(temp, *a),)
-FUNCTION_2D(bench_zeven,            zeven(*a),)
-FUNCTION_2D(bench_zodd,             zodd(*a),)
-FUNCTION_2D(bench_zeven_nonzero,    zeven_nonzero(*a),)
-FUNCTION_2D(bench_zodd_nonzero,     zodd_nonzero(*a),)
-FUNCTION_2D(bench_zzero,            zzero(*a),)
-FUNCTION_2D(bench_zsignum,          zsignum(*a),)
-FUNCTION_2D(bench_zbits,            zbits(*a),)
-FUNCTION_2D(bench_zlsb,             zlsb(*a),)
-FUNCTION_2D(bench_zswap,            zswap(temp, *a),)
-FUNCTION_2D(bench_zcmpmag,          zcmpmag(temp2, *a),)
-FUNCTION_2D(bench_zcmp,             zcmp(temp2, *a),)
-FUNCTION_2D(bench_sqr_zmul,         zmul(temp, *a, temp2),)
-FUNCTION_2D(bench_zsqr,             zsqr(temp, *a),)
-FUNCTION_2D(bench_zstr_length,      zstr_length(*a, 10),)
-FUNCTION_2D(bench_zstr,             zstr(*a, buf, sizeof(buf) - 1),)
-FUNCTION_2D(bench_auto_zstr,        zstr(*a, buf, 0),)
-FUNCTION_2D(bench_zsave,            zsave(*a, buf),)
-FUNCTION_2D(bench_zload,            zload(temp, buf), zsave(*a, buf))
-FUNCTION_2D(bench_zbset_set,        zbset(temp, *a, 2, 1),)
-FUNCTION_2D(bench_zbset_clear,      zbset(temp, *a, 2, 0),)
-FUNCTION_2D(bench_zbset_flip,       zbset(temp, *a, 2, -1),)
-FUNCTION_2D(bench_self_zbset_set,   zbset(temp2, temp2, 2, 1),)
-FUNCTION_2D(bench_self_zbset_clear, zbset(temp2, temp2, 2, 0),)
-FUNCTION_2D(bench_self_zbset_flip,  zbset(temp2, temp2, 2, -1),)
-FUNCTION_2D(bench_zbtest,           zbtest(*a, 2),)
-FUNCTION_2D(bench_zptest,           zptest(temp, *a, 5),)
-FUNCTION_2D(bench_zsets,            zsets(temp, buf), zstr(*a, buf, sizeof(buf) - 1))
-FUNCTION_2D(bench_zlsh,             zlsh(temp, *a, 1),)
-FUNCTION_2D(bench_zrsh,             zrsh(temp, *a, 1),)
-FUNCTION_2D(bench_ztrunc,           ztrunc(temp, *a, i / 2),)
-FUNCTION_2D(bench_self_ztrunc,      ztrunc(*a, *a, i),)
-FUNCTION_2D(bench_zsplit,           zsplit(temp, temp2, *a, i / 2),)
+#define FAST2D(P)  1, 4097, 64, P, 0, 0, 0, 0, 1000, M_MAX
+#define SLOW2D(P)  1, 4097, 64, P, 0, 0, 0, 0, 10,   20
+
+#define LIST_2D_FUNCTIONS\
+	X(zset,             FAST2D(FULL),      zset(temp, *a),)\
+	X(zneg,             FAST2D(FULL),      zneg(temp, *a),)\
+	X(zabs,             FAST2D(FULL),      zabs(temp, *a),)\
+	X(self_zneg,        FAST2D(FULL),      zneg(*a, *a),)\
+	X(self_zabs,        FAST2D(FULL),      zabs(*a, *a),)\
+	X(zadd_unsigned,    FAST2D(FULL),      zadd_unsigned(temp, *a, temp2),)\
+	X(zsub_unsigned,    FAST2D(FULL),      zsub_unsigned(temp, *a, temp2),)\
+	X(zadd,             FAST2D(FULL),      zadd(temp, *a, temp2),)\
+	X(zsub,             FAST2D(FULL),      zsub(temp, *a, temp2),)\
+	X(zand,             FAST2D(FULL),      zand(temp, *a, temp2),)\
+	X(zor,              FAST2D(FULL),      zor(temp, *a, temp2),)\
+	X(zxor,             FAST2D(FULL),      zxor(temp, *a, temp2),)\
+	X(znot,             FAST2D(FULL),      znot(temp, *a),)\
+	X(zeven,            FAST2D(FULL),      zeven(*a),)\
+	X(zodd,             FAST2D(FULL),      zodd(*a),)\
+	X(zeven_nonzero,    FAST2D(FULL),      zeven_nonzero(*a),)\
+	X(zodd_nonzero,     FAST2D(FULL),      zodd_nonzero(*a),)\
+	X(zzero,            FAST2D(FULL),      zzero(*a),)\
+	X(zsignum,          FAST2D(FULL),      zsignum(*a),)\
+	X(zbits,            FAST2D(FULL),      zbits(*a),)\
+	X(zlsb,             FAST2D(HIGH_ONLY), zlsb(*a),)\
+	X(zswap,            FAST2D(FULL),      zswap(temp, *a),)\
+	X(zcmpmag,          FAST2D(FULL),      zcmpmag(temp2, *a),)\
+	X(zcmp,             FAST2D(FULL),      zcmp(temp2, *a),)\
+	X(sqr_zmul,         SLOW2D(FULL),      zmul(temp, *a, temp2),)\
+	X(zsqr,             SLOW2D(FULL),      zsqr(temp, *a),)\
+	X(zstr_length,      SLOW2D(FULL),      zstr_length(*a, 10),)\
+	X(zstr,             SLOW2D(FULL),      zstr(*a, buf, sizeof(buf) - 1),)\
+	X(auto_zstr,        SLOW2D(FULL),      zstr(*a, buf, 0),)\
+	X(zsave,            FAST2D(FULL),      zsave(*a, buf),)\
+	X(zload,            FAST2D(FULL),      zload(temp, buf), zsave(*a, buf))\
+	X(zbset_set,        FAST2D(FULL),      zbset(temp, *a, 2, 1),)\
+	X(zbset_clear,      FAST2D(FULL),      zbset(temp, *a, 2, 0),)\
+	X(zbset_flip,       FAST2D(FULL),      zbset(temp, *a, 2, -1),)\
+	X(self_zbset_set,   FAST2D(FULL),      zbset(temp2, temp2, 2, 1),)\
+	X(self_zbset_clear, FAST2D(FULL),      zbset(temp2, temp2, 2, 0),)\
+	X(self_zbset_flip,  FAST2D(FULL),      zbset(temp2, temp2, 2, -1),)\
+	X(zbtest,           FAST2D(FULL),      zbtest(*a, 2),)\
+	X(zptest,           FAST2D(FULL),      zptest(temp, *a, 5),)\
+	X(zsets,            FAST2D(FULL),      zsets(temp, buf), zstr(*a, buf, sizeof(buf) - 1))\
+	X(zlsh,             FAST2D(FULL),      zlsh(temp, *a, 1),)\
+	X(zrsh,             FAST2D(FULL),      zrsh(temp, *a, 1),)\
+	X(ztrunc,           FAST2D(FULL),      ztrunc(temp, *a, i / 2),)\
+	X(self_ztrunc,      FAST2D(FULL),      ztrunc(*a, *a, i),)\
+	X(zsplit,           FAST2D(FULL),      zsplit(temp, temp2, *a, i / 2),)
 
 /* TODO
 	zgcd
@@ -179,43 +183,16 @@ FUNCTION_2D(bench_zsplit,           zsplit(temp, temp2, *a, i / 2),)
 	zdivmod
 */
 
-#define F(f) #f, bench_##f
-struct function functions[] = {
-	{F(zset),          1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zneg),          1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zabs),          1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(self_zneg),     1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(self_zabs),     1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zadd_unsigned), 1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zsub_unsigned), 1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zadd),          1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zsub),          1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zand),          1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zor),           1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zxor),          1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(znot),          1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zeven),         1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zodd),          1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zeven_nonzero), 1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zodd_nonzero),  1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zzero),         1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zsignum),       1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zbits),         1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zlsb),          1, 4097, 64, HIGH_ONLY, 0, 0, 0, 0, 1000, M_MAX},
-	{F(zswap),         1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zcmpmag),       1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zcmp),          1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(sqr_zmul),      1, 4097, 64, FULL,      0, 0, 0, 0, 10,   20},
-	{F(zsqr),          1, 4097, 64, FULL,      0, 0, 0, 0, 10,   20},
-	{F(zstr_length),   1, 4097, 64, FULL,      0, 0, 0, 0, 10,   20},
-	{F(zstr),          1, 4097, 64, FULL,      0, 0, 0, 0, 10,   20},
-	{F(auto_zstr),     1, 4097, 64, FULL,      0, 0, 0, 0, 10,   20},
-	{F(zsave),         1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
-	{F(zload),         1, 4097, 64, FULL,      0, 0, 0, 0, 1000, M_MAX},
+#define X(FN, A, F1, F2)  FUNCTION_2D(bench_##FN, F1, F2)
+LIST_2D_FUNCTIONS
+#undef X
 
-	{0, 0,             0, 0,    0,  0,         0, 0, 0, 0, 0,    0}
+struct function functions[] = {
+#define X(FN, A, F1, F2)  {#FN, bench_##FN, A},
+LIST_2D_FUNCTIONS
+#undef X
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 };
-#undef F
 
 static z_t *
 create_ints(size_t start, size_t end, int mode)
