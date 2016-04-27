@@ -1,48 +1,28 @@
-#include <time.h>
-#include <stdio.h>
-
-#ifdef BENCHMARK_LIB
-# include BENCHMARK_LIB
-#else
-# include "../zahl.h"
-# define BIGINT_LIBRARY "libzahl"
-#endif
-
-
-#ifndef CLOCK_MONOTONIC_RAW
-# define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
-#endif
+#include "benchmark.h"
 
 
 #define BENCHMARK(INSTRUCTION, FAST)\
 	do {\
 		i = FAST ? 1000000L : 1000L;\
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start);\
+		TIC;\
 		while (i--) {\
 			(void)INSTRUCTION;\
 		}\
-		clock_gettime(CLOCK_MONOTONIC_RAW, &end);\
-		end.tv_sec -= start.tv_sec;\
-		end.tv_nsec -= start.tv_nsec;\
-		if (end.tv_nsec < 0) {\
-			end.tv_nsec += 1000000000L;\
-			end.tv_sec -= 1;\
-		}\
-		printf("%s: %lli.%09li %s (152 bits)\n",\
-		       #INSTRUCTION,\
-		       (long long int)(end.tv_sec), end.tv_nsec,\
-		       FAST ? "µs" : "ms");\
+		TOC;\
+		printf("%s: %s %s (152 bits)\n",\
+		       #INSTRUCTION, STIME, FAST ? "µs" : "ms");\
 	} while (0)
 
 
 int
 main(int argc, char *argv[])
 {
-	struct timespec start, end;
 	char buf[1000];
 	z_t a, b, c, d, tiny;
 	jmp_buf jmp;
 	size_t i;
+
+	benchmark_init();
 
 	if (setjmp(jmp)) {
 		zperror(argv[0]);

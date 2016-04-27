@@ -1,16 +1,7 @@
-#include <limits.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <unistd.h>
+#include "benchmark.h"
 
-#ifdef BENCHMARK_LIB
-# include BENCHMARK_LIB
-#else
-# include "../zahl.h"
-# define BIGINT_LIBRARY "libzahl"
-#endif
+#include <limits.h>
+
 
 enum {
 	HIGH_ONLY,
@@ -34,24 +25,10 @@ struct function {
 	size_t measurements;
 };
 
-#if defined(__x86_64__)
-# undef clock_t
-# define clock_t unsigned long long int
-static inline clock_t rdtsc(void)
-{
-  unsigned int low, high;
-  __asm__ __volatile__ ("rdtsc" : "=a"(low), "=d"(high));
-  return (clock_t)low | (((clock_t)high) << 32);
-}
-#else
-# define rdtsc clock
-#endif
-
 #define M_MAX 200
 
 static char buf[1000];
 static z_t temp, temp2;
-static clock_t start, end;
 static unsigned long long int measurements[M_MAX];
 
 #if 1
@@ -124,12 +101,12 @@ gettime(size_t m)
 				INSTRUCTION;\
 				INSTRUCTION;\
 				j = f->runs;\
-				start = rdtsc();\
+				TIC;\
 				while (j--) {\
 					INSTRUCTION;\
 				}\
-				end = rdtsc();\
-				measurements[k] = (unsigned long long int)(end - start);\
+				TOC;\
+				measurements[k] = TICKS;\
 			}\
 			printf("%llu\n", gettime(f->measurements));\
 			a++;\
@@ -300,6 +277,8 @@ main(int argc, char *argv[])
 		fprintf(stderr, "usage: %s function\n", *argv);
 		return 2;
 	}
+
+	benchmark_init();
 
 	if (setjmp(jmp)) {
 		zperror(argv[0]);
