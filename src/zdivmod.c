@@ -72,9 +72,9 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 	sign = zsignum(c) * zsignum(d);
 
 	if (unlikely(!sign)) {
-		if (check(unlikely(!zzero(c)))) {
+		if (check(!zzero(c))) {
 			libzahl_failure(-ZERROR_DIV_0);
-		} else if (check(unlikely(zzero(d)))) {
+		} else if (check(zzero(d))) {
 			libzahl_failure(-ZERROR_0_DIV_0);
 		} else {
 			SET_SIGNUM(a, 0);

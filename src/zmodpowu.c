@@ -16,7 +16,7 @@ zmodpowu(z_t a, z_t b, unsigned long long int c, z_t d)
 		else
 			zsetu(a, 1);
 		return;
-	} else if (check(unlikely(zzero(d)))) {
+	} else if (check(zzero(d))) {
 		libzahl_failure(-ZERROR_DIV_0);
 	} else if (unlikely(zzero(b))) {
 		SET_SIGNUM(a, 0);

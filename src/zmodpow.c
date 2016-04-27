@@ -25,7 +25,7 @@ zmodpow(z_t a, z_t b, z_t c, z_t d)
 			SET_SIGNUM(a, 0);
 		}
 		return;
-	} else if (check(unlikely(zzero(d)))) {
+	} else if (check(zzero(d))) {
 		libzahl_failure(-ZERROR_DIV_0);
 	} else if (unlikely(zzero(b))) {
 		SET_SIGNUM(a, 0);

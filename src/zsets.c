@@ -17,12 +17,12 @@ zsets(z_t a, const char *str)
 
 	str += neg || (*str == '+');
 
-	if (check(unlikely(!*str))) {
+	if (check(!*str)) {
 		errno = EINVAL;
 		return -1;
 	}
 	for (str_end = str; *str_end; str_end++) {
-		if (check(unlikely(!isdigit(*str_end)))) {
+		if (check(!isdigit(*str_end))) {
 			errno = EINVAL;
 			return -1;
 		}
