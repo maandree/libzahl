@@ -79,13 +79,13 @@ main(int argc, char *argv[])
 	BENCHMARK(zbset(c, a, 76, -1), 1);
 	BENCHMARK(zbset(a, a, 76, -1), 1);
 	BENCHMARK(zbtest(a, 76), 1);
-#ifndef HEBIMATH
+#ifndef HEBIMATH /* These take too long in hebimath because of inefficient division. */
 	BENCHMARK(zgcd(c, a, b), 0);
 #endif
 	BENCHMARK(zmul(c, a, b), 0);
 	BENCHMARK(zmul(c, a, a), 0);
 	BENCHMARK(zsqr(c, a), 0);
-#ifndef HEBIMATH
+#ifndef HEBIMATH /* Ditto. */
 	zsets(d, "1484298084218938358480511181388394862858002249");
 	BENCHMARK(zmodmul(c, a, b, d), 0);
 	BENCHMARK(zmodmul(c, a, a, d), 0);
@@ -94,8 +94,8 @@ main(int argc, char *argv[])
 	BENCHMARK(zmodmul(c, a, a, tiny), 0);
 	BENCHMARK(zmodsqr(c, a, tiny), 0);
 	zsets(d, "12");
-	BENCHMARK(zpow(c, a, d), 0);   /* Memory corruption when using hebimath */
-	BENCHMARK(zpowu(c, a, 12), 0); /* Memory corruption when using hebimath */
+	BENCHMARK(zpow(c, a, d), 0);   /* Memory corruption when using hebimath. */
+	BENCHMARK(zpowu(c, a, 12), 0); /* Memory corruption when using hebimath. */
 	BENCHMARK(zmodpow(c, a, d, b), 0);
 	BENCHMARK(zmodpowu(c, a, 12, b), 0);
 #endif
@@ -111,7 +111,7 @@ main(int argc, char *argv[])
 	BENCHMARK(zdiv(c, a, b), 1);
 	BENCHMARK(zmod(c, a, b), 1);
 	BENCHMARK(zdivmod(c, d, a, b), 1);
-#ifndef HEBIMATH
+#ifndef HEBIMATH /* Ditto. */
 	BENCHMARK(zdiv(c, a, tiny), 0);
 	BENCHMARK(zmod(c, a, tiny), 0);
 	BENCHMARK(zdivmod(c, d, a, tiny), 0);

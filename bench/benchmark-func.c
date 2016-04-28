@@ -3,6 +3,11 @@
 #include <limits.h>
 
 
+#if !defined(USE_MEDIAN) && !defined(USE_MID_7TH_AVERAGE) && !defined(USE_AVERAGE) && !defined(USE_LOWEST)
+# define USE_MID_7TH_AVERAGE
+#endif
+
+
 enum {
 	HIGH_ONLY,
 	HIGH_AND_LOW,
@@ -27,18 +32,20 @@ struct function {
 
 #define M_MAX 200
 
+
 static char buf[1000];
 static z_t temp, temp2;
 static unsigned long long int measurements[M_MAX];
 
-#if 1
+
+#if defined(USE_MEDIAN) || defined(USE_MID_7TH_AVERAGE)
 static int
 measurementpcmp(const void *ap_, const void *bp_)
 {
 	const unsigned long long int *ap = ap_, *bp = bp_;
 	return *ap < *bp ? -1 : *ap > *bp;
 }
-# if 0
+# if defined(USE_MEDIAN)
 static unsigned long long int
 gettime(size_t m)
 {
@@ -47,7 +54,7 @@ gettime(size_t m)
 		return measurements[m / 2];
 	return (measurements[m / 2] + measurements[m / 2 - 1]) / 2;
 }
-# else
+# else /* if defined(USE_MID_7TH_AVERAGE) */
 static unsigned long long int
 gettime(size_t m)
 {
@@ -61,7 +68,7 @@ gettime(size_t m)
 #  undef X
 }
 # endif
-#elif 0
+#elif defined(USE_AVERAGE)
 static unsigned long long int
 gettime(size_t m)
 {
@@ -71,7 +78,7 @@ gettime(size_t m)
 		tot += measurements[i];
 	return tot / m;
 }
-#else
+#else /* if defined(USE_LOWEST) */
 static unsigned long long int
 gettime(size_t m)
 {
@@ -83,6 +90,7 @@ gettime(size_t m)
 	return best;
 }
 #endif
+
 
 #define FUNCTION_2D(NAME, INSTRUCTION, PREINSTRUCTION)\
 	static void\
@@ -183,6 +191,7 @@ gettime(size_t m)
 	zdivmod
 */
 
+
 #define X(FN, A, F1, F2)  FUNCTION_2D(bench_##FN, F1, F2)
 LIST_2D_FUNCTIONS
 #undef X
@@ -193,6 +202,7 @@ LIST_2D_FUNCTIONS
 #undef X
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 };
+
 
 static z_t *
 create_ints(size_t start, size_t end, int mode)

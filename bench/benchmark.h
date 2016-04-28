@@ -39,17 +39,74 @@
 #endif
 
 
+
 static struct timespec dur;
 static char timebuf[512];
-#if defined(USE_RDTSC)
+
+
+#if defined(USE_RDTSC) && defined(__x86_64__)
 typedef unsigned long long int rdtsc_t;
 static unsigned int start_high, start_low, end_high, end_low;
 static unsigned long long int freq;
+
+# define TIC  (rdtsc(&start_low, &start_high))
+# define TOC\
+	do {\
+		rdtsc_t dur_cycles;\
+		double dur_seconds;\
+		rdtsc(&end_low, &end_high);\
+		dur_cycles = rdtsc_join(end_low, end_high);\
+		dur_cycles -= rdtsc_join(start_low, start_high);\
+		dur_seconds = (double)dur_cycles;\
+		dur_seconds /= 1000 * (double)freq;\
+		dur_seconds -= (double)(dur.tv_sec = (int)dur_seconds);\
+		dur.tv_nsec = (long int)(dur_seconds * 1000000000L);\
+	} while (0)
+
+static inline void
+rdtsc(unsigned int *low, unsigned int *high)
+{
+	__asm__ __volatile__ ("rdtsc" : "=a"(*low), "=d"(*high));
+}
+
+static inline rdtsc_t
+rdtsc_join(unsigned int low, unsigned int high)
+{
+	return (rdtsc_t)low | (((rdtsc_t)high) << 32);
+}
+
+
 #elif defined(USE_CLOCK)
 static clock_t start, end;
-#else
+
+# define TIC  (start = clock())
+# define TOC\
+	do {\
+		end = clock();\
+		dur.tv_sec = (end - start) / 1000000ULL;\
+		dur.tv_nsec = ((end - start) % 1000000ULL) * 1000;\
+	} while (0)
+
+
+#elif defined(USE_GETTIME)
 static struct timespec start;
+
+# define TIC  clock_gettime(CLOCK_MONOTONIC_RAW, &start)
+# define TOC\
+	do {\
+		clock_gettime(CLOCK_MONOTONIC_RAW, &dur);\
+		dur.tv_sec -= start.tv_sec;\
+		dur.tv_nsec -= start.tv_nsec;\
+		if (dur.tv_nsec < 0) {\
+			dur.tv_nsec += 1000000000L;\
+			dur.tv_sec -= 1;\
+		}\
+	} while (0)
 #endif
+
+
+#define TICKS  ((unsigned long long int)(dur.tv_sec) * 1000000000ULL + (unsigned long long int)(dur.tv_nsec))
+#define STIME  (sprintf(timebuf, "%lli.%09li", (long long)(dur.tv_sec), dur.tv_nsec), timebuf)
 
 
 static void
@@ -76,58 +133,3 @@ benchmark_init(void)
 #endif
 	(void) timebuf;
 }
-
-
-#if defined(USE_RDTSC) && defined(__x86_64__)
-static inline void
-rdtsc(unsigned int *low, unsigned int *high)
-{
-	__asm__ __volatile__ ("rdtsc" : "=a"(*low), "=d"(*high));
-}
-static inline rdtsc_t
-rdtsc_join(unsigned int low, unsigned int high)
-{
-	return (rdtsc_t)low | (((rdtsc_t)high) << 32);
-}
-#endif
-
-
-#if defined(USE_RDTSC)
-# define TIC  (rdtsc(&start_low, &start_high))
-# define TOC\
-	do {\
-		rdtsc_t dur_cycles;\
-		double dur_seconds;\
-		rdtsc(&end_low, &end_high);\
-		dur_cycles = rdtsc_join(end_low, end_high);\
-		dur_cycles -= rdtsc_join(start_low, start_high);\
-		dur_seconds = (double)dur_cycles;\
-		dur_seconds /= 1000 * (double)freq;\
-		dur_seconds -= (double)(dur.tv_sec = (int)dur_seconds);\
-		dur.tv_nsec = (long int)(dur_seconds * 1000000000L);\
-	} while (0)
-#elif defined(USE_CLOCK)
-# define TIC  (start = clock())
-# define TOC\
-	do {\
-		end = clock();\
-		dur.tv_sec = (end - start) / 1000000ULL;\
-		dur.tv_nsec = ((end - start) % 1000000ULL) * 1000;\
-	} while (0)
-#elif defined(USE_GETTIME)
-# define TIC  clock_gettime(CLOCK_MONOTONIC_RAW, &start)
-# define TOC\
-	do {\
-		clock_gettime(CLOCK_MONOTONIC_RAW, &dur);\
-		dur.tv_sec -= start.tv_sec;\
-		dur.tv_nsec -= start.tv_nsec;\
-		if (dur.tv_nsec < 0) {\
-			dur.tv_nsec += 1000000000L;\
-			dur.tv_sec -= 1;\
-		}\
-	} while (0)
-#endif
-
-
-#define TICKS  ((unsigned long long int)(dur.tv_sec) * 1000000000ULL + (unsigned long long int)(dur.tv_nsec))
-#define STIME  (sprintf(timebuf, "%lli.%09li", (long long)(dur.tv_sec), dur.tv_nsec), timebuf)
