@@ -144,7 +144,7 @@ libzahl_failure(int error)
 }
 
 static inline void
-libzahl_memfailure()
+libzahl_memfailure(void)
 {
 	if (!errno) /* sigh... */
 		errno = ENOENT;
@@ -316,7 +316,6 @@ zsplit_unsigned_fast_small_auto(z_t high, z_t low, z_t a, size_t n)
  *   zinit_temp(c);
  *   zfree_temp(c);
  *   zfree_temp(a);
- * 
  * 
  * And not (swap the two last lines)
  * 

@@ -101,11 +101,10 @@ rdtsc_join(unsigned int low, unsigned int high)
 		rdtsc(&end_low, &end_high);\
 		dur_cycles = rdtsc_join(end_low, end_high);\
 		dur_cycles -= rdtsc_join(start_low, start_high);\
-		dur_seconds = dur_cycles;\
-		dur_seconds /= freq;\
-		dur_seconds /= 1000;\
-		dur_seconds -= dur.tv_sec = (int)dur_seconds;\
-		dur.tv_nsec = dur_seconds * 1000000000L;\
+		dur_seconds = (double)dur_cycles;\
+		dur_seconds /= 1000 * (double)freq;\
+		dur_seconds -= (double)(dur.tv_sec = (int)dur_seconds);\
+		dur.tv_nsec = (long int)(dur_seconds * 1000000000L);\
 	} while (0)
 #elif defined(USE_CLOCK)
 # define TIC  (start = clock())
@@ -130,5 +129,5 @@ rdtsc_join(unsigned int low, unsigned int high)
 #endif
 
 
-#define TICKS  (dur.tv_sec * 1000000000ULL + dur.tv_nsec)
+#define TICKS  ((unsigned long long int)(dur.tv_sec) * 1000000000ULL + (unsigned long long int)(dur.tv_nsec))
 #define STIME  (sprintf(timebuf, "%lli.%09li", (long long)(dur.tv_sec), dur.tv_nsec), timebuf)

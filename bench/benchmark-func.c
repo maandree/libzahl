@@ -16,10 +16,10 @@ struct function {
 	size_t a_start;
 	size_t a_end;
 	size_t a_step;
-	int a_mode;
 	size_t b_start;
 	size_t b_end;
 	size_t b_step;
+	int a_mode;
 	int b_mode;
 	size_t runs;
 	size_t measurements;
@@ -85,7 +85,7 @@ gettime(size_t m)
 #endif
 
 #define FUNCTION_2D(NAME, INSTRUCTION, PREINSTRUCTION)\
-	void\
+	static void\
 	NAME(z_t *as, z_t* bs, struct function *f)\
 	{\
 		size_t i, j, k, n = f->a_end - f->a_start + 1;\
@@ -114,8 +114,8 @@ gettime(size_t m)
 		(void) bs;\
 	}
 
-#define FAST2D(P)  1, 4097, 64, P, 0, 0, 0, 0, 1000, M_MAX
-#define SLOW2D(P)  1, 4097, 64, P, 0, 0, 0, 0, 10,   20
+#define FAST2D(P)  1, 4097, 64, 0, 0, 0, P, 0, 1000, M_MAX
+#define SLOW2D(P)  1, 4097, 64, 0, 0, 0, P, 0, 10,   20
 
 #define LIST_2D_FUNCTIONS\
 	X(zset,             FAST2D(FULL),      zset(temp, *a),)\
@@ -197,10 +197,10 @@ LIST_2D_FUNCTIONS
 static z_t *
 create_ints(size_t start, size_t end, int mode)
 {
-	z_t *array = malloc((end - start + 1) * sizeof(z_t));
+	z_t *array = malloc((++end - start) * sizeof(z_t));
 	z_t *rc = array;
 	ssize_t n;
-	for (; start <= end; start++, array++) {
+	for (; start < end; start++, array++) {
 		zinit(*array);
 		switch (mode) {
 		case HIGH_ONLY:
