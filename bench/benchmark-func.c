@@ -106,12 +106,12 @@ gettime(size_t m)
 			PREINSTRUCTION;\
 			k = f->measurements;\
 			while (k--) {\
-				INSTRUCTION;\
-				INSTRUCTION;\
+				(void)INSTRUCTION;\
+				(void)INSTRUCTION;\
 				j = f->runs;\
 				TIC;\
 				while (j--) {\
-					INSTRUCTION;\
+					(void)INSTRUCTION;\
 				}\
 				TOC;\
 				measurements[k] = TICKS;\
