@@ -55,8 +55,8 @@ $a \gets -b$                  & {\tt zneg(a, b)}           &                    
 
 \textbf{Assignment}           & {}                         & {}                                                \\
 $a \gets b$                   & {\tt zset(a, b)}           &                                                   \\
-$a \gets b$                   & {\tt zseti(a, b)}          & {\tt b} is a {\tt long long int}                  \\
-$a \gets b$                   & {\tt zsetu(a, b)}          & {\tt b} is an {\tt unsigned long long int}        \\
+$a \gets b$                   & {\tt zseti(a, b)}          & {\tt b} is an {\tt int64\_t}                      \\
+$a \gets b$                   & {\tt zsetu(a, b)}          & {\tt b} is a {\tt uint64\_t}                      \\
 $a \gets b$                   & {\tt zsets(a, b)}          & {\tt b} is a decimal {\tt const char *}           \\
 %$a \gets b$                   & {\tt zsets\_radix(a, b, c)} & {\tt b} is a radix $c$ {\tt const char *},  \\  %%
 %{}                            & {}                   & $~~~~~$ {\tt c} is an {\tt unsigned long long int} \\  %%
@@ -65,8 +65,8 @@ $a \leftrightarrow b$         & {\tt zswap(a, b)}          &                    
 
 \textbf{Comparison}           & {}                         & {}                                                \\
 Compare $a$ and $b$           & {\tt zcmp(a, b)}           & returns {\tt int} $\mbox{sgn}(a - b)$             \\
-Compare $a$ and $b$           & {\tt zcmpi(a, b)}          & ditto, {\tt b} is n {\tt long long int}           \\
-Compare $a$ and $b$           & {\tt zcmpu(a, b)}          & ditto, {\tt b} is an {\tt unsigned long long int} \\
+Compare $a$ and $b$           & {\tt zcmpi(a, b)}          & ditto, {\tt b} is an {\tt int64\_t}               \\
+Compare $a$ and $b$           & {\tt zcmpu(a, b)}          & ditto, {\tt b} is a {\tt uint64\_t}               \\
 Compare $\ab{a}$ and $\ab{b}$ & {\tt zcmpmag(a, b)}        & returns {\tt int} $\mbox{sgn}(\ab{a} - \ab{b})$   \\
 \\
 
