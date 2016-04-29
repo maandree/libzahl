@@ -32,10 +32,12 @@
 
 #define ZAHL_SET_SIGNUM(a, signum)        ((a)->sign = (signum))
 #define ZAHL_SET(a, b)                    do { if ((a) != (b)) zset(a, b); } while (0)
+#define ZAHL_ENSURE_SIZE(a, n)            do { if ((a)->alloced < (n)) libzahl_realloc(a, (n)); } while (0)
 #define ZAHL_TRIM(a)                      for (; (a)->used && !(a)->chars[(a)->used - 1]; (a)->used--)
 #define ZAHL_TRIM_NONZERO(a)              for (; !(a)->chars[(a)->used - 1]; (a)->used--)
 #define ZAHL_TRIM_AND_ZERO(a)             do { ZAHL_TRIM(a); if (!(a)->used) ZAHL_SET_SIGNUM(a, 0); } while (0)
 #define ZAHL_TRIM_AND_SIGN(a, s)          do { ZAHL_TRIM(a); ZAHL_SET_SIGNUM(a, (a)->used ? (s) : 0); } while (0)
+#define ZAHL_SWAP(a, b, t, m)             ((t)->m = (a)->m, (a)->m = (b)->m, (b)->m = (t)->m)
 
 
 #if defined(__GNUC__) || defined(__clang__)
@@ -72,3 +74,20 @@ struct zahl {
         size_t alloced;
         zahl_char_t *chars;
 };
+
+
+void libzahl_realloc(struct zahl *, size_t);
+
+static inline void
+libzahl_memcpy(zahl_char_t *restrict d, const zahl_char_t *restrict s, register size_t n)
+{
+	while (n--)
+		d[n] = s[n];
+}
+
+static inline void
+libzahl_memset(zahl_char_t *a, register zahl_char_t v, register size_t n)
+{
+	while (n--)
+		a[n] = v;
+}

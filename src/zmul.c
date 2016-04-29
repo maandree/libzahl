@@ -53,8 +53,8 @@ zmul_impl(z_t a, z_t b, z_t c)
 	zinit_temp(c_high);
 	zinit_temp(c_low);
 
-	zsplit(b_high, b_low, b, m2);
-	zsplit(c_high, c_low, c, m2);
+	zsplit_pz(b_high, b_low, b, m2);
+	zsplit_pz(c_high, c_low, c, m2);
 
 
 	zmul_impl(z0, b_low, c_low);

@@ -105,11 +105,12 @@ extern void *libzahl_temp_allocation;
 
 #define SET_SIGNUM(a, signum)        ZAHL_SET_SIGNUM(a, signum)
 #define SET(a, b)                    ZAHL_SET(a, b)
-#define ENSURE_SIZE(a, n)            do { if ((a)->alloced < (n)) libzahl_realloc(a, (n)); } while (0)
+#define ENSURE_SIZE(a, n)            ZAHL_ENSURE_SIZE(a, n)
 #define TRIM(a)                      ZAHL_TRIM(a)
 #define TRIM_NONZERO(a)              ZAHL_TRIM_NONZERO(a)
 #define TRIM_AND_ZERO(a)             ZAHL_TRIM_AND_ZERO(a)
 #define TRIM_AND_SIGN(a, s)          ZAHL_TRIM_AND_SIGN(a, s)
+#define SWAP(a, b, t, m)             ((t)->m = (a)->m, (a)->m = (b)->m, (b)->m = (t)->m)
 #define MIN(a, b)                    ((a) < (b) ? (a) : (b))
 #define MAX(a, b)                    ((a) > (b) ? (a) : (b))
 #define znegative(a)                 (zsignum(a) < 0)
@@ -120,8 +121,9 @@ extern void *libzahl_temp_allocation;
 #define zpositive2(a, b)             (zsignum(a) + zsignum(b) == 2)
 #define zzero2(a, b)                 (!(zsignum(a) | zsignum(b)))
 #define zmemmove(d, s, n)            memmove((d), (s), (n) * sizeof(zahl_char_t))
+#define zmemcpy(d, s, n)             libzahl_memcpy(d, s, n)
+#define zmemset(a, v, n)             libzahl_memset(a, v, n)
 
-void libzahl_realloc(z_t a, size_t need);
 void zmul_impl(z_t a, z_t b, z_t c);
 void zsqr_impl(z_t a, z_t b);
 
@@ -149,20 +151,6 @@ libzahl_memfailure(void)
 	if (!errno) /* sigh... */
 		errno = ENOENT;
 	libzahl_failure(errno);
-}
-
-static inline void
-zmemcpy(zahl_char_t *restrict d, const zahl_char_t *restrict s, register size_t n)
-{
-	while (n--)
-		d[n] = s[n];
-}
-
-static inline void
-zmemset(zahl_char_t *a, register zahl_char_t v, register size_t n)
-{
-	while (n--)
-		a[n] = v;
 }
 
 /*
@@ -216,6 +204,17 @@ libzahl_add_overflow(zahl_char_t *rp, zahl_char_t a, zahl_char_t b)
 	return carry;
 }
 #endif
+
+static inline void
+zsplit_pz(z_t high, z_t low, z_t a, size_t delim)
+{
+	if (unlikely(zzero(a))) {
+		SET_SIGNUM(high, 0);
+		SET_SIGNUM(low, 0);
+	} else {
+		zsplit(high, low, a, delim);
+	}
+}
 
 static inline void
 zrsh_taint(z_t a, size_t bits)

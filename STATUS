@@ -16,7 +16,7 @@ zadd_unsigned ........... fastest (faster than all others' zadd)
 zsub_unsigned ........... fastest (faster than all others' zsub)
 zadd .................... 87 % of tomsfastmath, 83 % libtommath, 80 % of hebimath
 zsub .................... 97 % of tomsfastmath, 95 % hebimath, 93 % of libtommath
-zand .................... 93 % of gmp, 49 % of tomsfastmath
+zand .................... 49 % of tomsfastmath
 zor ..................... 36 % of tomsfastmath
 zxor .................... 51 % of tomsfastmath
 znot .................... fastest
@@ -26,16 +26,16 @@ zeven_nonzero ........... fastest (shared with gmp, libtommath, and tomsfastmath
 zodd_nonzero ............ fastest (shared with gmp, libtommath, and tomsfastmath)
 zzero ................... fastest (shared with gmp and libtommath)
 zsignum ................. fastest (shared with gmp)
-zbits ................... gmp is faster, because of bug in libzahl
-zlsb .................... fastest (shared with gmp)
+zbits ................... fastest
+zlsb .................... fastest
 zswap ................... fastest
 zlsh .................... fastest
 zrsh .................... fastest
 ztrunc(a, b, c) ......... fastest
 ztrunc(a, a, b) ......... fastest
-zsplit .................. 95 % of gmp
-zcmpmag ................. gmp is faster
-zcmp .................... 94 % of tomsfastmath, 81 % of hebimath, gmp is even faster (zcmpmag)
+zsplit .................. fastest
+zcmpmag ................. fastest
+zcmp .................... 94 % of tomsfastmath, 81 % of hebimath (zcmpmag)
 zcmpi ................... fastest
 zcmpu ................... fastest
 zbset(a, b, 1) .......... fastest
@@ -44,8 +44,8 @@ zbset(a, b, 0) .......... fastest
 zbset(a, a, 0) .......... fastest
 zbset(a, b, -1) ......... fastest
 zbset(a, a, -1) ......... fastest
-zbtest .................. fastest (shared with gmp)
-zgcd .................... 26 % of gmp (zcmpmag)
+zbtest .................. fastest
+zgcd .................... 17 % of gmp (zcmpmag)
 zmul .................... slowest
 zsqr .................... slowest (zmul)
 zmodmul(big mod) ........ slowest ((zmul, zmod))

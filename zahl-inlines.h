@@ -14,19 +14,12 @@ ZAHL_INLINE void zneg(z_t a, z_t b)   { ZAHL_SET(a, b); a->sign = -a->sign; }
 ZAHL_INLINE void
 zswap(z_t a, z_t b)
 {
+	/* Almost three times faster than the naïve method. */
 	z_t t;
-	t->sign = a->sign;
-	a->sign = b->sign;
-	b->sign = t->sign;
-	t->used = b->used;
-	b->used = a->used;
-	a->used = t->used;
-	t->alloced = a->alloced;
-	a->alloced = b->alloced;
-	b->alloced = t->alloced;
-	t->chars = b->chars;
-	b->chars = a->chars;
-	a->chars = t->chars;
+	ZAHL_SWAP(a, b, t, sign);
+	ZAHL_SWAP(b, a, t, used);
+	ZAHL_SWAP(a, b, t, alloced);
+	ZAHL_SWAP(b, a, t, chars);
 }
 
 
@@ -39,6 +32,20 @@ zseti(z_t a, int64_t b)
 		zsetu(a, (uint64_t)-b);
 		ZAHL_SET_SIGNUM(a, -1);
 	}
+}
+
+
+ZAHL_INLINE void
+zsetu(z_t a, uint64_t b)
+{
+	if (!b) {
+		ZAHL_SET_SIGNUM(a, 0);
+		return;
+	}
+	ZAHL_ENSURE_SIZE(a, 1);
+	ZAHL_SET_SIGNUM(a, 1);
+	a->chars[0] = (zahl_char_t)b;
+	a->used = 1;
 }
 
 
@@ -140,10 +147,6 @@ zcmpi(z_t a, int64_t b)
 }
 
 
-void zbset_impl_set(z_t a, size_t bit);
-void zbset_impl_clear(z_t a, size_t bit);
-void zbset_impl_flip(z_t a, size_t bit);
-
 ZAHL_INLINE void
 zbset(z_t a, z_t b, size_t bit, int action)
 {
@@ -174,11 +177,11 @@ fallback:
 #endif
 
 	if (action > 0)
-		zbset_impl_set(a, bit);
+		zbset_ll_set(a, bit);
 	else if (action < 0)
-		zbset_impl_flip(a, bit);
+		zbset_ll_flip(a, bit);
 	else
-		zbset_impl_clear(a, bit);
+		zbset_ll_clear(a, bit);
 }
 
 
@@ -195,4 +198,31 @@ zbtest(z_t a, size_t bit)
 
 	bit &= ZAHL_BITS_IN_LAST_CHAR(bit);
 	return (a->chars[chars] >> bit) & 1;
+}
+
+
+ZAHL_INLINE void
+zsplit(z_t high, z_t low, z_t a, size_t delim)
+{
+	if (ZAHL_UNLIKELY(high == a)) {
+		ztrunc(low, a, delim);
+		zrsh(high, a, delim);
+	} else {
+		zrsh(high, a, delim);
+		ztrunc(low, a, delim);
+	}
+}
+
+
+ZAHL_INLINE size_t
+zsave(z_t a, void *buffer)
+{
+	if (ZAHL_LIKELY(buffer)) {
+		char *buf = buffer;
+		*((int *)buf)    = a->sign, buf += sizeof(int);
+		*((size_t *)buf) = a->used, buf += sizeof(size_t);
+		if (ZAHL_LIKELY(!zzero(a)))
+			libzahl_memcpy((zahl_char_t *)buf, a->chars, a->used);
+	}
+	return sizeof(int) + sizeof(size_t) + (zzero(a) ? 0 : a->used * sizeof(zahl_char_t));
 }

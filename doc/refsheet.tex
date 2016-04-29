@@ -106,10 +106,10 @@ Get string length of $a$      & {\tt zstr\_length(a, b)}   & returns {\tt size\_
 
 \textbf{Marshallisation}      & {}                         & {}                                                \\
 Marshal $a$ into $b$          & {\tt zsave(a, b)}          & returns {\tt size\_t} number of saved bytes,      \\
-{}                            & {}                         & $~~~~~$ {\tt b} is a {\tt char *\_t}              \\
+{}                            & {}                         & $~~~~~$ {\tt b} is a {\tt void *\_t}              \\
 Get marshal-size of $a$       & {\tt zsave(a, NULL)}       & returns {\tt size\_t}                             \\
 Unmarshal $a$ from $b$        & {\tt zload(a, b)}          & returns {\tt size\_t} number of read bytes,       \\
-{}                            & {}                         & $~~~~~$ {\tt b} is a {\tt const char *\_t}        \\
+{}                            & {}                         & $~~~~~$ {\tt b} is a {\tt const void *\_t}        \\
 \\
 
 \textbf{Number theory}        & {}                         & {}                                                \\

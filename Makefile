@@ -2,8 +2,8 @@ include config.mk
 
 HDR_PUBLIC =\
 	zahl.h\
-	zahl-internals.h\
-	zahl-inlines.h
+	zahl-inlines.h\
+	zahl-internals.h
 
 HDR_PRIVATE =\
 	src/internals.h
@@ -33,12 +33,9 @@ FUN =\
 	zptest\
 	zrand\
 	zrsh\
-	zsave\
 	zset\
 	zsets\
-	zsetu\
 	zsetup\
-	zsplit\
 	zsqr\
 	zstr\
 	zstr_length\
@@ -48,24 +45,27 @@ FUN =\
 	zxor
 
 INLINE_FUN =\
-	zinit\
-	zswap\
-	zeven\
-	zodd\
-	zeven_nonzero\
-	zodd_nonzero\
-	zzero\
-	zsignum\
 	zabs\
-	zneg\
-	zlsb\
 	zbits\
-	zseti\
+	zbtest\
 	zcmp\
 	zcmpi\
 	zcmpmag\
 	zcmpu\
-	zbtest
+	zeven\
+	zeven_nonzero\
+	zinit\
+	zlsb\
+	zneg\
+	zodd\
+	zodd_nonzero\
+	zsave\
+	zseti\
+	zsetu\
+	zsignum\
+	zsplit\
+	zswap\
+	zzero
 
 DOC =\
 	refsheet.pdf

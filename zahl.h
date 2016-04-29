@@ -66,14 +66,14 @@ void zunsetup(void);                    /* Free resources used by libzahl */
 ZAHL_INLINE void zinit(z_t);            /* Prepare a for use. */
 ZAHL_INLINE void zswap(z_t, z_t);       /* (a, b) := (b, a) */
 void zfree(z_t);                        /* Free resources in a. */
-size_t zsave(z_t, void *);              /* Store a into b (if !!b), and return number of written bytes. */
+ZAHL_INLINE size_t zsave(z_t, void *);  /* Store a into b (if !!b), and return number of written bytes. */
 size_t zload(z_t, const void *);        /* Restore a from b, and return number of read bytes. */
 
 
 /* Assignment functions. */
 
 void zset(z_t, z_t);                    /* a := b */
-void zsetu(z_t, uint64_t);              /* a := b */
+ZAHL_INLINE void zsetu(z_t, uint64_t);  /* a := b */
 ZAHL_INLINE void zseti(z_t, int64_t);   /* a := b */
 
 /* Comparison functions. */
@@ -119,7 +119,8 @@ void znot(z_t, z_t);                    /* a := ~b */
 void zlsh(z_t, z_t, size_t);            /* a := b << c */
 void zrsh(z_t, z_t, size_t);            /* a := b >> c */
 void ztrunc(z_t, z_t, size_t);          /* a := b & ((1 << c) - 1) */
-void zsplit(z_t, z_t, z_t, size_t);     /* a := c >> d, b := c - (a << d) */
+ZAHL_INLINE void zsplit(z_t, z_t, z_t, size_t);
+                                        /* a := c >> d, b := c - (a << d) */
 ZAHL_INLINE int zbtest(z_t, size_t);    /* (a >> b) & 1 */
 ZAHL_INLINE size_t zlsb(z_t);           /* Index of first set bit, SIZE_MAX if none are set. */
 ZAHL_INLINE size_t zbits(z_t);          /* ⌊log₂ |a|⌋ + 1, 1 if a = 0 */
@@ -162,6 +163,14 @@ size_t zstr_length(z_t, unsigned long long int);
 
 enum zerror zerror(const char **);      /* Return the current error code, and unless !a, a description in *a. */
 void zperror(const char *);             /* Identical to perror(3p) except it supports libzahl errors. */
+
+
+
+/* Low-level functions. [Do not count on these to be retained between different versions of libzahl.] */
+
+void zbset_ll_set(z_t, size_t);         /* zbset(a, a, b, 1) */
+void zbset_ll_clear(z_t, size_t);       /* zbset(a, a, b, 0) */
+void zbset_ll_flip(z_t, size_t);        /* zbset(a, a, b, -1) */
 
 
 

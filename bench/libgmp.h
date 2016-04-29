@@ -1,3 +1,5 @@
+#define __GMP_NO_ATTRIBUTE_CONST_PURE
+
 #include <gmp.h>
 
 #include <setjmp.h>
