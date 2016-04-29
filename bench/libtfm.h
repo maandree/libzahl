@@ -24,7 +24,7 @@ static z_t _0, _1, _a, _b;
 static int _tmp, error;
 static jmp_buf jbuf;
 
-#ifdef UNSAFE
+#ifdef ZAHL_UNSAFE
 # define try(expr) (expr)
 #else
 # define try(expr) do if ((error = (expr))) longjmp(jbuf, 1); while (0)

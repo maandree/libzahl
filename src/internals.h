@@ -97,7 +97,7 @@ extern void *libzahl_temp_allocation;
 #define likely(expr)                 ZAHL_LIKELY(expr)
 #define unlikely(expr)               ZAHL_UNLIKELY(expr)
 
-#if defined(UNSAFE)
+#if defined(ZAHL_UNSAFE)
 # define check(expr)                 0
 #else
 # define check(expr)                 unlikely(expr)

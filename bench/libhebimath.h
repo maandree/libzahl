@@ -29,7 +29,7 @@ static jmp_buf jbuf;
 #define UNIFORM            1
 #define MODUNIFORM         2
 
-#ifdef UNSAFE
+#ifdef ZAHL_UNSAFE
 # define try(expr) (expr)
 #else
 # define try(expr) do if ((error = (expr))) longjmp(jbuf, 1); while (0)

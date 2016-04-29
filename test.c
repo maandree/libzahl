@@ -787,7 +787,7 @@ main(void)
 	assert((zseti(a, 11), zptest(0, a, 100)), != NONPRIME);
 	assert((zseti(a, 101), zptest(0, a, 100)), != NONPRIME);
 
-#if defined(UNSAFE)
+#if defined(ZAHL_UNSAFE)
 	(void) env2;
 #else
 	assert_nr(zdivmod(a, b, _0, _0));

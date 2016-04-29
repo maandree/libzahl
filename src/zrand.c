@@ -209,7 +209,7 @@ zrand(z_t r, enum zranddev dev, enum zranddist dist, z_t n)
 		break;
 
 	default:
-#if !defined(UNSAFE)
+#if !defined(ZAHL_UNSAFE)
 		libzahl_failure(EINVAL);
 #endif
 		break;
