@@ -11,7 +11,7 @@ ZAHL_INLINE void zabs(z_t a, z_t b)   { ZAHL_SET(a, b); a->sign = !!a->sign; }
 ZAHL_INLINE void zneg(z_t a, z_t b)   { ZAHL_SET(a, b); a->sign = -a->sign; }
 
 
-ZAHL_INLINE void
+ZAHL_INLINE ZAHL_O3 void
 zswap(z_t a, z_t b)
 {
 	/* Almost three times faster than the naïve method. */
@@ -23,7 +23,7 @@ zswap(z_t a, z_t b)
 }
 
 
-ZAHL_INLINE void
+ZAHL_INLINE ZAHL_O3 void
 zseti(z_t a, int64_t b)
 {
 	if (ZAHL_UNLIKELY(b >= 0)) {
@@ -35,7 +35,7 @@ zseti(z_t a, int64_t b)
 }
 
 
-ZAHL_INLINE void
+ZAHL_INLINE ZAHL_O3 void
 zsetu(z_t a, uint64_t b)
 {
 	if (!b) {
@@ -49,7 +49,7 @@ zsetu(z_t a, uint64_t b)
 }
 
 
-ZAHL_INLINE size_t
+ZAHL_INLINE ZAHL_O3 size_t
 zlsb(z_t a)
 {
 	size_t i = 0;
@@ -62,7 +62,7 @@ zlsb(z_t a)
 }
 
 
-ZAHL_INLINE size_t
+ZAHL_INLINE ZAHL_O3 size_t
 zbits(z_t a)
 {
 	size_t rc;
@@ -75,7 +75,7 @@ zbits(z_t a)
 }
 
 
-ZAHL_INLINE int
+ZAHL_INLINE ZAHL_O3 int
 zcmpmag(z_t a, z_t b)
 {
 	size_t i, j;
@@ -103,7 +103,7 @@ zcmpmag(z_t a, z_t b)
 }
 
 
-ZAHL_INLINE int
+ZAHL_INLINE ZAHL_O3 int
 zcmp(z_t a, z_t b)
 {
 	if (zsignum(a) != zsignum(b))
@@ -112,7 +112,7 @@ zcmp(z_t a, z_t b)
 }
 
 
-ZAHL_INLINE int
+ZAHL_INLINE ZAHL_O3 int
 zcmpu(z_t a, uint64_t b)
 {
 	extern z_t libzahl_tmp_cmp;
@@ -125,7 +125,7 @@ zcmpu(z_t a, uint64_t b)
 }
 
 
-ZAHL_INLINE int
+ZAHL_INLINE ZAHL_O3 int
 zcmpi(z_t a, int64_t b)
 {
 	extern z_t libzahl_tmp_cmp;
@@ -147,7 +147,7 @@ zcmpi(z_t a, int64_t b)
 }
 
 
-ZAHL_INLINE void
+ZAHL_INLINE ZAHL_O3 void
 zbset(z_t a, z_t b, size_t bit, int action)
 {
 	if (ZAHL_UNLIKELY(a != b))
@@ -185,7 +185,7 @@ fallback:
 }
 
 
-ZAHL_INLINE int
+ZAHL_INLINE ZAHL_O3 int
 zbtest(z_t a, size_t bit)
 {
 	size_t chars;
@@ -201,7 +201,7 @@ zbtest(z_t a, size_t bit)
 }
 
 
-ZAHL_INLINE void
+ZAHL_INLINE ZAHL_O3 void
 zsplit(z_t high, z_t low, z_t a, size_t delim)
 {
 	if (ZAHL_UNLIKELY(high == a)) {
@@ -214,7 +214,7 @@ zsplit(z_t high, z_t low, z_t a, size_t delim)
 }
 
 
-ZAHL_INLINE size_t
+ZAHL_INLINE ZAHL_O3 size_t
 zsave(z_t a, void *buffer)
 {
 	if (ZAHL_LIKELY(buffer)) {

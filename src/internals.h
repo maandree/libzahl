@@ -18,31 +18,13 @@
 #define BITS_IN_LAST_CHAR(bits)      ZAHL_BITS_IN_LAST_CHAR(bits)
 #define TRUNCATE_TO_CHAR(bits)       ZAHL_TRUNCATE_TO_CHAR(bits)
 
-#if defined(__GNUC__)
-# define O0     __attribute__((optimize("O0")))
-# define O1     __attribute__((optimize("O1")))
-# define O2     __attribute__((optimize("O2")))
-# define O3     __attribute__((optimize("O3")))
-# define Ofast  __attribute__((optimize("Ofast")))
-# define Os     __attribute__((optimize("Os")))
-# define Oz     __attribute__((optimize("Os")))
-#elif defined(__clang__)
-# define O0     __attribute__((optnone))
-# define O1     /* Don't know how. */
-# define O2     /* Don't know how. */
-# define O3     /* Don't know how. */
-# define Ofast  /* Don't know how. */
-# define Os     /* Don't know how. */
-# define Oz     /* Don't know how. */
-#else
-# define O0     /* Don't know how. */
-# define O1     /* Don't know how. */
-# define O2     /* Don't know how. */
-# define O3     /* Don't know how. */
-# define Ofast  /* Don't know how. */
-# define Os     /* Don't know how. */
-# define Oz     /* Don't know how. */
-#endif
+#define O0     ZAHL_O0
+#define O1     ZAHL_O1
+#define O2     ZAHL_O2
+#define O3     ZAHL_O3
+#define Ofast  ZAHL_Ofast
+#define Os     ZAHL_Os
+#define Oz     ZAHL_Oz
 
 #define LIST_TEMPS\
 	X(libzahl_tmp_cmp, 1)\

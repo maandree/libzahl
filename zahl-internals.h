@@ -19,6 +19,33 @@
 #endif
 
 
+#if defined(__GNUC__) && !defined(__clang__)
+# define ZAHL_O0     __attribute__((optimize("O0")))
+# define ZAHL_O1     __attribute__((optimize("O1")))
+# define ZAHL_O2     __attribute__((optimize("O2")))
+# define ZAHL_O3     __attribute__((optimize("O3")))
+# define ZAHL_Ofast  __attribute__((optimize("Ofast")))
+# define ZAHL_Os     __attribute__((optimize("Os")))
+# define ZAHL_Oz     __attribute__((optimize("Os")))
+#elif defined(__clang__)
+# define ZAHL_O0     __attribute__((optnone))
+# define ZAHL_O1     /* Don't know how. */
+# define ZAHL_O2     /* Don't know how. */
+# define ZAHL_O3     /* Don't know how. */
+# define ZAHL_Ofast  /* Don't know how. */
+# define ZAHL_Os     /* Don't know how. */
+# define ZAHL_Oz     /* Don't know how. */
+#else
+# define ZAHL_O0     /* Don't know how. */
+# define ZAHL_O1     /* Don't know how. */
+# define ZAHL_O2     /* Don't know how. */
+# define ZAHL_O3     /* Don't know how. */
+# define ZAHL_Ofast  /* Don't know how. */
+# define ZAHL_Os     /* Don't know how. */
+# define ZAHL_Oz     /* Don't know how. */
+#endif
+
+
 #define ZAHL_BITS_PER_CHAR                64
 #define ZAHL_LB_BITS_PER_CHAR             6
 #define ZAHL_CHAR_MAX                     UINT64_MAX
@@ -78,14 +105,14 @@ struct zahl {
 
 void libzahl_realloc(struct zahl *, size_t);
 
-static inline void
+ZAHL_O3 static inline void
 libzahl_memcpy(zahl_char_t *restrict d, const zahl_char_t *restrict s, register size_t n)
 {
 	while (n--)
 		d[n] = s[n];
 }
 
-static inline void
+ZAHL_O3 static inline void
 libzahl_memset(zahl_char_t *a, register zahl_char_t v, register size_t n)
 {
 	while (n--)
