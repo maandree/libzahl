@@ -1,0 +1,137 @@
+\documentclass[10pt,draft]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\DeclarePairedDelimiter\ab{\lvert}{\rvert}
+\begin{document}
+
+
+{\Huge libzahl}
+\\
+
+Unless specified otherwise, all times are of type {\tt z\_t}.
+\\ \\
+
+
+\begin{tabular}{lll}
+\textbf{Initialisation}       & {}                         & {}                                                \\
+Initialise libzahl            & {\tt zsetup(env)}          & must be called before any other function is used, \\
+{}                            & {}                         & $~~~~~$ {\tt env} is a {\tt jmp\_buf} all
+                                                                     functions will {\tt longjmp}              \\
+{}                            & {}                         & $~~~~~$ to --- with value 1 --- on error          \\
+Deinitialise libzahl          & {\tt zunsetup()}           & will free any pooled memory                       \\
+Initialise $a$                & {\tt zinit(a)}             & must be called before used in any other function  \\
+Deinitialise $a$              & {\tt zfree(a)}             & must not be used again before reinitialisation    \\
+\\
+
+\textbf{Error handling}       & {}                         & {}                                                \\
+Get error code                & {\tt zerror(a)}            & returns {\tt enum zerror},
+                                                                     and stores description in                 \\
+{}                            & {}                         & $~~~~~$ {\tt const char **a}                      \\
+Print error description       & {\tt zperror(a)}           & behaves like {\tt perror(a)}, {\tt a} is a,
+                                                                     possibly {\tt NULL},                      \\
+{}                            & {}                         & $~~~~~$ {\tt const char *}                        \\
+\\
+
+\textbf{Arithmetic}           & {}                         & {}                                                \\
+$a \gets b + c$               & {\tt zadd(a, b, c)}        &                                                   \\
+$a \gets b - c$               & {\tt zsub(a, b, c)}        &                                                   \\
+$a \gets b \cdot c$           & {\tt zmul(a, b, c)}        &                                                   \\
+$a \gets b \cdot c \mod d$    & {\tt zmodmul(a, b, c, d)}  & $0 \le a < \ab{d}$                                \\
+$a \gets [b / c]$             & {\tt zdiv(a, b, c)}        & rounded towards zero                              \\
+$a \gets [c / d]$             & {\tt zdivmod(a, b, c, d)}  & rounded towards zero                              \\
+$b \gets c \mod d$            & {\tt zdivmod(a, b, c, d)}  & $0 \le b < \ab{d}$                                \\
+$a \gets b \mod c$            & {\tt zmod(a, b, c)}        & $0 \le a < \ab{c}$                                \\
+%$a \gets b / c$               & {\tt zdiv\_exact(a, b, c)} & assumes $c \vert d$                          \\  %%
+$a \gets b^2$                 & {\tt zsqr(a, b)}           &                                                   \\
+$a \gets b^2 \mod c$          & {\tt zmodsqr(a, b, c)}     & $0 \le a < \ab{c}$                                \\
+$a \gets b^2$                 & {\tt zsqr(a, b)}           &                                                   \\
+$a \gets b^c$                 & {\tt zpow(a, b, c)}        &                                                   \\
+$a \gets b^c$                 & {\tt zpowu(a, b, c)}       & {\tt c} is an {\tt unsigned long long int}        \\
+$a \gets b^c \mod d$          & {\tt zmodpow(a, b, c, d)}  & $0 \le a < \ab{d}$                                \\
+$a \gets b^c \mod d$          & {\tt zmodpowu(a, b, c, d)} & ditto, {\tt c} is an {\tt unsigned long long int} \\
+$a \gets \ab{b}$              & {\tt zabs(a, b)}           &                                                   \\
+$a \gets -b$                  & {\tt zneg(a, b)}           &                                                   \\
+\\
+
+\textbf{Assignment}           & {}                         & {}                                                \\
+$a \gets b$                   & {\tt zset(a, b)}           &                                                   \\
+$a \gets b$                   & {\tt zseti(a, b)}          & {\tt b} is a {\tt long long int}                  \\
+$a \gets b$                   & {\tt zsetu(a, b)}          & {\tt b} is an {\tt unsigned long long int}        \\
+$a \gets b$                   & {\tt zsets(a, b)}          & {\tt b} is a decimal {\tt const char *}           \\
+%$a \gets b$                   & {\tt zsets\_radix(a, b, c)} & {\tt b} is a radix $c$ {\tt const char *},  \\  %%
+%{}                            & {}                   & $~~~~~$ {\tt c} is an {\tt unsigned long long int} \\  %%
+$a \leftrightarrow b$         & {\tt zswap(a, b)}          &                                                   \\
+\\
+
+\textbf{Comparison}           & {}                         & {}                                                \\
+Compare $a$ and $b$           & {\tt zcmp(a, b)}           & returns {\tt int} $\mbox{sgn}(a - b)$             \\
+Compare $a$ and $b$           & {\tt zcmpi(a, b)}          & ditto, {\tt b} is n {\tt long long int}           \\
+Compare $a$ and $b$           & {\tt zcmpu(a, b)}          & ditto, {\tt b} is an {\tt unsigned long long int} \\
+Compare $\ab{a}$ and $\ab{b}$ & {\tt zcmpmag(a, b)}        & returns {\tt int} $\mbox{sgn}(\ab{a} - \ab{b})$   \\
+\\
+
+\end{tabular}
+\newpage
+\begin{tabular}{lll}
+
+\textbf{Bit operations}       & {}                         & {}                                                \\
+$a \gets b \wedge c$          & {\tt zand(a, b, c)}        & bitwise                                           \\
+$a \gets b \vee c$            & {\tt zor(a, b, c)}         & bitwise                                           \\
+$a \gets b \oplus c$          & {\tt zxor(a, b, c)}        & bitwise                                           \\
+$a \gets \lnot b$             & {\tt znot(a, b, c)}        & bitwise, cut at highest set bit                   \\
+$a \gets b \cdot 2^c$         & {\tt zlsh(a, b, c)}        & {\tt c} is a {\tt size\_t}                        \\
+$a \gets [b / 2^c]$           & {\tt zrsh(a, b, c)}        & ditto, rounded towards zero                       \\
+$a \gets b \mod 2^c$          & {\tt ztrunc(a, b, c)}      & ditto, {\tt a} shares signum with {\tt b}         \\
+Get index of highest set bit  & {\tt zbits(a)}             & returns {\tt size\_t}, 1 if $a = 0$               \\
+Get index of lowest set bit   & {\tt zlsb(a)}              & returns {\tt size\_t}, {\tt SIZE\_MAX} if $a = 0$ \\
+Is bit $b$ in $a$ set?        & {\tt zbtest(a, b)}         & {\tt b} is a {\tt size\_t}, returns {\tt int}     \\
+$a \gets b$, set bit $c$      & {\tt zbset(a, b, c, 1)}    & {\tt c} is a {\tt size\_t}                        \\
+$a \gets b$, clear bit $c$    & {\tt zbset(a, b, c, 0)}    & ditto                                             \\
+$a \gets b$, flip bit $c$     & {\tt zbset(a, b, c, -1)}   & ditto                                             \\
+$a \gets [c / 2^d]$           & {\tt zsplit(a, b, c, d)}   & {\tt d} is a {\tt size\_t}, rounded towards zero  \\
+$b \gets c \mod 2^d$          & {\tt zsplit(a, b, c, d)}   & ditto, {\tt b} shares signum with {\tt c}         \\
+\\
+
+\textbf{Conversion to string} & {}                         & {}                                                \\
+Convert $a$ to decimal        & {\tt zstr(a, b, c)}        & returns the resulting {\tt const char *}          \\
+{}                            & {}                         & $~~~~~$ --- {\tt b} unless {\tt b} is {\tt NULL},
+                                                                     --- {\tt c} must be                       \\
+{}                            & {}                         & $~~~~~$ either 0 or at least the length of the    \\
+{}                            & {}                         & $~~~~~$ resulting string but at most the          \\
+{}                            & {}                         & $~~~~~$ allocation size of {\tt b} minus 1        \\
+%Convert $a$ to radix $d$      & {\tt zstr\_radix(a, b, c, d)} & ditto,
+%                                                                {\tt d} is an {\tt unsigned long long int}\\  %%
+Get string length of $a$      & {\tt zstr\_length(a, b)}   & returns {\tt size\_t} length of $a$ in radix $b$  \\
+\\
+
+\textbf{Marshallisation}      & {}                         & {}                                                \\
+Marshal $a$ into $b$          & {\tt zsave(a, b)}          & returns {\tt size\_t} number of saved bytes,      \\
+{}                            & {}                         & $~~~~~$ {\tt b} is a {\tt char *\_t}              \\
+Get marshal-size of $a$       & {\tt zsave(a, NULL)}       & returns {\tt size\_t}                             \\
+Unmarshal $a$ from $b$        & {\tt zload(a, b)}          & returns {\tt size\_t} number of read bytes,       \\
+{}                            & {}                         & $~~~~~$ {\tt b} is a {\tt const char *\_t}        \\
+\\
+
+\textbf{Number theory}        & {}                         & {}                                                \\
+$a \gets \mbox{sgn}(b)$       & {\tt zsignum(a, b)}        &                                                   \\
+Is $a$ even?                  & {\tt zeven(a)}             & returns {\tt int} 1 (true) or 0 (false)           \\
+Is $a$ even?                  & {\tt zeven\_nonzero(a)}    & ditto, assumes $a \neq 0$                         \\
+Is $a$ odd?                   & {\tt zodd(a)}              & returns {\tt int} 1 (true) or 0 (false)           \\
+Is $a$ odd?                   & {\tt zodd\_nonzero(a)}     & ditto, assumes $a \neq 0$                         \\
+Is $a$ zero?                  & {\tt zzero(a)}             & returns {\tt int} 1 (true) or 0 (false)           \\
+$a \gets \gcd(c, b)$          & {\tt zgcd(a, b, c)}        & $a < 0$ iff $b < 0 \wedge c < 0$                  \\
+Is $b$ a prime?               & {\tt zptest(a, b, c)}      & {\tt c} runs of Miller--Rabin, returns            \\
+{}                            & {}                         & $~~~~~$ {\tt enum zprimality} {\tt NONPRIME} (0)  \\
+{}                            & {}                         & $~~~~~$ (and stores the witness in {\tt a} unless \\
+{}                            & {}                         & $~~~~~$ {\tt a} is {\tt NULL}),
+                                                                     {\tt PROBABLY\_PRIME} (1), or             \\
+{}                            & {}                         & $~~~~~$ {\tt PRIME} (2)                           \\
+
+\textbf{Random numbers}       & {}                         & {}                                                \\
+$a \xleftarrow{\$} \mathbb{Z}_d $ & {\tt zrand(a, b, UNIFORM, d)}
+& {\tt b} is a {\tt zranddev}, e.g. {\tt DEFAULT\_RANDOM} \\
+\\
+
+
+\end{tabular}
+\end{document}

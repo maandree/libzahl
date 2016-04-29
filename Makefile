@@ -67,6 +67,9 @@ INLINE_FUN =\
 	zcmpu\
 	zbtest
 
+DOC =\
+	refsheet.pdf
+
 HDR  = $(HDR_PUBLIC) $(HDR_PRIVATE)
 OBJ  = $(FUN:=.o) allocator.o
 MAN3 = $(FUN:=.3) $(INLINE_FUN:=.3)
@@ -115,7 +118,7 @@ CPPFLAGS += $(BENCHMARK_CPP_$(BENCHMARK_LIB))
 CFLAGS_WITHOUT_O = $$(printf '%s\n' $(CFLAGS) | sed '/^-O.*$$/d')
 
 
-all: libzahl.a
+all: libzahl.a $(DOC)
 
 .o: .c $(HDR) config.mk
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
@@ -141,6 +144,10 @@ benchmark-func: bench/benchmark-func.c bench/benchmark.h $(BENCHMARK_DEP_$(BENCH
 benchmark-zrand: bench/benchmark-zrand.c bench/benchmark.h libzahl.a
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ $^
 
+refsheet.pdf: doc/refsheet.tex
+	yes X | pdflatex doc/refsheet.tex
+	yes X | pdflatex doc/refsheet.tex
+
 check: test
 	./test
 
@@ -149,6 +156,7 @@ install: libzahl.a
 	mkdir -p -- "$(DESTDIR)$(PREFIX)/include"
 	mkdir -p -- "$(DESTDIR)$(MANPREFIX)/man3"
 	mkdir -p -- "$(DESTDIR)$(MANPREFIX)/man7"
+	mkdir -p -- "$(DESTDIR)$(DOCPREFIX)/libzahl"
 	@if test -n "$(DESTDIR)"; then \
 		cd man && test -d "$(DESTDIR)$(MANPREFIX)/man7" || \
 		(printf '\n\n!!  DESTDIR must be an absolute path.  !!\n\n\n' ; exit 1) \
@@ -157,15 +165,20 @@ install: libzahl.a
 	cp -- $(HDR_PUBLIC) "$(DESTDIR)$(PREFIX)/include"
 	cd man && cp -- $(MAN3) "$(DESTDIR)$(MANPREFIX)/man3"
 	cd man && cp -- $(MAN7) "$(DESTDIR)$(MANPREFIX)/man7"
+	cp -- $(DOC) "$(DESTDIR)$(DOCPREFIX)/libzahl"
 
 uninstall:
 	-rm -- "$(DESTDIR)$(EXECPREFIX)/lib/libzahl.a"
 	-cd -- "$(DESTDIR)$(PREFIX)/include" && rm $(HDR_PUBLIC)
 	-cd -- "$(DESTDIR)$(MANPREFIX)/man3" && rm $(MAN3)
 	-cd -- "$(DESTDIR)$(MANPREFIX)/man7" && rm $(MAN7)
+	-cd -- "$(DESTDIR)$(DOCPREFIX)/libzahl" && rm $(DOC)
+	-rmdir -- "$(DESTDIR)$(DOCPREFIX)/libzahl"
 
 clean:
 	-rm -- *.o *.su *.a *.so test test-random.c 2>/dev/null
 	-rm -- benchmark benchmark-zrand benchmark-func 2>/dev/null
+	-rm -- *.aux *.log *.out 2>/dev/null
+	-rm -- refsheet.pdf refsheet.dvi refsheet.ps 2>/dev/null
 
 .PHONY: all check clean install uninstall

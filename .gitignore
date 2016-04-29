@@ -14,3 +14,9 @@
 /benchmark
 /benchmark-zrand
 /benchmark-func
+*.aux
+*.log
+*.out
+*.pdf
+*.ps
+*.dvi

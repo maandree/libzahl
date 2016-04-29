@@ -3,6 +3,7 @@ VERSION = 1.1
 PREFIX = /usr/local
 EXECPREFIX = $(PREFIX)
 MANPREFIX = $(PREFIX)/share/man
+DOCPREFIX = $(PREFIX)/share/doc
 
 CC = cc
 AR = ar
