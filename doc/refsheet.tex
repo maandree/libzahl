@@ -137,7 +137,7 @@ Unless specified otherwise, all times are of type {\tt z\_t}.
 \entry    {zodd(a)}           {Is $a$ odd?}            {returns {\tt int} 1 (true) or 0 (false)}
 \entry    {zodd\_nonzero(a)}  {Is $a$ odd?}            {ditto, assumes $a \neq 0$}
 \entry    {zzero(a)}          {Is $a$ zero?}           {returns {\tt int} 1 (true) or 0 (false)}
-\entry    {zgcd(a, b, c)}     {$a \gets \gcd(c, b)$}   {$a < 0$ iff $b < 0 \wedge c < 0$}
+\entry    {zgcd(a, b, c)}     {$a \gets \gcd(c, b)$}   {$a < 0$ if $b < 0 \wedge c < 0$}
 \entryFive{zptest(a, b, c)}   {Is $b$ a prime?}        {{\tt c} runs of Miller--Rabin, returns}
                                                        {{\tt enum zprimality} {\tt NONPRIME} (0)}
                                                        {(and stores the witness in {\tt a} unless}
