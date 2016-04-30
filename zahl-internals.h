@@ -51,7 +51,7 @@
 #define ZAHL_BITS_PER_CHAR                64
 #define ZAHL_LB_BITS_PER_CHAR             6
 #define ZAHL_CHAR_MAX                     UINT64_MAX
-/* Note: These, cannot be changed willy-nilly, some code depends
+/* Note: These cannot be changed willy-nilly, some code depends
  * on them, be cause being flexible would just be too painful. */
 
 
