@@ -79,13 +79,12 @@ zsub_unsigned(z_t a, z_t b, z_t c)
 void
 zsub_nonnegative_assign(z_t a, z_t b)
 {
-	if (unlikely(zzero(b))) {
+	if (unlikely(zzero(b)))
 		zabs(a, a);
-	} else if (unlikely(!zcmpmag(a, b))) {
+	else if (unlikely(!zcmpmag(a, b)))
 		SET_SIGNUM(a, 0);
-	} else {
+	else
 		zsub_impl(a, b, b->used);
-	}
 }
 
 void

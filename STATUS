@@ -14,11 +14,11 @@ zabs(a, b) .............. fastest
 zabs(a, a) .............. tomsfastmath is faster
 zadd_unsigned ........... fastest (faster than all others' zadd)
 zsub_unsigned ........... fastest (faster than all others' zsub)
-zadd .................... 94 % of tomsfastmath, 90 % libtommath, 86 % of hebimath
-zsub .................... 97 % of tomsfastmath, 95 % hebimath, 93 % of libtommath
-zand .................... 55 % of tomsfastmath
-zor ..................... 46 % of tomsfastmath
-zxor .................... 57 % of tomsfastmath
+zadd .................... fastest
+zsub .................... 98 % of libtommath
+zand .................... 77 % of tomsfastmath
+zor ..................... 65 % of tomsfastmath
+zxor .................... 87 % of tomsfastmath
 znot .................... fastest
 zeven ................... fastest (shared with gmp, libtommath, and tomsfastmath)
 zodd .................... fastest (shared with gmp, libtommath, and tomsfastmath)

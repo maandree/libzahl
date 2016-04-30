@@ -33,7 +33,6 @@ FUN =\
 	zptest\
 	zrand\
 	zrsh\
-	zset\
 	zsets\
 	zsetup\
 	zsqr\
@@ -60,6 +59,7 @@ INLINE_FUN =\
 	zodd\
 	zodd_nonzero\
 	zsave\
+	zset\
 	zseti\
 	zsetu\
 	zsignum\

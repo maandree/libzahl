@@ -2,12 +2,25 @@
 #include "internals.h"
 
 
-static inline O2 void
-zor_impl(zahl_char_t *restrict a, const zahl_char_t *restrict b, size_t n)
+O2 static inline void
+zor_impl_3(register zahl_char_t *restrict a,
+	    register const zahl_char_t *restrict b, size_t n)
 {
 	size_t i;
 	for (i = 0; i < n; i++)
 		a[i] |= b[i];
+}
+
+static inline void
+zor_impl_5(register zahl_char_t *restrict a,
+	    register const zahl_char_t *restrict b, size_t n,
+	    register const zahl_char_t *restrict c, size_t m)
+{
+	size_t i;
+	for (i = 0; i < n; i++)
+		a[i] = b[i] | c[i];
+	for (; i < m; i++)
+		a[i] = c[i];
 }
 
 void
@@ -23,25 +36,21 @@ zor(z_t a, z_t b, z_t c)
 		return;
 	}
 
-	m = MAX(b->used, c->used);
-	n = b->used + c->used - m;
-
+	MIN_MAX_1(n, m, b->used, c->used);
 	ENSURE_SIZE(a, m);
 
 	if (a == b) {
+		zor_impl_3(a->chars, c->chars, n);
 		if (a->used < c->used)
-			zmemcpy(a->chars + n, c->chars + n, m - n);
-		zor_impl(a->chars, c->chars, n);
+			zmemcpy_range(a->chars, c->chars, n, m);
 	} else if (unlikely(a == c)) {
+		zor_impl_3(a->chars, b->chars, n);
 		if (a->used < b->used)
-			zmemcpy(a->chars + n, b->chars + n, m - n);
-		zor_impl(a->chars, b->chars, n);
+			zmemcpy_range(a->chars, b->chars, n, m);
 	} else  if (m == b->used) {
-		zmemcpy(a->chars, b->chars, m);
-		zor_impl(a->chars, c->chars, n);
+		zor_impl_5(a->chars, c->chars, n, b->chars, m);
 	} else {
-		zmemcpy(a->chars, c->chars, m);
-		zor_impl(a->chars, b->chars, n);
+		zor_impl_5(a->chars, b->chars, n, c->chars, m);
 	}
 
 	a->used = m;

@@ -19,6 +19,20 @@ ZAHL_INLINE void zabs(z_t a, z_t b)   { ZAHL_SET(a, b); a->sign = !!a->sign; }
 
 
 ZAHL_INLINE void
+zset(z_t a, z_t b)
+{
+	if (ZAHL_UNLIKELY(b->sign == 0)) {
+		a->sign = 0;
+	} else {
+		a->sign = b->sign;
+		a->used = b->used;
+		ZAHL_ENSURE_SIZE(a, b->used);
+		libzahl_memcpy(a->chars, b->chars, b->used);
+	}
+}
+
+
+ZAHL_INLINE void
 zswap(z_t a, z_t b)
 {
 	/* Almost three times faster than the naïve method. */

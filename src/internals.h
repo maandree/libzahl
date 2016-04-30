@@ -94,6 +94,8 @@ extern void *libzahl_temp_allocation;
 #define SWAP(a, b, t, m)             ((t)->m = (a)->m, (a)->m = (b)->m, (b)->m = (t)->m)
 #define MIN(a, b)                    ((a) < (b) ? (a) : (b))
 #define MAX(a, b)                    ((a) > (b) ? (a) : (b))
+#define MIN_MAX_1(min, max, a, b)    ((min) = MIN(a, b), (max) = MAX(a, b))
+#define MIN_MAX_2(min, max, a, b)    ((min) = (a) + (b) - ((max) = MAX(a, b)))
 #define znegative(a)                 (zsignum(a) < 0)
 #define znegative1(a, b)             ((zsignum(a) | zsignum(b)) < 0)
 #define znegative2(a, b)             ((zsignum(a) & zsignum(b)) < 0)
@@ -112,6 +114,13 @@ static inline int
 zzero1(z_t a, z_t b)
 {
 	return zzero(a) || zzero(b);
+}
+
+O2 static inline void
+zmemcpy_range(register zahl_char_t *restrict d, register const zahl_char_t *restrict s, size_t i, size_t n)
+{
+	for (; i < n; i++)
+		d[i] = s[i];
 }
 
 static void

@@ -72,9 +72,10 @@ size_t zload(z_t, const void *);        /* Restore a from b, and return number o
 
 /* Assignment functions. */
 
-void zset(z_t, z_t);                    /* a := b */
+ZAHL_INLINE void zset(z_t, z_t);        /* a := b */
 ZAHL_INLINE void zsetu(z_t, uint64_t);  /* a := b */
 ZAHL_INLINE void zseti(z_t, int64_t);   /* a := b */
+
 
 /* Comparison functions. */
 
