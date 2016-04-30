@@ -83,8 +83,8 @@ you are better of with the regular addition (zadd).
 
 Also note, TomsFastMath does not support arbitrarily large
 integers, which gives is a significant performance advantage.
-Furthermore, not failure check is done with GMP. Additionally,
-hebimath is some functions that are not working correctly;
+Furthermore, no failure check is done with GMP. Additionally,
+hebimath has some functions that are not working correctly;
 those have been excluded from the comparison.
 
 Also note, NOT does not mean the same thing in all libraries,
