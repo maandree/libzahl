@@ -44,11 +44,15 @@
 # define ZAHL_Os     /* Don't know how. */
 # define ZAHL_Oz     /* Don't know how. */
 #endif
+/* Mostly ZAHL_O2, but sometimes ZAHL_O3, are useful.
+ * But note, often it optimal to not use any of them. */
 
 
 #define ZAHL_BITS_PER_CHAR                64
 #define ZAHL_LB_BITS_PER_CHAR             6
 #define ZAHL_CHAR_MAX                     UINT64_MAX
+/* Note: These, cannot be changed willy-nilly, some code depends
+ * on them, be cause being flexible would just be too painful. */
 
 
 #define ZAHL_FLOOR_BITS_TO_CHARS(bits)    ((bits) >> ZAHL_LB_BITS_PER_CHAR)
