@@ -45,7 +45,7 @@ This function will either return:
 .TP
 .B NONPRIME
 .I questioned
-is certainly a composite number.
+is certainly a nonprime number (composite).
 .TP
 .B PROBABLY_PRIME
 .I questioned
@@ -70,5 +70,11 @@ the chance that
 .B PRIME
 is returned.
 .IR witness .
+.SH RATIONALE
+.B NONPRIME
+is called just that, rather than COMPOSITE,
+because negative integers, zero, and one are
+neither prime nor composite. (One was historically
+a prime, we do not recognise it as such.)
 .SH SEE ALSO
 .BR zgcd (3)
