@@ -100,7 +100,7 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 \entry{znot(a, b, c)}      {$a \gets \lnot b$}            {bitwise, cut at highest set bit}
 \entry{zlsh(a, b, c)}      {$a \gets b \cdot 2^c$}        {{\tt c} is a \size{}}
 \entry{zrsh(a, b, c)}      {$a \gets [b / 2^c]$}          {ditto, rounded towards zero}
-\entry{ztrunc(a, b, c)}    {$a \gets b \mod 2^c$}         {ditto, {\tt a} shares signum with {\tt b}}
+\entry{ztrunc(a, b, c)}    {$a \gets b \mod 2^c$}         {ditto, $a$ shares signum with $b$}
 \entry{zbits(a)}           {Get index of highest set bit} {returns \size{}, 1 if $a = 0$}
 \entry{zlsb(a)}            {Get index of lowest set bit}  {returns \size{}, {\tt SIZE\_MAX} if $a = 0$}
 \entry{zbtest(a, b)}       {Is bit $b$ in $a$ set?}       {{\tt b} is a \size{}, returns {\tt int}}
@@ -108,13 +108,13 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 \entry{zbset(a, b, c, 0)}  {$a \gets b$, clear bit $c$}   {ditto}
 \entry{zbset(a, b, c, -1)} {$a \gets b$, flip bit $c$}    {ditto}
 \entry{zsplit(a, b, c, d)} {$a \gets [c / 2^d]$}          {{\tt d} is a \size{}, rounded towards zero}
-\entry{zsplit(a, b, c, d)} {$b \gets c \mod 2^d$}         {ditto, {\tt b} shares signum with {\tt c}}
+\entry{zsplit(a, b, c, d)} {$b \gets c \mod 2^d$}         {ditto, $b$ shares signum with $c$}
 \\
 
 \textbf{Conversion to string} \\
 \entryFive{zstr(a, b, c)}           {Convert $a$ to decimal}   {returns the resulting {\tt const char *}}
                                                                {--- {\tt b} unless {\tt b} is
-                                                                    {\tt NULL}, --- {\tt c} must be}
+                                                                    {\tt NULL}, --- $c$ must be}
                                                                {either 0 or at least the length of the}
                                                                {resulting string but at most the}
                                                                {allocation size of {\tt b} minus 1}
@@ -138,7 +138,7 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 \entry    {zodd\_nonzero(a)}  {Is $a$ odd?}            {ditto, assumes $a \neq 0$}
 \entry    {zzero(a)}          {Is $a$ zero?}           {returns {\tt int} 1 (true) or 0 (false)}
 \entry    {zgcd(a, b, c)}     {$a \gets \gcd(c, b)$}   {$a < 0$ if $b < 0 \wedge c < 0$}
-\entryFive{zptest(a, b, c)}   {Is $b$ a prime?}        {{\tt c} runs of Miller--Rabin, returns}
+\entryFive{zptest(a, b, c)}   {Is $b$ a prime?}        {$c$ runs of Miller--Rabin, returns}
                                                        {{\tt enum zprimality} {\tt NONPRIME} (0)}
                                                        {(and stores the witness in {\tt a} unless}
                                                        {{\tt a} is {\tt NULL}), {\tt PROBABLY\_PRIME} (1), or}
