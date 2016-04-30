@@ -43,7 +43,7 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 \entryTwo{zerror(a)}  {Get error code}          {returns {\tt enum zerror}, and stores}
                                                 {description in {\tt const char **a}}
 \entryTwo{zperror(a)} {Print error description} {behaves like {\tt perror(a)}, {\tt a} is a,}
-                                                {possibly {\tt NULL}, {\tt const char *}}
+                                                {possibly {\tt NULL} or $\varepsilon$, {\tt const char *}}
 %\\
 
 \textbf{Arithmetic} \\
