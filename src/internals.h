@@ -27,7 +27,6 @@
 #define Oz     ZAHL_Oz
 
 #define LIST_TEMPS\
-	X(libzahl_tmp_cmp, 1)\
 	X(libzahl_tmp_str_num, 0)\
 	X(libzahl_tmp_str_mag, 0)\
 	X(libzahl_tmp_str_div, 0)\

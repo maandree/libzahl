@@ -105,16 +105,18 @@ struct zahl {
 
 void libzahl_realloc(struct zahl *, size_t);
 
-ZAHL_O3 static inline void
-libzahl_memcpy(zahl_char_t *restrict d, const zahl_char_t *restrict s, register size_t n)
+ZAHL_O2 static inline void
+libzahl_memcpy(register zahl_char_t *restrict d, register const zahl_char_t *restrict s, size_t n)
 {
-	while (n--)
-		d[n] = s[n];
+	size_t i;
+	for (i = 0; i < n; i++)
+		d[i] = s[i];
 }
 
-ZAHL_O3 static inline void
-libzahl_memset(zahl_char_t *a, register zahl_char_t v, register size_t n)
+ZAHL_O2 static inline void
+libzahl_memset(register zahl_char_t *a, register zahl_char_t v, size_t n)
 {
-	while (n--)
-		a[n] = v;
+	size_t i;
+	for (i = 0; i < n; i++)
+		a[i] = v;
 }

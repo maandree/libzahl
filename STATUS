@@ -14,11 +14,11 @@ zabs(a, b) .............. fastest
 zabs(a, a) .............. tomsfastmath is faster
 zadd_unsigned ........... fastest (faster than all others' zadd)
 zsub_unsigned ........... fastest (faster than all others' zsub)
-zadd .................... 87 % of tomsfastmath, 83 % libtommath, 80 % of hebimath
+zadd .................... 94 % of tomsfastmath, 90 % libtommath, 86 % of hebimath
 zsub .................... 97 % of tomsfastmath, 95 % hebimath, 93 % of libtommath
-zand .................... 49 % of tomsfastmath
-zor ..................... 36 % of tomsfastmath
-zxor .................... 51 % of tomsfastmath
+zand .................... 55 % of tomsfastmath
+zor ..................... 46 % of tomsfastmath
+zxor .................... 57 % of tomsfastmath
 znot .................... fastest
 zeven ................... fastest (shared with gmp, libtommath, and tomsfastmath)
 zodd .................... fastest (shared with gmp, libtommath, and tomsfastmath)
@@ -35,7 +35,7 @@ ztrunc(a, b, c) ......... fastest
 ztrunc(a, a, b) ......... fastest
 zsplit .................. fastest
 zcmpmag ................. fastest
-zcmp .................... 94 % of tomsfastmath, 81 % of hebimath (zcmpmag)
+zcmp .................... fastest
 zcmpi ................... fastest
 zcmpu ................... fastest
 zbset(a, b, 1) .......... fastest
@@ -45,7 +45,7 @@ zbset(a, a, 0) .......... fastest
 zbset(a, b, -1) ......... fastest
 zbset(a, a, -1) ......... fastest
 zbtest .................. fastest
-zgcd .................... 17 % of gmp (zcmpmag)
+zgcd .................... 21 % of gmp (zcmpmag)
 zmul .................... slowest
 zsqr .................... slowest (zmul)
 zmodmul(big mod) ........ slowest ((zmul, zmod))
@@ -56,16 +56,16 @@ zpow .................... slowest (zmul, zsqr)
 zpowu ................... slowest (zmul, zsqr)
 zmodpow ................. slowest (zmul, zsqr. zmod)
 zmodpowu ................ slowest (zmul, zsqr, zmod)
-zsets ................... 9 % of gmp
+zsets ................... 13 % of gmp
 zstr_length(a, 10) ...... gmp is faster (zdiv, zsqr)
-zstr(a, b, n) ........... 8 % of gmp, 58 % of hebimath
+zstr(a, b, n) ........... 8 % of gmp, 59 % of hebimath
 zrand(default uniform) .. 51 % of gmp
 zptest .................. slowest (zrand, zmodpow, zsqr, zmod)
 zsave ................... fastest
 zload ................... fastest
 zdiv(big denum) ......... tomsfastmath and naïve hebimath implementation are faster (zdivmod)
-zmod(big denum) ......... naïve hebimath implementation is faster (zdivmod)
-zdivmod(big denum) ...... tomsfastmath and naïve hebimath implementation are faster
+zmod(big denum) ......... fastest (zdivmod)
+zdivmod(big denum) ...... fastest
 zdiv(tiny denum) ........ slowest
 zmod(tiny denum) ........ slowest
 zdivmod(tiny denum) ..... slowest
