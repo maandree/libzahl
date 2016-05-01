@@ -17,7 +17,7 @@
 int
 main(int argc, char *argv[])
 {
-	char buf[1000];
+	char buf[2000];
 	z_t a, b, c, d, tiny;
 	jmp_buf jmp;
 	size_t i;

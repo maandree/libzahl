@@ -59,7 +59,7 @@ zmodpow ................. slowest (zmul, zsqr. zmod)
 zmodpowu ................ slowest (zmul, zsqr, zmod)
 zsets ................... 13 % of gmp
 zstr_length(a, 10) ...... gmp is faster [always] (zdiv, zsqr)
-zstr(a, b, n) ........... 8 % of gmp, 59 % of hebimath [gmp, tomsfastmath, and libtommath explode at ~3500]
+zstr(a, b, n) ........... 8 % of gmp, 59 % of hebimath
 zrand(default uniform) .. 51 % of gmp
 zptest .................. slowest (zrand, zmodpow, zsqr, zmod)
 zsave ................... fastest [until ~600, then tomsfastmath; libtommath is suspicious]

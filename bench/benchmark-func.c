@@ -33,7 +33,7 @@ struct function {
 #define M_MAX 200
 
 
-static char buf[1000];
+static char buf[2000];
 static z_t temp, temp2;
 static unsigned long long int measurements[M_MAX];
 
