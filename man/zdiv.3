@@ -25,6 +25,14 @@ gets
 It is safe to call
 .B zdiv
 with non-unique parameters.
+.SH RATIONALE
+.B zdiv
+rounds toward zero because this is what you expect
+from the C programming language and is most often
+what you want to do when rounding downwards. Note
+however, this is not the same things as floored
+division which is used in some programming languages
+and some libraries.
 .SH SEE ALSO
 .BR zdivmod (3),
 .BR zstr (3),
