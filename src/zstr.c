@@ -70,15 +70,11 @@ zstr(z_t a, char *b, size_t n)
 	}
 
 	if (!n) {
-		/* This is not the most efficient way to handle this. It should
-		 * be faster to allocate buffers that sprintint_fix and
-		 * sprintint_min print to, and then allocate `b` and copy the
-		 * buffers in reverse order into `b`. However, that is an overly
-		 * complicated solution. You probably already know the maximum
-		 * length or do not care about performance. Another disadvantage
-		 * with calculating the length before-hand, means that it is not
-		 * possible to reallocate `b` if it is too small. */
-		n = zstr_length(a, 10);
+		/* Calculate a value that is at least the number of
+		 * digits required to store the string. The overshoot
+		 * is not too signicant. */
+		n = (20 * BITS_PER_CHAR / 64 + (BITS_PER_CHAR == 8)) * a->used;
+		/* Note, depends on a ≠ as ensure above. */
 	}
 
 	if (unlikely(!b) && unlikely(!(b = libzahl_temp_allocation = malloc(n + 1))))
