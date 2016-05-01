@@ -101,7 +101,7 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 \entry{zlsh(a, b, c)}      {$a \gets b \cdot 2^c$}        {{\tt c} is a \size{}}
 \entry{zrsh(a, b, c)}      {$a \gets b / 2^c$}            {ditto, rounded towards zero}
 \entry{ztrunc(a, b, c)}    {$a \gets b \mod 2^c$}         {ditto, $a$ shares signum with $b$}
-\entry{zbits(a)}           {Get index of highest set bit} {returns \size{}, 1 if $a = 0$}
+\entry{zbits(a)}           {Get number of used bits}      {returns \size{}, 1 if $a = 0$}
 \entry{zlsb(a)}            {Get index of lowest set bit}  {returns \size{}, {\tt SIZE\_MAX} if $a = 0$}
 \entry{zbtest(a, b)}       {Is bit $b$ in $a$ set?}       {{\tt b} is a \size{}, returns {\tt int}}
 \entry{zbset(a, b, c, 1)}  {$a \gets b$, set bit $c$}     {{\tt c} is a \size{}}
