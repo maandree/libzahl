@@ -3,48 +3,49 @@ libraries. These comparisons are for 152-bit integers. Functions
 in parenthesis the right column are functions that needs
 optimisation to improve the peformance of the function in the
 left column. Double-parenthesis means there may be a better way
-to do it.
+to do it. Inside square-brackets, there are some comments on
+multi-bit comparisons.
 
-zset .................... fastest
-zseti ................... tomsfastmath is faster
-zsetu ................... tomsfastmath is faster
-zneg(a, b) .............. fastest
-zneg(a, a) .............. fastest (shared with gmp)
-zabs(a, b) .............. fastest
-zabs(a, a) .............. tomsfastmath is faster
-zadd_unsigned ........... fastest (faster than all others' zadd)
-zsub_unsigned ........... fastest (faster than all others' zsub)
-zadd .................... fastest
-zsub .................... 98 % of libtommath
-zand .................... 77 % of tomsfastmath
-zor ..................... 65 % of tomsfastmath
-zxor .................... 87 % of tomsfastmath
-znot .................... fastest
-zeven ................... fastest (shared with gmp, libtommath, and tomsfastmath)
-zodd .................... fastest (shared with gmp, libtommath, and tomsfastmath)
-zeven_nonzero ........... fastest (shared with gmp, libtommath, and tomsfastmath)
-zodd_nonzero ............ fastest (shared with gmp, libtommath, and tomsfastmath)
-zzero ................... fastest (shared with gmp and libtommath)
-zsignum ................. fastest (shared with gmp)
-zbits ................... fastest
-zlsb .................... fastest
-zswap ................... fastest
-zlsh .................... fastest
-zrsh .................... fastest
-ztrunc(a, b, c) ......... fastest
-ztrunc(a, a, b) ......... fastest
-zsplit .................. fastest
-zcmpmag ................. fastest
-zcmp .................... fastest
+zset .................... fastest [until ~750, then gmp, also tomsfastmath after ~2750]
+zseti ................... tomsfastmath is faster [always]
+zsetu ................... tomsfastmath is faster [always]
+zneg(a, b) .............. fastest [until ~300, then gmp]
+zneg(a, a) .............. fastest [always] (shared with gmp)
+zabs(a, b) .............. fastest [until ~700, then gmp, also after ~2700]
+zabs(a, a) .............. tomsfastmath is faster [always]
+zadd_unsigned ........... fastest [until 3600~4000, then gmp] (faster than all others' zadd)
+zsub_unsigned ........... fastest [always] (faster than all others' zsub)
+zadd .................... fastest [almost never]
+zsub .................... 98 % of libtommath [always]
+zand .................... 77 % of tomsfastmath [until ~150, then gmp]
+zor ..................... 65 % of tomsfastmath [until ~250, then gmp]
+zxor .................... 87 % of tomsfastmath [until ~500, then gmp]
+znot .................... fastest [always]
+zeven ................... fastest [always]
+zodd .................... fastest [always]
+zeven_nonzero ........... fastest [always]
+zodd_nonzero ............ fastest [always]
+zzero ................... fastest [always] (shared with gmp and libtommath)
+zsignum ................. fastest [always] (shared with gmp)
+zbits ................... fastest [always]
+zlsb .................... fastest [always]
+zswap ................... fastest [always]
+zlsh .................... fastest [until ~300, then gmp, also tomsfastmath after 2500~3200]
+zrsh .................... fastest [until ~150, then gmp, also tomsfastmath after 3000~4000]
+ztrunc(a, b, c) ......... fastest [until ~750, then gmp]
+ztrunc(a, a, b) ......... fastest [until ~150, then 77 % of tomsfastmath]
+zsplit .................. fastest [until 100~200, then gmp]
+zcmpmag ................. fastest [always]
+zcmp .................... fastest [almost never]
 zcmpi ................... fastest
 zcmpu ................... fastest
-zbset(a, b, 1) .......... fastest
-zbset(a, a, 1) .......... fastest
-zbset(a, b, 0) .......... fastest
-zbset(a, a, 0) .......... fastest
-zbset(a, b, -1) ......... fastest
-zbset(a, a, -1) ......... fastest
-zbtest .................. fastest
+zbset(a, b, 1) .......... fastest [until ~900, then gmp]
+zbset(a, a, 1) .......... fastest [always]
+zbset(a, b, 0) .......... fastest [until 600~150, then gmp, also tomsfastmath after ~3000]
+zbset(a, a, 0) .......... fastest [always]
+zbset(a, b, -1) ......... fastest [until ~1200, then gmp]
+zbset(a, a, -1) ......... fastest [always]
+zbtest .................. fastest [always]
 zgcd .................... 21 % of gmp (zcmpmag)
 zmul .................... slowest
 zsqr .................... slowest (zmul)
@@ -57,12 +58,12 @@ zpowu ................... slowest (zmul, zsqr)
 zmodpow ................. slowest (zmul, zsqr. zmod)
 zmodpowu ................ slowest (zmul, zsqr, zmod)
 zsets ................... 13 % of gmp
-zstr_length(a, 10) ...... gmp is faster (zdiv, zsqr)
-zstr(a, b, n) ........... 8 % of gmp, 59 % of hebimath
+zstr_length(a, 10) ...... gmp is faster [always] (zdiv, zsqr)
+zstr(a, b, n) ........... 8 % of gmp, 59 % of hebimath [gmp, tomsfastmath, and libtommath explode at ~3500]
 zrand(default uniform) .. 51 % of gmp
 zptest .................. slowest (zrand, zmodpow, zsqr, zmod)
-zsave ................... fastest
-zload ................... fastest
+zsave ................... fastest [until ~600, then tomsfastmath; libtommath is suspicious]
+zload ................... fastest [always]
 zdiv(big denum) ......... tomsfastmath and naïve hebimath implementation are faster (zdivmod)
 zmod(big denum) ......... fastest (zdivmod)
 zdivmod(big denum) ...... fastest
