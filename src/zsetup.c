@@ -4,7 +4,7 @@
 #define X(x, s)  z_t x;
 LIST_TEMPS
 #undef X
-#define X(x, f, v)  z_t x;
+#define X(i, x, f, v)  z_t x;
 LIST_CONSTS
 #undef X
 
@@ -19,6 +19,10 @@ struct zahl **libzahl_temp_stack;
 struct zahl **libzahl_temp_stack_head;
 struct zahl **libzahl_temp_stack_end;
 void *libzahl_temp_allocation = 0;
+
+#define X(i, x, f, v)  1 +
+static zahl_char_t constant_chars[LIST_CONSTS 0];
+#undef X
 
 
 void
@@ -38,8 +42,8 @@ zsetup(jmp_buf env)
 		zinit(x); if (s) zsetu(x, 1);
 		LIST_TEMPS;
 #undef X
-#define X(x, f, v)\
-		zinit(x), f(x, v);
+#define X(i, x, f, v)\
+		(x)->alloced = 1, (x)->chars = constant_chars + (i), f(x, v);
 		LIST_CONSTS;
 #undef X
 		for (i = BITS_PER_CHAR; i--;)

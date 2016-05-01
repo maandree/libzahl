@@ -12,10 +12,6 @@ zunsetup(void)
 		free(x->chars);
 		LIST_TEMPS;
 #undef X
-#define X(x, f, v)\
-		free(x->chars);
-		LIST_CONSTS;
-#undef X
 		for (i = BITS_PER_CHAR; i--;)
 			free(libzahl_tmp_divmod_ds[i]->chars);
 
