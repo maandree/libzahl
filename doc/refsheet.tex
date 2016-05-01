@@ -1,17 +1,14 @@
 \documentclass[10pt,draft]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath, amssymb, mathtools}
+\usepackage{microtype}
 \DeclarePairedDelimiter\ab{\lvert}{\rvert}
 
 \newcommand{\size}{{\tt size\_t}}
 \newcommand{\ullong}{{\tt unsigned long long int}}
 
 \newcommand{\entry}[3]{ #2 & {\tt #1} & #3 \\ }
-\newcommand{\entrycont}[1]{ & & \hspace*{2ex} #1 \\ }
-\newcommand{\entryTwo}[4]{\entry{#1}{#2}{#3}\entrycont{#4}}
-\newcommand{\entryThree}[5]{\entryTwo{#1}{#2}{#3}{#4}\entrycont{#5}}
-\newcommand{\entryFour}[6]{\entryThree{#1}{#2}{#3}{#4}{#5}\entrycont{#6}}
-\newcommand{\entryFive}[7]{\entryFour{#1}{#2}{#3}{#4}{#5}{#6}\entrycont{#7}}
+\newcommand{\cont}[1]{ & & #1 \\ }
 
 \begin{document}
 
@@ -25,25 +22,25 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 
 
 
-\hspace{-0.8em}
+\hspace{-2ex}
 \begin{tabular}{lll}
 
 
 
 \textbf{Initialisation} \\
-\entryThree{zsetup(env)} {Initialise libzahl}   {must be called before any other function is}
-                                                {used, {\tt env} is a {\tt jmp\_buf} all functions will}
-                                                {{\tt longjmp} to --- with value 1 --- on error}
-\entry     {zunsetup()}  {Deinitialise libzahl} {will free any pooled memory}
-\entry     {zinit(a)}    {Initialise $a$}       {call once before use in any other function}
-\entry     {zfree(a)}    {Deinitialise $a$}     {must not be used again before reinitialisation}
+\entry{zsetup(env)} {Initialise libzahl}   {must be called before any other function is}
+\cont                                      {used, {\tt env} is a {\tt jmp\_buf} all functions will}
+\cont                                      {{\tt longjmp} to --- with value 1 --- on error}
+\entry{zunsetup()}  {Deinitialise libzahl} {will free any pooled memory}
+\entry{zinit(a)}    {Initialise $a$}       {call once before use in any other function}
+\entry{zfree(a)}    {Deinitialise $a$}     {must not be used again before reinitialisation}
 \\
 
 \textbf{Error handling} \\
-\entryTwo{zerror(a)}  {Get error code}          {returns {\tt enum zerror}, and stores}
-                                                {description in {\tt const char **a}}
-\entryTwo{zperror(a)} {Print error description} {behaves like {\tt perror(a)}, {\tt a} is a,}
-                                                {possibly {\tt NULL} or $\varepsilon$, {\tt const char *}}
+\entry{zerror(a)}  {Get error code}          {returns {\tt enum zerror}, and stores}
+\cont                                        {description in {\tt const char **a}}
+\entry{zperror(a)} {Print error description} {behaves like {\tt perror(a)}, {\tt a} is a,}
+\cont                                        {possibly {\tt NULL} or $\varepsilon$, {\tt const char *}}
 %\\
 
 \textbf{Arithmetic} \\
@@ -68,13 +65,13 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 \\
 
 \textbf{Assignment} \\
-\entry   {zset(a, b)}            {$a \gets b$}           {}
-\entry   {zseti(a, b)}           {$a \gets b$}           {{\tt b} is an {\tt int64\_t}}
-\entry   {zsetu(a, b)}           {$a \gets b$}           {{\tt b} is a {\tt uint64\_t}}
-\entry   {zsets(a, b)}           {$a \gets b$}           {{\tt b} is a decimal {\tt const char *}}
-%\entryTwo{zsets\_radix(a, b, c)} {$a \gets b$}           {{\tt b} is a radix $c$ {\tt const char *},}
-%                                                         {{\tt c} is an \ullong{}}
-\entry   {zswap(a, b)}           {$a \leftrightarrow b$} {}
+\entry{zset(a, b)}            {$a \gets b$}           {}
+\entry{zseti(a, b)}           {$a \gets b$}           {{\tt b} is an {\tt int64\_t}}
+\entry{zsetu(a, b)}           {$a \gets b$}           {{\tt b} is a {\tt uint64\_t}}
+\entry{zsets(a, b)}           {$a \gets b$}           {{\tt b} is a decimal {\tt const char *}}
+%\entry{zsets\_radix(a, b, c)} {$a \gets b$}           {{\tt b} is a radix $c$ {\tt const char *},}
+%\cont                                                 {{\tt c} is an \ullong{}}
+\entry{zswap(a, b)}           {$a \leftrightarrow b$} {}
 \\
 
 \textbf{Comparison} \\
@@ -88,7 +85,7 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 
 \end{tabular}
 \newpage
-\hspace{-0.8em}
+\hspace{-2ex}
 \begin{tabular}{lll}
 
 
@@ -112,43 +109,43 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 \\
 
 \textbf{Conversion to string} \\
-\entryFive{zstr(a, b, c)}           {Convert $a$ to decimal}   {returns the resulting {\tt const char *}}
-                                                               {--- {\tt b} unless {\tt b} is
-                                                                    {\tt NULL}, --- $c$ must be}
-                                                               {either 0 or at least the length of the}
-                                                               {resulting string but at most the}
-                                                               {allocation size of {\tt b} minus 1}
-%\entry    {zstr\_radix(a, b, c, d)} {Convert $a$ to radix $d$} {ditto, {\tt d} is an \ullong{}}
-\entry    {zstr\_length(a, b)}      {Get string length of $a$} {returns \size{} length of $a$ in radix $b$}
+\entry{zstr(a, b, c)}           {Convert $a$ to decimal}   {returns the resulting {\tt const char *}}
+\cont                                                      {--- {\tt b} unless {\tt b} is
+                                                                {\tt NULL}, --- $c$ must be}
+\cont                                                      {either 0 or at least the length of the}
+\cont                                                      {resulting string but at most the}
+\cont                                                      {allocation size of {\tt b} minus 1}
+%\entry{zstr\_radix(a, b, c, d)} {Convert $a$ to radix $d$} {ditto, {\tt d} is an \ullong{}}
+\entry{zstr\_length(a, b)}      {Get string length of $a$} {returns \size{} length of $a$ in radix $b$}
 \\
 
 \textbf{Marshallisation} \\
-\entryTwo{zsave(a, b)}    {Marshal $a$ into $b$}    {returns \size{} number of saved bytes,}
-                                                    {{\tt b} is a {\tt void *\_t}}
-\entry   {zsave(a, NULL)} {Get marshal-size of $a$} {returns \size{}}
-\entryTwo{zload(a, b)}    {Unmarshal $a$ from $b$}  {returns \size{} number of read bytes,}
-                                                    {{\tt b} is a {\tt const void *\_t}}
+\entry{zsave(a, b)}    {Marshal $a$ into $b$}    {returns \size{} number of saved bytes,}
+\cont                                            {{\tt b} is a {\tt void *\_t}}
+\entry{zsave(a, NULL)} {Get marshal-size of $a$} {returns \size{}}
+\entry{zload(a, b)}    {Unmarshal $a$ from $b$}  {returns \size{} number of read bytes,}
+\cont                                            {{\tt b} is a {\tt const void *\_t}}
 %\\
 
 \textbf{Number theory} \\
-\entry    {zsignum(a, b)}     {$a \gets \mbox{sgn} b$} {}
-\entry    {zeven(a)}          {Is $a$ even?}           {returns {\tt int} 1 (true) or 0 (false)}
-\entry    {zeven\_nonzero(a)} {Is $a$ even?}           {ditto, assumes $a \neq 0$}
-\entry    {zodd(a)}           {Is $a$ odd?}            {returns {\tt int} 1 (true) or 0 (false)}
-\entry    {zodd\_nonzero(a)}  {Is $a$ odd?}            {ditto, assumes $a \neq 0$}
-\entry    {zzero(a)}          {Is $a$ zero?}           {returns {\tt int} 1 (true) or 0 (false)}
-\entry    {zgcd(a, b, c)}     {$a \gets \gcd(c, b)$}   {$a < 0$ if $b < 0 \wedge c < 0$}
-\entryFive{zptest(a, b, c)}   {Is $b$ a prime?}        {$c$ runs of Miller--Rabin, returns}
-                                                       {{\tt enum zprimality} {\tt NONPRIME} (0)}
-                                                       {(and stores the witness in {\tt a} unless}
-                                                       {{\tt a} is {\tt NULL}), {\tt PROBABLY\_PRIME} (1), or}
-                                                       {{\tt PRIME} (2)}
+\entry{zsignum(a, b)}     {$a \gets \mbox{sgn} b$} {}
+\entry{zeven(a)}          {Is $a$ even?}           {returns {\tt int} 1 (true) or 0 (false)}
+\entry{zeven\_nonzero(a)} {Is $a$ even?}           {ditto, assumes $a \neq 0$}
+\entry{zodd(a)}           {Is $a$ odd?}            {returns {\tt int} 1 (true) or 0 (false)}
+\entry{zodd\_nonzero(a)}  {Is $a$ odd?}            {ditto, assumes $a \neq 0$}
+\entry{zzero(a)}          {Is $a$ zero?}           {returns {\tt int} 1 (true) or 0 (false)}
+\entry{zgcd(a, b, c)}     {$a \gets \gcd(c, b)$}   {$a < 0$ if $b < 0 \wedge c < 0$}
+\entry{zptest(a, b, c)}   {Is $b$ a prime?}        {$c$ runs of Miller--Rabin, returns}
+\cont                                              {{\tt enum zprimality} {\tt NONPRIME} (0)}
+\cont                                              {(and stores the witness in {\tt a} unless}
+\cont                                              {{\tt a} is {\tt NULL}), {\tt PROBABLY\_PRIME} (1), or}
+\cont                                              {{\tt PRIME} (2)}
 %\\
 
 \textbf{Random numbers} \\
-\entryTwo{zrand(a, b, UNIFORM, d)} {$a \xleftarrow{\$} \textbf{Z}_d$}
-         {{\tt b} is a {\tt enum zranddev}, e.g.}
-         {{\tt DEFAULT\_RANDOM}, {\tt FASTEST\_RANDOM}}
+\entry{zrand(a, b, UNIFORM, d)} {$a \xleftarrow{\$} \textbf{Z}_d$}
+      {{\tt b} is a {\tt enum zranddev}, e.g.}
+\cont {{\tt DEFAULT\_RANDOM}, {\tt FASTEST\_RANDOM}}
 \\
 
 
