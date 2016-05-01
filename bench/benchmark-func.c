@@ -150,6 +150,9 @@ gettime(size_t m)
 	X(zswap,            FAST2D(FULL),      zswap(temp, *a),)\
 	X(zcmpmag,          FAST2D(FULL),      zcmpmag(temp2, *a),)\
 	X(zcmp,             FAST2D(FULL),      zcmp(temp2, *a),)\
+	X(pos_zcmpi,        FAST2D(FULL),      zcmpi(*a, 1000000000LL),)\
+	X(zcmpi,            FAST2D(FULL),      zcmpi(*a, -1000000000LL),)\
+	X(zcmpu,            FAST2D(FULL),      zcmpu(*a, 1000000000ULL),)\
 	X(sqr_zmul,         SLOW2D(FULL),      zmul(temp, *a, temp2),)\
 	X(zsqr,             SLOW2D(FULL),      zsqr(temp, *a),)\
 	X(zstr_length,      SLOW2D(FULL),      zstr_length(*a, 10),)\
@@ -272,7 +275,7 @@ main(int argc, char *argv[])
 		return 1;
 	}
 	zsetup(jmp);
-	printf("%s\n", BIGINT_LIBRARY);
+	printf("%s%s\n", BIGINT_LIBRARY, LIBRARY_SUFFIX);
 	zinit(temp);
 	zinit(temp2);
 

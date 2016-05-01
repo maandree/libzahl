@@ -14,12 +14,16 @@
 # include BENCHMARK_LIB
 #else
 # include "../zahl.h"
-# define BIGINT_LIBRARY "libzahl"
+# define BIGINT_LIBRARY  "libzahl"
+#endif
+
+#ifndef LIBRARY_SUFFIX
+# define LIBRARY_SUFFIX  ""
 #endif
 
 
 #ifndef CLOCK_MONOTONIC_RAW
-# define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
+# define CLOCK_MONOTONIC_RAW  CLOCK_MONOTONIC
 #endif
 
 

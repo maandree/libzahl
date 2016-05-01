@@ -71,6 +71,7 @@ main(int argc, char *argv[])
 	BENCHMARK(zcmpmag(a, b), 1);
 	BENCHMARK(zcmp(a, b), 1);
 	BENCHMARK(zcmpi(a, 1000000000LL), 1);
+	BENCHMARK(zcmpi(a, -1000000000LL), 1);
 	BENCHMARK(zcmpu(a, 1000000000ULL), 1);
 	BENCHMARK(zbset(c, a, 76, 1), 1);
 	BENCHMARK(zbset(a, a, 76, 1), 1);
@@ -105,6 +106,7 @@ main(int argc, char *argv[])
 	BENCHMARK(zstr(a, buf, sizeof(buf) - 1), 0);
 	BENCHMARK(zrand(c, DEFAULT_RANDOM, QUASIUNIFORM, a), 0);
 	BENCHMARK(zrand(c, DEFAULT_RANDOM, UNIFORM, a), 0);
+	BENCHMARK(zrand(c, DEFAULT_RANDOM, MODUNIFORM, a), 0);
 	BENCHMARK(zptest(d, a, 5), 0);
 	BENCHMARK(zsave(a, buf), 1);
 	BENCHMARK(zload(a, buf), 1);
