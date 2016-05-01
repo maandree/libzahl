@@ -51,8 +51,8 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 \entry{zsub(a, b, c)}        {$a \gets b - c$}            {}
 \entry{zmul(a, b, c)}        {$a \gets b \cdot c$}        {}
 \entry{zmodmul(a, b, c, d)}  {$a \gets b \cdot c \mod d$} {$0 \le a < \ab{d}$}
-\entry{zdiv(a, b, c)}        {$a \gets [b / c]$}          {rounded towards zero}
-\entry{zdivmod(a, b, c, d)}  {$a \gets [c / d]$}          {rounded towards zero}
+\entry{zdiv(a, b, c)}        {$a \gets b / c$}            {rounded towards zero}
+\entry{zdivmod(a, b, c, d)}  {$a \gets c / d$}            {rounded towards zero}
 \entry{zdivmod(a, b, c, d)}  {$b \gets c \mod d$}         {$0 \le b < \ab{d}$}
 \entry{zmod(a, b, c)}        {$a \gets b \mod c$}         {$0 \le a < \ab{c}$}
 %\entry{zdiv\_exact(a, b, c)} {$a \gets b / c$}            {assumes $c \vert d$}
@@ -99,7 +99,7 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 \entry{zxor(a, b, c)}      {$a \gets b \oplus c$}         {bitwise}
 \entry{znot(a, b, c)}      {$a \gets \lnot b$}            {bitwise, cut at highest set bit}
 \entry{zlsh(a, b, c)}      {$a \gets b \cdot 2^c$}        {{\tt c} is a \size{}}
-\entry{zrsh(a, b, c)}      {$a \gets [b / 2^c]$}          {ditto, rounded towards zero}
+\entry{zrsh(a, b, c)}      {$a \gets b / 2^c$}            {ditto, rounded towards zero}
 \entry{ztrunc(a, b, c)}    {$a \gets b \mod 2^c$}         {ditto, $a$ shares signum with $b$}
 \entry{zbits(a)}           {Get index of highest set bit} {returns \size{}, 1 if $a = 0$}
 \entry{zlsb(a)}            {Get index of lowest set bit}  {returns \size{}, {\tt SIZE\_MAX} if $a = 0$}
@@ -107,7 +107,7 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 \entry{zbset(a, b, c, 1)}  {$a \gets b$, set bit $c$}     {{\tt c} is a \size{}}
 \entry{zbset(a, b, c, 0)}  {$a \gets b$, clear bit $c$}   {ditto}
 \entry{zbset(a, b, c, -1)} {$a \gets b$, flip bit $c$}    {ditto}
-\entry{zsplit(a, b, c, d)} {$a \gets [c / 2^d]$}          {{\tt d} is a \size{}, rounded towards zero}
+\entry{zsplit(a, b, c, d)} {$a \gets c / 2^d$}            {{\tt d} is a \size{}, rounded towards zero}
 \entry{zsplit(a, b, c, d)} {$b \gets c \mod 2^d$}         {ditto, $b$ shares signum with $c$}
 \\
 
