@@ -25,75 +25,98 @@ if xkcdstyle:
     plot.xkcd()
 fig = plot.figure()
 
+xint = lambda x : (float(x) if '.' in x else int(x))
+
 multiple = 1
 smultiple = ''
 
-labels_1d = []
-values_1d = []
+multiples  = [1]    * len(sys.argv[1:])
+smultiples = ['']   * len(sys.argv[1:])
+paths      = [None] * len(sys.argv[1:])
 
-xint = lambda x : (float(x) if '.' in x else int(x))
+i = 0
+for arg in sys.argv[1:]:
+    if arg.startswith('*'):
+        multiples[i] = float(arg[1:])
+        smultiples[i] = ' * ' + arg[1:]
+    else:
+        paths[i] = arg
+    i += 1
 
-for path in sys.argv[1:]:
-    if path.startswith('*'):
-        multiple = float(path[1:])
-        smultiple = ' * ' + path[1:]
-        continue
+multiples  = multiples[:i]
+smultiples = smultiples[:i]
+paths      = paths[:i]
+
+xpoints = [None] * i
+ypoints = [None] * i
+values  = [None] * i
+labels  = [None] * i
+
+for i, path in enumerate(paths):
     with open(path, 'rb') as file:
         lines = file.read()
     lines = lines.decode('utf-8', 'strict').split('\n')
-    label, dim, values = lines[0] + smultiple, int(lines[1]), lines[2:]
+    labels[i], dim, values[i] = lines[0] + smultiples[i], int(lines[1]), lines[2:]
     if dim > 1:
-        xpoints, values = values[0], values[1:]
-        xpoints = [int(x) for x in xpoints.split(' ')]
-        xpoints[1] += 1
-        xpoints = list(range(*xpoints))
+        xpoints[i], values[i] = values[i][0], values[i][1:]
+        xpoints[i] = [int(x) for x in xpoints[i].split(' ')]
+        xpoints[i][1] += 1
+        xpoints[i] = list(range(*xpoints[i]))
     if dim > 2:
-        ypoints, values = values[0], values[1:]
-        ypoints = [int(x) for x in ypoints.split(' ')]
-        ypoints[1] += 1
-        ypoints = list(range(*ypoints))
-    values = [xint(v) * multiple for v in values if v != '']
-    if dim == 1:
-        labels_1d.append(label)
-        values_1d.append(values)
-    elif dim == 2:
+        ypoints[i], values[i] = values[i][0], values[i][1:]
+        ypoints[i] = [int(x) for x in ypoints[i].split(' ')]
+        ypoints[i][1] += 1
+        ypoints[i] = list(range(*ypoints[i]))
+    values[i] = [xint(v) * multiples[i] for v in values[i] if v != '']
+    if dim == 2:
         if 'PER_BIT' in os.environ:
-            values = [y / x for y, x in zip(values, xpoints)]
-        plot.plot(xpoints, values, label = label)
-    elif dim == 3:
-        pass
-    multiple = 1
-    smultiple = ''
+            values[i] = [y / x for y, x in zip(values[i], xpoints[i])]
+
+data = [[[i], (values[i], xpoints[i], ypoints[i])] for i in range(len(values))]
+data.sort(key = lambda x : x[1])
+merged, data = [data[0]], data[1:]
+for ([i], d) in data:
+    if d == merged[-1][1]:
+        merged[-1][0].append(i)
+    else:
+        merged.append(([i], d))
+
+xpoints = [xpoints[i[0]] for (i, _) in merged]
+ypoints = [ypoints[i[0]] for (i, _) in merged]
+values  = [values[i[0]]  for (i, _) in merged]
+labels  = [' & '.join(labels[j] for j in i)  for (i, _) in merged]
 
 if dim == 1:
     plot.ylabel('time')
-    if len(values_1d[0]) == 1:
-        plot.bar(range(len(values_1d)),
-                 [vs[0] for vs in values_1d],
+    if len(values[0]) == 1:
+        plot.bar(range(len(values)),
+                 [vs[0] for vs in values],
                  align = 'center',
                  orientation = 'vertical',
-                 tick_label = labels_1d)
-        labels_1d = None
+                 tick_label = labels)
+        labels = None
     elif 'VIOLIN_STYLE' in os.environ:
-        plot.violinplot(values_1d,
+        plot.violinplot(values,
                         vert = True,
                         showmeans = 'SHOW_MEAN' in os.environ,
                         showmedians = 'SHOW_MEAN' not in os.environ,
                         showextrema = True)
     else:
-        plot.boxplot(values_1d,
+        plot.boxplot(values,
                     vert = True,
                      notch = 'NOTCH_STYLE' in os.environ,
                      patch_artist = 'PATCH_ARTIST' in os.environ)
         if 'SHOW_MEAN' in os.environ:
-            for i in range(len(values_1d)):
-                mean = sum(values_1d[i]) / len(values_1d[i])
+            for i in range(len(values)):
+                mean = sum(values[i]) / len(values[i])
                 plot.plot([i + 0.75, i + 1.25], [mean, mean]);
-    if labels_1d is not None:
+    if labels is not None:
         plot.setp(fig.axes,
-                  xticks = [x + 1 for x in range(len(values_1d))],
-                  xticklabels = labels_1d)
+                  xticks = [x + 1 for x in range(len(values))],
+                  xticklabels = labels)
 elif dim == 2:
+    for i in range(len(values)):
+        plot.plot(xpoints[i], values[i], label = labels[i])
     plot.legend(loc = 'best')
     plot.xlabel('bits')
     plot.ylabel('time')
