@@ -86,6 +86,9 @@ ypoints = [ypoints[i[0]] for (i, _) in merged]
 values  = [values[i[0]]  for (i, _) in merged]
 labels  = [' & '.join(labels[j] for j in i)  for (i, _) in merged]
 
+vmin = min(min(min(v) for v in values), 0)
+vmax = max(max(max(v) for v in values), 0)
+
 if dim == 1:
     plot.ylabel('time')
     if len(values[0]) == 1:
@@ -122,6 +125,8 @@ elif dim == 2:
     plot.ylabel('time')
 elif dim == 3:
     pass
+
+plot.ylim((vmin * 1.1, vmax * 1.1))
 
 if not xkcdstyle:
     plot.grid(True)
