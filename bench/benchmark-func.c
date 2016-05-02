@@ -291,9 +291,9 @@ destroy_ints(z_t *array, size_t start, size_t end)
 int
 main(int argc, char *argv[])
 {
-	struct function *fs = functions;
+	static struct function *fs = functions;
+	static z_t *as = 0, *bs = 0;
 	jmp_buf jmp;
-	z_t *as = 0, *bs = 0;
 
 	if (argc != 2) {
 		fprintf(stderr, "usage: %s function\n", *argv);
