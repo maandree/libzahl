@@ -37,7 +37,8 @@ ztrunc(a, a, b) ......... fastest [until ~150, then 77 % of tomsfastmath]
 zsplit .................. fastest [until 100~200, then gmp]
 zcmpmag ................. fastest [always]
 zcmp .................... fastest [almost never]
-zcmpi ................... fastest
+zcmpi(a, +) ............. fastest
+zcmpi(a, -) ............. fastest
 zcmpu ................... fastest
 zbset(a, b, 1) .......... fastest [until ~900, then gmp]
 zbset(a, a, 1) .......... fastest [always]
