@@ -3,8 +3,8 @@
 ZAHL_INLINE void zinit(z_t a)         { a->alloced = 0; a->chars = 0; }
 ZAHL_INLINE int zeven(z_t a)          { return !a->sign || (~a->chars[0] & 1); }
 ZAHL_INLINE int zodd(z_t a)           { return a->sign && (a->chars[0] & 1); }
-ZAHL_INLINE int zeven_nonzero(z_t a)  { return (~a->chars[0] & 1); }
-ZAHL_INLINE int zodd_nonzero(z_t a)   { return (a->chars[0] & 1); }
+ZAHL_INLINE int zeven_nonzero(z_t a)  { return ~a->chars[0] & 1; }
+ZAHL_INLINE int zodd_nonzero(z_t a)   { return a->chars[0] & 1; }
 ZAHL_INLINE int zzero(z_t a)          { return !a->sign; }
 ZAHL_INLINE int zsignum(z_t a)        { return a->sign; }
 ZAHL_INLINE void zneg(z_t a, z_t b)   { ZAHL_SET(a, b); a->sign = -a->sign; }
@@ -15,6 +15,31 @@ ZAHL_INLINE void zabs(z_t a, z_t b)   { ZAHL_SET(a, b); a->sign &= 1; }
 ZAHL_INLINE void zabs(z_t a, z_t b)   { ZAHL_SET(a, b); if (ZAHL_LIKELY(a->sign < 0)) a->sign = 1; }
 #else
 ZAHL_INLINE void zabs(z_t a, z_t b)   { ZAHL_SET(a, b); a->sign = !!a->sign; }
+#endif
+
+
+#if ULONG_MAX != SIZE_MAX /* This variant should be equivalent to the second one if .sign was long. */
+ZAHL_INLINE void
+zswap(z_t a, z_t b)
+{
+	z_t t;
+	ZAHL_SWAP(a, b, t, sign);
+	ZAHL_SWAP(b, a, t, used);
+	ZAHL_SWAP(a, b, t, alloced);
+	ZAHL_SWAP(b, a, t, chars);
+}
+#else
+ZAHL_INLINE void
+zswap(z_t a_, z_t b_)
+{
+	register long t;
+	long *a = (long *)a_;
+	long *b = (long *)b_;
+	t = a[0], a[0] = b[0], b[0] = t;
+	t = b[1], b[1] = a[1], a[1] = t;
+	t = a[2], a[2] = b[2], b[2] = t;
+	t = b[3], b[3] = a[3], a[3] = t;
+}
 #endif
 
 
@@ -29,18 +54,6 @@ zset(z_t a, z_t b)
 		ZAHL_ENSURE_SIZE(a, b->used);
 		libzahl_memcpy(a->chars, b->chars, b->used);
 	}
-}
-
-
-ZAHL_INLINE void
-zswap(z_t a, z_t b)
-{
-	/* Almost three times faster than the naïve method. */
-	z_t t;
-	ZAHL_SWAP(a, b, t, sign);
-	ZAHL_SWAP(b, a, t, used);
-	ZAHL_SWAP(a, b, t, alloced);
-	ZAHL_SWAP(b, a, t, chars);
 }
 
 
