@@ -40,7 +40,7 @@ if dim > 1:
             if best_nsec is None or nsec < best_nsec:
                 best_nsec, best_line = nsec, line
         print(best_line)
-else 'SELECT_MIN' not in os.environ:
+elif 'SELECT_MIN' not in os.environ:
     for lines in files:
         for i in range(skip, line_count):
             print(lines[i])
