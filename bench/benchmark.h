@@ -3,6 +3,7 @@
 # include <sched.h>
 #endif
 
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,6 +20,10 @@
 
 #ifndef LIBRARY_SUFFIX
 # define LIBRARY_SUFFIX  ""
+#endif
+
+#ifndef USE_CPU
+# define USE_CPU  0
 #endif
 
 
@@ -122,12 +127,14 @@ benchmark_init(void)
 	FILE *f;
 	char *line = 0;
 	size_t size = 0;
+	char path[PATH_MAX];
 # endif
 	CPU_ZERO(&cpuset);
-	CPU_SET(0, &cpuset);
+	CPU_SET(USE_CPU, &cpuset);
 	sched_setaffinity(getpid(), sizeof(cpuset), &cpuset);
 # if defined(USE_RDTSC)
-	f = fopen("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq", "r");
+	sprintf(path, "/sys/devices/system/cpu/cpu%i/cpufreq/cpuinfo_max_freq", USE_CPU);
+	f = fopen(path, "r");
 	if (getline(&line, &size, f) < 0)
 		abort();
 	fclose(f);

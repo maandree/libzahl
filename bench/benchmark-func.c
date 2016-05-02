@@ -92,6 +92,29 @@ gettime(size_t m)
 #endif
 
 
+#define FUNCTION_1D(NAME, INSTRUCTION, PREINSTRUCTION)\
+	static void\
+	NAME(z_t *as, z_t* bs, struct function *f)\
+	{\
+		size_t i, j;\
+		PREINSTRUCTION;\
+		i = f->measurements;\
+		while (i--) {\
+			(void)INSTRUCTION;\
+			(void)INSTRUCTION;\
+			j = f->runs;\
+			TIC;\
+			while (j--) {\
+				(void)INSTRUCTION;\
+			}\
+			TOC;\
+			measurements[i] = TICKS;\
+		}\
+		printf("%llu\n", gettime(f->measurements));\
+		(void) as;\
+		(void) bs;\
+	}
+
 #define FUNCTION_2D(NAME, INSTRUCTION, PREINSTRUCTION)\
 	static void\
 	NAME(z_t *as, z_t* bs, struct function *f)\
@@ -122,8 +145,14 @@ gettime(size_t m)
 		(void) bs;\
 	}
 
+#define FAST1D()   0, 0,    0,  0, 0, 0, 0, 0, 1000, M_MAX
 #define FAST2D(P)  1, 4097, 64, 0, 0, 0, P, 0, 1000, M_MAX
 #define SLOW2D(P)  1, 4097, 64, 0, 0, 0, P, 0, 10,   20
+
+#define LIST_1D_FUNCTIONS\
+	X(pos_zseti,        FAST1D(),          zseti(temp, 1000000000LL),)\
+	X(zseti,            FAST1D(),          zseti(temp, -1000000000LL),)\
+	X(zsetu,            FAST1D(),          zsetu(temp, 1000000000ULL),)
 
 #define LIST_2D_FUNCTIONS\
 	X(zset,             FAST2D(FULL),      zset(temp, *a),)\
@@ -194,13 +223,16 @@ gettime(size_t m)
 	zdivmod
 */
 
-
+#define X(FN, A, F1, F2)  FUNCTION_1D(bench_##FN, F1, F2)
+LIST_1D_FUNCTIONS
+#undef X
 #define X(FN, A, F1, F2)  FUNCTION_2D(bench_##FN, F1, F2)
 LIST_2D_FUNCTIONS
 #undef X
 
 struct function functions[] = {
 #define X(FN, A, F1, F2)  {#FN, bench_##FN, A},
+LIST_1D_FUNCTIONS
 LIST_2D_FUNCTIONS
 #undef X
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -291,9 +323,11 @@ main(int argc, char *argv[])
 		printf("3\n%zu %zu %zu\n%zu %zu %zu\n",
 		       fs->a_start, fs->a_end, fs->a_step,
 		       fs->b_start, fs->b_end, fs->b_step);
-	} else {
+	} else if (fs->a_end) {
 		as = create_ints(fs->a_start, fs->a_end, fs->a_mode);
 		printf("2\n%zu %zu %zu\n", fs->a_start, fs->a_end, fs->a_step);
+	} else {
+		printf("1\n");
 	}
 	fs->f(as, bs, fs);
 
