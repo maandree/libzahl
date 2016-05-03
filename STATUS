@@ -6,17 +6,17 @@ left column. Double-parenthesis means there may be a better way
 to do it. Inside square-brackets, there are some comments on
 multi-bit comparisons.
 
-zset .................... fastest [always with gcc, unless ~250 with clang]
+zset .................... fastest [always (gcc); until ~250 (clang)]
 zseti ................... tomsfastmath is faster [always]
 zsetu ................... tomsfastmath is faster [always]
-zneg(a, b) .............. fastest [until ~300, then gmp]
+zneg(a, b) .............. fastest [always (gcc); until ~250 (clang)]
 zneg(a, a) .............. fastest [always] (shared with gmp)
-zabs(a, b) .............. fastest [until ~700, then gmp, also after ~2700]
+zabs(a, b) .............. fastest [always (gcc); until ~250 (clang)]
 zabs(a, a) .............. tomsfastmath is faster [always]
-zadd_unsigned ........... fastest [until 3600~4000, then gmp] (faster than all others' zadd)
-zsub_unsigned ........... fastest [always] (faster than all others' zsub)
+zadd_unsigned ........... fastest [always (gcc+glibc); until 1400~1600 (gcc+musl); until ~600 (clang+glibc)]
+zsub_unsigned ........... fastest [always]
 zadd .................... fastest [almost never]
-zsub .................... 98 % of libtommath [always]
+zsub .................... fastest [always]
 zand .................... 77 % of tomsfastmath [until ~150, then gmp]
 zor ..................... 65 % of tomsfastmath [until ~250, then gmp]
 zxor .................... 87 % of tomsfastmath [until ~500, then gmp]
