@@ -6,7 +6,7 @@ left column. Double-parenthesis means there may be a better way
 to do it. Inside square-brackets, there are some comments on
 multi-bit comparisons.
 
-zset .................... fastest [until ~750, then gmp, also tomsfastmath after ~2750]
+zset .................... fastest [always with gcc, unless ~250 with clang]
 zseti ................... tomsfastmath is faster [always]
 zsetu ................... tomsfastmath is faster [always]
 zneg(a, b) .............. fastest [until ~300, then gmp]

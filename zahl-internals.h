@@ -109,18 +109,62 @@ struct zahl {
 
 void libzahl_realloc(struct zahl *, size_t);
 
-ZAHL_O2 ZAHL_INLINE void
+ZAHL_INLINE void
 libzahl_memcpy(register zahl_char_t *restrict d, register const zahl_char_t *restrict s, size_t n)
 {
 	size_t i;
-	for (i = 0; i < n; i++)
-		d[i] = s[i];
+	if (n <= 4) {
+		if (n >= 1)
+			d[0] = s[0];
+		if (n >= 2)
+			d[1] = s[1];
+		if (n >= 3)
+			d[2] = s[2];
+		if (n >= 4)
+			d[3] = s[3];
+	} else {
+		for (i = 0; (i += 4) <= n;) {
+			d[i - 1] = s[i - 1];
+			d[i - 2] = s[i - 2];
+			d[i - 3] = s[i - 3];
+			d[i - 4] = s[i - 4];
+		}
+		if (i > n) {
+			i -= 4;
+			if (i < n)
+				d[i] = s[i], i++;
+			if (i < n)
+				d[i] = s[i], i++;
+			if (i < n)
+				d[i] = s[i], i++;
+			if (i < n)
+				d[i] = s[i], i++;
+		}
+	}
 }
 
-ZAHL_O2 ZAHL_INLINE void
+ZAHL_INLINE void
 libzahl_memset(register zahl_char_t *a, register zahl_char_t v, size_t n)
 {
 	size_t i;
-	for (i = 0; i < n; i++)
-		a[i] = v;
+	if (n <= 4) {
+		if (n >= 1)
+			a[0] = v;
+		if (n >= 2)
+			a[1] = v;
+		if (n >= 3)
+			a[2] = v;
+		if (n >= 4)
+			a[3] = v;
+	} else {
+		for (i = 0; (i += 4) <= n;) {
+			a[i - 1] = v;
+			a[i - 2] = v;
+			a[i - 3] = v;
+			a[i - 4] = v;
+		}
+		if (i > n)
+			for (i -= 4; i < n; i++)
+				a[i] = v;
+	}
 }
