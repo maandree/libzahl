@@ -30,9 +30,9 @@ zsignum ................. fastest [always] (shared with gmp)
 zbits ................... fastest [always]
 zlsb .................... fastest [always]
 zswap ................... fastest [always]
-zlsh .................... fastest [until ~300, then gmp, also tomsfastmath after 2500~3200]
-zrsh .................... fastest [until ~150, then gmp, also tomsfastmath after 3000~4000]
-ztrunc(a, b, c) ......... fastest [until ~750, then gmp]
+zlsh .................... fastest [until ~300, then gmp (gcc); until ~100 (clang)]
+zrsh .................... fastest [almost never]
+ztrunc(a, b, c) ......... fastest [until 750~2000, then gmp (gcc); until 1~500 (clang)]
 ztrunc(a, a, b) ......... fastest [until ~150, then 77 % of tomsfastmath]
 zsplit .................. fastest [until 100~200, then gmp]
 zcmpmag ................. fastest [always]
@@ -40,11 +40,11 @@ zcmp .................... fastest [almost never]
 zcmpi(a, +) ............. fastest
 zcmpi(a, -) ............. fastest
 zcmpu ................... fastest
-zbset(a, b, 1) .......... fastest [until ~900, then gmp]
+zbset(a, b, 1) .......... fastest [always (gcc+glibc); until 3500~3750 (gcc+musl); until ~100 (clang+glibc)]
 zbset(a, a, 1) .......... fastest [always]
-zbset(a, b, 0) .......... fastest [until 600~150, then gmp, also tomsfastmath after ~3000]
+zbset(a, b, 0) .......... fastest [until 3300~3800 (gcc); until ~800 (clang)]
 zbset(a, a, 0) .......... fastest [always]
-zbset(a, b, -1) ......... fastest [until ~1200, then gmp]
+zbset(a, b, -1) ......... fastest [until 3100~3400 (gcc); until ~200 (clang)]
 zbset(a, a, -1) ......... fastest [always]
 zbtest .................. fastest [always]
 zgcd .................... 21 % of gmp (zcmpmag)
