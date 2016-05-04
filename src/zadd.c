@@ -3,13 +3,13 @@
 
 
 static inline void
-zadd_impl(z_t a, z_t b, size_t n)
+zadd_impl_4(z_t a, z_t b, z_t c, size_t n)
 {
 	zahl_char_t carry = 0, tcarry;
 	size_t i;
 
 	for (i = 0; i < n; i++) {
-		tcarry = libzahl_add_overflow(a->chars + i, a->chars[i], b->chars[i]);
+		tcarry = libzahl_add_overflow(a->chars + i, b->chars[i], c->chars[i]);
 		carry = tcarry | (zahl_char_t)libzahl_add_overflow(a->chars + i, a->chars[i], carry);
 	}
 	while (carry) {
@@ -19,6 +19,12 @@ zadd_impl(z_t a, z_t b, size_t n)
 
 	if (a->used < i)
 		a->used = i;
+}
+
+static inline void
+zadd_impl_3(z_t a, z_t b, size_t n)
+{
+	zadd_impl_4(a, a, b, n);
 }
 
 static inline void
@@ -45,21 +51,21 @@ libzahl_zadd_unsigned(z_t a, z_t b, z_t c)
 			n = c->used;
 			zmemset(a->chars + a->used, 0, n - a->used);
 		}
-		zadd_impl(a, c, n);
+		zadd_impl_3(a, c, n);
 	} else if (unlikely(a == c)) {
 		if (a->used < b->used) {
 			n = b->used;
 			zmemset(a->chars + a->used, 0, n - a->used);
 		}
-		zadd_impl(a, b, n);
+		zadd_impl_3(a, b, n);
 	} else if (likely(b->used > c->used)) {
-		zmemcpy(a->chars, b->chars, b->used);
-		a->used = b->used;
-		zadd_impl(a, c, n);
+		zmemcpy(a->chars + n, b->chars + n, size - n);
+		a->used = size;
+		zadd_impl_4(a, b, c, n);
 	} else {
-		zmemcpy(a->chars, c->chars, c->used);
-		a->used = c->used;
-		zadd_impl(a, b, n);
+		zmemcpy(a->chars + n, c->chars + n, size - n);
+		a->used = size;
+		zadd_impl_4(a, b, c, n);
 	}
 
 	SET_SIGNUM(a, 1);
@@ -93,7 +99,7 @@ zadd_unsigned_assign(z_t a, z_t b)
 		n = b->used;
 		zmemset(a->chars + a->used, 0, n - a->used);
 	}
-	zadd_impl(a, b, n);
+	zadd_impl_3(a, b, n);
 
 	SET_SIGNUM(a, 1);
 }
