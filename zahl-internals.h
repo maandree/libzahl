@@ -110,7 +110,7 @@ struct zahl {
 void libzahl_realloc(struct zahl *, size_t);
 
 ZAHL_INLINE void
-libzahl_memcpy(register zahl_char_t *restrict d, register const zahl_char_t *restrict s, size_t n)
+libzahl_memcpy(register zahl_char_t *d, register const zahl_char_t *s, size_t n)
 {
 	size_t i;
 	if (n <= 4) {
@@ -124,10 +124,10 @@ libzahl_memcpy(register zahl_char_t *restrict d, register const zahl_char_t *res
 			d[3] = s[3];
 	} else {
 		for (i = 0; (i += 4) <= n;) {
-			d[i - 1] = s[i - 1];
-			d[i - 2] = s[i - 2];
-			d[i - 3] = s[i - 3];
 			d[i - 4] = s[i - 4];
+			d[i - 3] = s[i - 3];
+			d[i - 2] = s[i - 2];
+			d[i - 1] = s[i - 1];
 		}
 		if (i > n) {
 			i -= 4;
@@ -138,7 +138,7 @@ libzahl_memcpy(register zahl_char_t *restrict d, register const zahl_char_t *res
 			if (i < n)
 				d[i] = s[i], i++;
 			if (i < n)
-				d[i] = s[i], i++;
+				d[i] = s[i];
 		}
 	}
 }

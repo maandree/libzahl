@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 /* clang pretends to be GCC... */
 #if defined(__GNUC__) && defined(__clang__)
@@ -103,7 +104,6 @@ extern void *libzahl_temp_allocation;
 #define zpositive1(a, b)             (zpositive(a) + zpositive(b) > 0)
 #define zpositive2(a, b)             (zsignum(a) + zsignum(b) == 2)
 #define zzero2(a, b)                 (!(zsignum(a) | zsignum(b)))
-#define zmemmove(d, s, n)            memmove((d), (s), (n) * sizeof(zahl_char_t))
 #define zmemcpy(d, s, n)             libzahl_memcpy(d, s, n)
 #define zmemset(a, v, n)             libzahl_memset(a, v, n)
 
@@ -245,12 +245,8 @@ static inline void
 zswap_tainted_unsigned(z_t a, z_t b)
 {
 	z_t t;
-	t->used = b->used;
-	b->used = a->used;
-	a->used = t->used;
-	t->chars = b->chars;
-	b->chars = a->chars;
-	a->chars = t->chars;
+	SWAP(a, b, t, used);
+	SWAP(b, a, t, chars);
 }
 
 static inline void
@@ -398,3 +394,40 @@ zfree_temp(z_t a)
 					a__[i__] = OP(b__[i__]);  \
 		}                                                 \
 	} while (0)
+
+static inline void
+zmemcpyb(register zahl_char_t *restrict d, register const zahl_char_t *restrict s, size_t n_)
+{
+	ssize_t i, n = (ssize_t)n_;
+	switch (n & 3) {
+	case 3:
+		d[n - 1] = s[n - 1];
+		d[n - 2] = s[n - 2];
+		d[n - 3] = s[n - 3];
+		break;
+	case 2:
+		d[n - 1] = s[n - 1];
+		d[n - 2] = s[n - 2];
+		break;
+	case 1:
+		d[n - 1] = s[n - 1];
+		break;
+	default:
+		break;
+	}
+	for (i = n & ~3; (i -= 4) >= 0;) {
+		d[i + 3] = s[i + 3];
+		d[i + 2] = s[i + 2];
+		d[i + 1] = s[i + 1];
+		d[i + 0] = s[i + 0];
+	}
+}
+
+static inline void
+zmemmove(register zahl_char_t *d, register const zahl_char_t *s, size_t n)
+{
+	if (d < s)
+		zmemcpy(d, s, n);
+	else
+		zmemcpyb(d, s, n);
+}

@@ -18,10 +18,11 @@ zlsh(z_t a, z_t b, size_t bits)
 	cbits = BITS_PER_CHAR - bits;
 
 	ENSURE_SIZE(a, b->used + chars + 1);
-	if (likely(a == b))
-		zmemmove(a->chars + chars, b->chars, b->used);
-	else
+	if (likely(a == b)) {
+		zmemcpyb(a->chars + chars, b->chars, b->used);
+	} else {
 		zmemcpy(a->chars + chars, b->chars, b->used);
+	}
 	zmemset(a->chars, 0, chars);
 	a->used = b->used + chars;
 
