@@ -13,7 +13,7 @@
 		if (unlikely(chars >= a->used)) {\
 			ENSURE_SIZE(a, chars + 1);\
 			zmemset(a->chars + a->used, 0, chars + 1 - a->used);\
-			        a->used = chars + 1;\
+			a->used = chars + 1;\
 		}\
 	} else if (unlikely(chars >= a->used)) {\
 		return;\
