@@ -343,3 +343,31 @@ zfree_temp(z_t a)
 }
 
 /* } */
+
+#define ZMEM_OP(a, b, c, n, OP)                                               \
+	do {                                                                  \
+		zahl_char_t *a__ = (a);                                       \
+		const zahl_char_t *b__ = (b);                                 \
+		const zahl_char_t *c__ = (c);                                 \
+		size_t i__, n__ = (n);                                        \
+		if (n__ <= 4) {                                               \
+			if (n__ >= 1)                                         \
+				a__[0] = b__[0] OP c__[0];                    \
+			if (n__ >= 2)                                         \
+				a__[1] = b__[1] OP c__[1];                    \
+			if (n__ >= 3)                                         \
+				a__[2] = b__[2] OP c__[2];                    \
+			if (n__ >= 4)                                         \
+				a__[3] = b__[3] OP c__[3];                    \
+		} else {                                                      \
+			for (i__ = 0; (i__ += 4) < n__;) {                    \
+				a__[i__ - 1] = b__[i__ - 1] OP c__[i__ - 1];  \
+				a__[i__ - 2] = b__[i__ - 2] OP c__[i__ - 2];  \
+				a__[i__ - 3] = b__[i__ - 3] OP c__[i__ - 3];  \
+				a__[i__ - 4] = b__[i__ - 4] OP c__[i__ - 4];  \
+			}                                                     \
+			if (i__ > n__)                                        \
+				for (i__ -= 4; i__ < n__; i__++)              \
+					a__[i__] = b__[i__] OP c__[i__];      \
+		}                                                             \
+	} while (0)
