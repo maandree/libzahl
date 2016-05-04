@@ -26,18 +26,18 @@ zxor(z_t a, z_t b, z_t c)
 	ENSURE_SIZE(a, m);
 
 	if (a == b) {
-		ZMEM_OP(a->chars, a->chars, cc, n, ^);
+		ZMEM_2OP(a->chars, a->chars, cc, n, ^);
 		if (a->used < cn)
 			zmemcpy_range(a->chars, cc, n, m);
 	} else if (unlikely(a == c)) {
-		ZMEM_OP(a->chars, b->chars, cc, n, ^);
+		ZMEM_2OP(a->chars, b->chars, cc, n, ^);
 		if (a->used < bn)
 			zmemcpy_range(a->chars, bc, n, m);
 	} else if (m == bn) {
-		ZMEM_OP(a->chars, c->chars, b->chars, n, ^);
+		ZMEM_2OP(a->chars, c->chars, b->chars, n, ^);
 		zmemcpy_range(a->chars, b->chars, n, m);
 	} else {
-		ZMEM_OP(a->chars, b->chars, c->chars, n, ^);
+		ZMEM_2OP(a->chars, b->chars, c->chars, n, ^);
 		zmemcpy_range(a->chars, c->chars, n, m);
 	}
 

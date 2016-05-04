@@ -17,12 +17,12 @@ zand(z_t a, z_t b, z_t c)
 	a->used = MIN(b->used, c->used);
 
 	if (a == b) {
-		ZMEM_OP(a->chars, a->chars, c->chars, a->used, &);
+		ZMEM_2OP(a->chars, a->chars, c->chars, a->used, &);
 	} else if (unlikely(a == c)) {
-		ZMEM_OP(a->chars, a->chars, b->chars, a->used, &);
+		ZMEM_2OP(a->chars, a->chars, b->chars, a->used, &);
 	} else {
 		ENSURE_SIZE(a, a->used);
-		ZMEM_OP(a->chars, b->chars, c->chars, a->used, &);
+		ZMEM_2OP(a->chars, b->chars, c->chars, a->used, &);
 	}
 
 	TRIM_AND_SIGN(a, zpositive1(b, c) * 2 - 1);
