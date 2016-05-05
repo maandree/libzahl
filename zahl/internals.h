@@ -2,11 +2,7 @@
 
 #ifndef ZAHL_INLINE
 # if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-#  if defined(__GNUC__) || defined(__clang__)
-#   define ZAHL_INLINE  __attribute__((__always_inline__, __gnu_inline__)) static inline
-#  else
-#   define ZAHL_INLINE  static inline
-#  endif
+#  define ZAHL_INLINE  static inline
 # else
 #  define ZAHL_INLINE  static
 # endif

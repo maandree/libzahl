@@ -1,3 +1,21 @@
+The following functions are probably implemented optimally:
+
+zswap ................... always fastest
+zzero ................... always fastest (shared with gmp)
+zsignum ................. always fastest (shared with gmp)
+zeven ................... always fastest
+zodd .................... always fastest
+zeven_nonzero ........... always fastest
+zodd_nonzero ............ always fastest (shared with gmp)
+zbtest .................. always fastest
+
+
+The following functions are probably implemented close to
+optimally, further optimisation should not be a priority:
+
+zadd_unsigned ........... fastest after ~70 compared against zadd too (x86-64)
+
+
 Optimisation progress for libzahl, compared to other big integer
 libraries. These comparisons are for 152-bit integers. Functions
 in parenthesis the right column are functions that needs
@@ -10,26 +28,18 @@ zset .................... fastest [always]
 zseti ................... tomsfastmath is faster [always]
 zsetu ................... tomsfastmath is faster [always]
 zneg(a, b) .............. fastest [always]
-zneg(a, a) .............. fastest [always] (shared with gmp)
+zneg(a, a) .............. fastest [always] (shared with gmp; faster with clang)
 zabs(a, b) .............. fastest [always]
 zabs(a, a) .............. tomsfastmath is faster [always]
-zadd_unsigned ........... fastest [always]
-zsub_unsigned ........... fastest [always]
-zadd .................... fastest [after ~100, tomsfastmath before] (shared with gmp)
+zsub_unsigned ........... fastest [always] (compared against zsub too)
+zadd .................... fastest [after ~110, tomsfastmath before] (x86-64)
 zsub .................... fastest [always]
 zand .................... 77 % of tomsfastmath [until ~900, alternating with gmp]
 zor ..................... 65 % of tomsfastmath [until ~1750, alternating with gmp (gcc) and tomsfastmath (clang)]
 zxor .................... 87 % of tomsfastmath [until ~700, alternating with gmp (gcc+clangs),]
 znot .................... fastest [always]
-zeven ................... fastest [always]
-zodd .................... fastest [always]
-zeven_nonzero ........... fastest [always]
-zodd_nonzero ............ fastest [always]
-zzero ................... fastest [always] (shared with gmp)
-zsignum ................. fastest [always] (shared with gmp)
 zbits ................... fastest [always]
 zlsb .................... fastest [always]
-zswap ................... fastest [always]
 zlsh .................... fastest [until ~1000, then gmp]
 zrsh .................... fastest [almost never]
 ztrunc(a, b, c) ......... fastest [always; alternating with gmp between 1400~3000 (clang)]
@@ -46,7 +56,6 @@ zbset(a, b, 0) .......... fastest [always]
 zbset(a, a, 0) .......... fastest [always]
 zbset(a, b, -1) ......... fastest [always]
 zbset(a, a, -1) ......... fastest [always]
-zbtest .................. fastest [always]
 zgcd .................... 21 % of gmp (zcmpmag)
 zmul .................... slowest
 zsqr .................... slowest (zmul)
