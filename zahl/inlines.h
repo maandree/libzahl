@@ -254,7 +254,7 @@ zsplit(z_t high, z_t low, z_t a, size_t delim)
 }
 
 
-ZAHL_O2 ZAHL_INLINE size_t
+ZAHL_INLINE size_t
 zsave(z_t a, void *buffer)
 {
 	if (ZAHL_LIKELY(buffer)) {
