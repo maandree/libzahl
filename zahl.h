@@ -12,7 +12,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "zahl-internals.h"
+#include "zahl/internals.h"
 
 
 
@@ -175,6 +175,6 @@ void zbset_ll_flip(z_t, size_t);        /* zbset(a, a, b, -1) */
 
 
 
-#include "zahl-inlines.h"
+#include "zahl/inlines.h"
 
 #endif

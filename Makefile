@@ -1,9 +1,8 @@
 include config.mk
 
-HDR_PUBLIC =\
-	zahl.h\
-	zahl-inlines.h\
-	zahl-internals.h
+HDR_SEMIPUBLIC =\
+	zahl/inlines.h\
+	zahl/internals.h
 
 HDR_PRIVATE =\
 	src/internals.h
@@ -70,10 +69,11 @@ INLINE_FUN =\
 DOC =\
 	refsheet.pdf
 
-HDR  = $(HDR_PUBLIC) $(HDR_PRIVATE)
-OBJ  = $(FUN:=.o) allocator.o
-MAN3 = $(FUN:=.3) $(INLINE_FUN:=.3)
-MAN7 = libzahl.7
+HDR_PUBLIC = zahl.h $(HDR_SEMIPUBLIC)
+HDR        = $(HDR_PUBLIC) $(HDR_PRIVATE)
+OBJ        = $(FUN:=.o) allocator.o
+MAN3       = $(FUN:=.3) $(INLINE_FUN:=.3)
+MAN7       = libzahl.7
 
 VPATH = src
 
@@ -153,7 +153,7 @@ check: test
 
 install: libzahl.a
 	mkdir -p -- "$(DESTDIR)$(EXECPREFIX)/lib"
-	mkdir -p -- "$(DESTDIR)$(PREFIX)/include"
+	mkdir -p -- "$(DESTDIR)$(PREFIX)/include/zahl"
 	mkdir -p -- "$(DESTDIR)$(MANPREFIX)/man3"
 	mkdir -p -- "$(DESTDIR)$(MANPREFIX)/man7"
 	mkdir -p -- "$(DESTDIR)$(DOCPREFIX)/libzahl"
@@ -162,7 +162,8 @@ install: libzahl.a
 		(printf '\n\n!!  DESTDIR must be an absolute path.  !!\n\n\n' ; exit 1) \
 	fi
 	cp -- libzahl.a "$(DESTDIR)$(EXECPREFIX)/lib"
-	cp -- $(HDR_PUBLIC) "$(DESTDIR)$(PREFIX)/include"
+	cp -- zahl.h "$(DESTDIR)$(PREFIX)/include"
+	cp -- $(HDR_SEMIPUBLIC) "$(DESTDIR)$(PREFIX)/include/zahl"
 	cd man && cp -- $(MAN3) "$(DESTDIR)$(MANPREFIX)/man3"
 	cd man && cp -- $(MAN7) "$(DESTDIR)$(MANPREFIX)/man7"
 	cp -- $(DOC) "$(DESTDIR)$(DOCPREFIX)/libzahl"
@@ -170,6 +171,7 @@ install: libzahl.a
 uninstall:
 	-rm -- "$(DESTDIR)$(EXECPREFIX)/lib/libzahl.a"
 	-cd -- "$(DESTDIR)$(PREFIX)/include" && rm $(HDR_PUBLIC)
+	-rmdir -- "$(DESTDIR)$(PREFIX)/include/zahl"
 	-cd -- "$(DESTDIR)$(MANPREFIX)/man3" && rm $(MAN3)
 	-cd -- "$(DESTDIR)$(MANPREFIX)/man7" && rm $(MAN7)
 	-cd -- "$(DESTDIR)$(DOCPREFIX)/libzahl" && rm $(DOC)
