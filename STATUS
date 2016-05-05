@@ -6,7 +6,7 @@ following combinations of cc and libc:
     gcc + musl
     clang + glibc
 
-All benchmarks are done on a x86-64 (specifically an Intel
+All benchmarks are done on an x86-64 (specifically an Intel
 Core 2 Quad CPU Q9300), without any extensions turned on
 during compilation, and without any use of extensions in
 assembly code. The benchmarks are performed with Linux as
@@ -14,8 +14,11 @@ the OS's kernel with 50 µs timer slack, and the benchmarking
 processes are fixed to one CPU.
 
 
-   The following functions are probably implemented optimally:
+  The following functions are probably implemented optimally:
 
+zseti(a, +) ............. tomsfastmath is faster
+zseti(a, -) ............. tomsfastmath is faster
+zsetu ................... tomsfastmath is faster
 zswap ................... always fastest
 zzero ................... always fastest (shared with gmp)
 zsignum ................. always fastest (shared with gmp)
@@ -31,6 +34,10 @@ zbtest .................. always fastest
 
 zadd_unsigned ........... fastest after ~70 compared against zadd too (x86-64)
 ztrunc(a, a, b) ......... fastest until ~100, then 77 % (gcc) or 68 % (clang) of tomsfastmath
+zbset(a, a, 1) .......... always fastest (93 % of gmp (clang))
+zbset(a, a, 0) .......... always fastest
+zbset(a, a, -1) ......... always fastest
+zlsb .................... always fastest <<suspicious>>
 
 
   The following functions are probably implemented optimally, but
@@ -39,6 +46,10 @@ ztrunc(a, a, b) ......... fastest until ~100, then 77 % (gcc) or 68 % (clang) of
 zneg(a, b) .............. always fastest
 zabs(a, b) .............. always fastest
 ztrunc(a, b, c) ......... always fastest (alternating with gmp between 1400~3000 (clang+glibc))
+zbset(a, b, 1) .......... always fastest
+zbset(a, b, 0) .......... always fastest
+zbset(a, b, -1) ......... always fastest
+zsplit .................. alternating with gmp for fastest
 
 
   The following functions require structural changes for
@@ -53,6 +64,15 @@ zxor .................... fastest until ~700, alternating with gmp (gcc+glibc)
 znot .................... always fastest
 
 
+  The following functions are probably implemented optimally
+  or close to optimally, except it contains some code that
+  should not be necessary after some bugs have been fixed:
+
+zbits ................... always fastest
+zcmpi(a, +) ............. always fastest
+zcmpi(a, -) ............. always fastest
+zcmpu ................... always fastest
+
 
 
 
@@ -64,27 +84,13 @@ left column. Double-parenthesis means there may be a better way
 to do it. Inside square-brackets, there are some comments on
 multi-bit comparisons.
 
-zseti ................... tomsfastmath is faster [always]
-zsetu ................... tomsfastmath is faster [always]
 zsub_unsigned ........... fastest [always] (compared against zsub too)
 zadd .................... fastest [after ~110, tomsfastmath before] (x86-64)
 zsub .................... fastest [always]
-zbits ................... fastest [always]
-zlsb .................... fastest [always]
 zlsh .................... fastest [until ~1000, then gmp]
 zrsh .................... fastest [almost never]
-zsplit .................. fastest [alternating with gmp and slightly slow than gmp]
-zcmpmag ................. fastest [always]
+zcmpmag ................. fastest [always] (suspicious)
 zcmp .................... fastest [almost never]
-zcmpi(a, +) ............. fastest [always]
-zcmpi(a, -) ............. fastest [always]
-zcmpu ................... fastest [always]
-zbset(a, b, 1) .......... fastest [always]
-zbset(a, a, 1) .......... fastest [always]
-zbset(a, b, 0) .......... fastest [always]
-zbset(a, a, 0) .......... fastest [always]
-zbset(a, b, -1) ......... fastest [always]
-zbset(a, a, -1) ......... fastest [always]
 zgcd .................... 21 % of gmp (zcmpmag)
 zmul .................... slowest
 zsqr .................... slowest (zmul)
