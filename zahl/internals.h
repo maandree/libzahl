@@ -2,7 +2,11 @@
 
 #ifndef ZAHL_INLINE
 # if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-#  define ZAHL_INLINE  static inline
+#  if defined(__GNUC__) || defined(__clang__)
+#   define ZAHL_INLINE  __attribute__((__always_inline__, __gnu_inline__)) static inline
+#  else
+#   define ZAHL_INLINE  static inline
+#  endif
 # else
 #  define ZAHL_INLINE  static
 # endif
@@ -20,15 +24,15 @@
 
 
 #if defined(__GNUC__) && !defined(__clang__)
-# define ZAHL_O0     __attribute__((optimize("O0")))
-# define ZAHL_O1     __attribute__((optimize("O1")))
-# define ZAHL_O2     __attribute__((optimize("O2")))
-# define ZAHL_O3     __attribute__((optimize("O3")))
-# define ZAHL_Ofast  __attribute__((optimize("Ofast")))
-# define ZAHL_Os     __attribute__((optimize("Os")))
-# define ZAHL_Oz     __attribute__((optimize("Os")))
+# define ZAHL_O0     __attribute__((__optimize__("O0")))
+# define ZAHL_O1     __attribute__((__optimize__("O1")))
+# define ZAHL_O2     __attribute__((__optimize__("O2")))
+# define ZAHL_O3     __attribute__((__optimize__("O3")))
+# define ZAHL_Ofast  __attribute__((__optimize__("Ofast")))
+# define ZAHL_Os     __attribute__((__optimize__("Os")))
+# define ZAHL_Oz     __attribute__((__optimize__("Os")))
 #elif defined(__clang__)
-# define ZAHL_O0     __attribute__((optnone))
+# define ZAHL_O0     __attribute__((__optnone__))
 # define ZAHL_O1     /* Don't know how. */
 # define ZAHL_O2     /* Don't know how. */
 # define ZAHL_O3     /* Don't know how. */
