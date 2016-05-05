@@ -142,7 +142,7 @@ benchmark-func: bench/benchmark-func.c bench/benchmark.h $(BENCHMARK_DEP_$(BENCH
 		$(BENCHMARK_LIB_$(BENCHMARK_LIB)) $(BENCHMARK_C_$(BENCHMARK_LIB))
 
 benchmark-zrand: bench/benchmark-zrand.c bench/benchmark.h libzahl.a
-	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark-zrand.c libzahl.a
 
 refsheet.pdf: doc/refsheet.tex
 	yes X | pdflatex doc/refsheet.tex
