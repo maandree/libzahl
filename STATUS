@@ -38,6 +38,7 @@ zbset(a, a, 1) .......... always fastest (93 % of gmp (clang))
 zbset(a, a, 0) .......... always fastest
 zbset(a, a, -1) ......... always fastest
 zlsb .................... always fastest <<suspicious>>
+zlsh .................... fastest until ~3400, then tomsfastmath, clang and musl are a bit slow
 
 
   The following functions are probably implemented optimally, but
@@ -59,13 +60,15 @@ zset .................... always fastest
 zneg(a, a) .............. always fastest (shared with gmp; faster with clang)
 zabs(a, a) .............. tomsfastmath is faster (46 % of tomsfastmath with clang)
 zand .................... fastest until ~900, alternating with gmp
-zor ..................... fastest until ~1750, alternating with gmp (gcc) and tomsfastmath (clang)]
+zor ..................... fastest until ~1750, alternating with gmp (gcc) and tomsfastmath (clang)
 zxor .................... fastest until ~700, alternating with gmp (gcc+glibc)
 znot .................... always fastest
+zsave ................... fastest until ~300, then tomsfastmath; libtommath is suspicious
+zload ................... always fastest
 
 
   The following functions are probably implemented optimally
-  or close to optimally, except it contains some code that
+  or close to optimally, except they contains some code that
   should not be necessary after some bugs have been fixed:
 
 zbits ................... always fastest
@@ -74,8 +77,23 @@ zcmpi(a, -) ............. always fastest
 zcmpu ................... always fastest
 
 
+  It may be possible optimise the following functions
+  further:
+
+zadd .................... fastest after ~110 (x86-64)
+zcmp .................... acceptable (glibc); almost always fastest (musl)
+zcmpmag ................. always fastest <<suspicious, see zcmp>>
 
 
+  The following functions could be optimised further:
+
+zrsh .................... gmp is almost always faster
+zsub_unsigned ........... always fastest (compared against zsub too)
+zsub .................... always fastest
+
+
+
+{{{ [legacy area, this beign phased out]
 Optimisation progress for libzahl, compared to other big integer
 libraries. These comparisons are for 152-bit integers. Functions
 in parenthesis the right column are functions that needs
@@ -84,13 +102,6 @@ left column. Double-parenthesis means there may be a better way
 to do it. Inside square-brackets, there are some comments on
 multi-bit comparisons.
 
-zsub_unsigned ........... fastest [always] (compared against zsub too)
-zadd .................... fastest [after ~110, tomsfastmath before] (x86-64)
-zsub .................... fastest [always]
-zlsh .................... fastest [until ~1000, then gmp]
-zrsh .................... fastest [almost never]
-zcmpmag ................. fastest [always] (suspicious)
-zcmp .................... fastest [almost never]
 zgcd .................... 21 % of gmp (zcmpmag)
 zmul .................... slowest
 zsqr .................... slowest (zmul)
@@ -107,14 +118,13 @@ zstr_length(a, 10) ...... gmp is faster [always] (zdiv, zsqr)
 zstr(a, b, n) ........... 8 % of gmp
 zrand(default uniform) .. 51 % of gmp
 zptest .................. slowest (zrand, zmodpow, zsqr, zmod)
-zsave ................... fastest [until ~250, then tomsfastmath; libtommath is suspicious]
-zload ................... fastest [always]
 zdiv(big denum) ......... tomsfastmath is faster (zdivmod)
 zmod(big denum) ......... fastest (zdivmod)
 zdivmod(big denum) ...... fastest
 zdiv(tiny denum) ........ slowest
 zmod(tiny denum) ........ slowest
 zdivmod(tiny denum) ..... slowest
+}}}
 
 
 
