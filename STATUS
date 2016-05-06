@@ -97,7 +97,7 @@ zsub .................... always fastest
   optimising their dependencies:
 
 zmul .................... fastest after ~4096
-zsqr .................... slowest, but asymptotically fastest (for now, use zmul instead)
+zsqr .................... slowest, but asymptotically fastest
 zstr_length(a, 10) ...... gmp is faster
 zstr(a, b, n) ........... fastest after ~700
 
