@@ -46,15 +46,15 @@ zpow(z_t a, z_t b, z_t c)
 		x = tc->chars[i];
 		for (j = BITS_PER_CHAR; j--; x >>= 1) {
 			if (x & 1)
-				zmul_impl(a, a, tb);
-			zsqr_impl(tb, tb);
+				zmul_ll(a, a, tb);
+			zsqr_ll(tb, tb);
 		}
 	}
 	x = tc->chars[i];
 	for (; x; x >>= 1) {
 		if (x & 1)
-			zmul_impl(a, a, tb);
-		zsqr_impl(tb, tb);
+			zmul_ll(a, a, tb);
+		zsqr_ll(tb, tb);
 	}
 
 	if (neg)

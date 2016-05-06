@@ -24,11 +24,11 @@ zpowu(z_t a, z_t b, unsigned long long int c)
 	zsetu(a, 1);
 
 	if (c & 1)
-		zmul_impl(a, a, tb);
+		zmul_ll(a, a, tb);
 	while (c >>= 1) {
-		zsqr_impl(tb, tb);
+		zsqr_ll(tb, tb);
 		if (c & 1)
-			zmul_impl(a, a, tb);
+			zmul_ll(a, a, tb);
 	}
 
 	if (neg)

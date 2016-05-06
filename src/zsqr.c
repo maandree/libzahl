@@ -3,7 +3,7 @@
 
 
 static inline void
-zsqr_impl_single_char(z_t a, z_t b)
+zsqr_ll_single_char(z_t a, z_t b)
 {
 	ENSURE_SIZE(a, 1);
 	a->used = 1;
@@ -12,7 +12,7 @@ zsqr_impl_single_char(z_t a, z_t b)
 }
 
 void
-zsqr_impl(z_t a, z_t b)
+zsqr_ll(z_t a, z_t b)
 {
 	/*
 	 * Karatsuba algorithm, optimised for equal factors.
@@ -26,7 +26,7 @@ zsqr_impl(z_t a, z_t b)
 	bits = zbits(b);
 
 	if (bits <= BITS_PER_CHAR / 2) {
-		zsqr_impl_single_char(a, b);
+		zsqr_ll_single_char(a, b);
 		return;
 	}
 
@@ -47,18 +47,18 @@ zsqr_impl(z_t a, z_t b)
 
 
 	if (unlikely(zzero(low))) {
-		zsqr_impl(z2, high);
+		zsqr_ll(z2, high);
 		zlsh(a, z2, bits << 1);
 	} else {
 		zinit_temp(z0);
 		zinit_temp(z1);
 
-		zsqr_impl(z0, low);
+		zsqr_ll(z0, low);
 
-		zmul_impl(z1, low, high);
+		zmul_ll(z1, low, high);
 		zlsh(z1, z1, bits + 1);
 
-		zsqr_impl(z2, high);
+		zsqr_ll(z2, high);
 		zlsh(a, z2, bits << 1);
 
 		zadd_unsigned_assign(a, z1);
@@ -66,16 +66,5 @@ zsqr_impl(z_t a, z_t b)
 
 		zfree_temp(z1);
 		zfree_temp(z0);
-	}
-}
-
-void
-zsqr(z_t a, z_t b)
-{
-	if (unlikely(zzero(b))) {
-		SET_SIGNUM(a, 0);
-	} else {
-		zsqr_impl(a, b);
-		SET_SIGNUM(a, 1);
 	}
 }

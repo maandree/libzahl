@@ -266,3 +266,28 @@ zsave(z_t a, void *buffer)
 	}
 	return sizeof(int) + sizeof(size_t) + (zzero(a) ? 0 : a->used * sizeof(zahl_char_t));
 }
+
+
+ZAHL_INLINE void
+zmul(z_t a, z_t b, z_t c)
+{
+	int b_sign, c_sign;
+	b_sign = b->sign, b->sign *= b_sign;
+	c_sign = c->sign, c->sign *= c_sign;
+	zmul_ll(a, b, c);
+	c->sign = c_sign;
+	b->sign = b_sign;
+	ZAHL_SET_SIGNUM(a, zsignum(b) * zsignum(c));
+}
+
+
+ZAHL_INLINE void
+zsqr(z_t a, z_t b)
+{
+	if (ZAHL_UNLIKELY(zzero(b))) {
+		ZAHL_SET_SIGNUM(a, 0);
+	} else {
+		zsqr_ll(a, b);
+		ZAHL_SET_SIGNUM(a, 1);
+	}
+}

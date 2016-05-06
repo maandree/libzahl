@@ -91,12 +91,12 @@ ZAHL_INLINE void zabs(z_t, z_t);        /* a := |b| */
 ZAHL_INLINE void zneg(z_t, z_t);        /* a := -b */
 void zadd(z_t, z_t, z_t);               /* a := b + c */
 void zsub(z_t, z_t, z_t);               /* a := b - c */
-void zmul(z_t, z_t, z_t);               /* a := b * c */
+ZAHL_INLINE void zmul(z_t, z_t, z_t);   /* a := b * c */
 void zmodmul(z_t, z_t, z_t, z_t);       /* a := (b * c) % d */
 void zdiv(z_t, z_t, z_t);               /* a := b / c */
 void zdivmod(z_t, z_t, z_t, z_t);       /* a := c / d, b = c % d */
 void zmod(z_t, z_t, z_t);               /* a := b % c */
-void zsqr(z_t, z_t);                    /* a := b² */
+ZAHL_INLINE void zsqr(z_t, z_t);        /* a := b² */
 void zmodsqr(z_t, z_t, z_t);            /* a := b² % c */
 void zpow(z_t, z_t, z_t);               /* a := b ↑ c */
 void zmodpow(z_t, z_t, z_t, z_t);       /* a := (b ↑ c) % d */
@@ -172,6 +172,8 @@ void zperror(const char *);             /* Identical to perror(3p) except it sup
 void zbset_ll_set(z_t, size_t);         /* zbset(a, a, b, 1) */
 void zbset_ll_clear(z_t, size_t);       /* zbset(a, a, b, 0) */
 void zbset_ll_flip(z_t, size_t);        /* zbset(a, a, b, -1) */
+void zmul_ll(z_t, z_t, z_t);            /* zmul for non-negative operands */
+void zsqr_ll(z_t, z_t);                 /* zsqr for non-negative operand */
 
 
 

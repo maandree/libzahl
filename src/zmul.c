@@ -3,7 +3,7 @@
 
 
 static inline void
-zmul_impl_single_char(z_t a, z_t b, z_t c)
+zmul_ll_single_char(z_t a, z_t b, z_t c)
 {
 	ENSURE_SIZE(a, 1);
 	a->used = 1;
@@ -12,7 +12,7 @@ zmul_impl_single_char(z_t a, z_t b, z_t c)
 }
 
 void
-zmul_impl(z_t a, z_t b, z_t c)
+zmul_ll(z_t a, z_t b, z_t c)
 {
 	/*
 	 * Karatsuba algorithm
@@ -41,7 +41,7 @@ zmul_impl(z_t a, z_t b, z_t c)
 	m2 = b == c ? m : zbits(c);
 
 	if (m + m2 <= BITS_PER_CHAR) {
-		zmul_impl_single_char(a, b, c);
+		zmul_ll_single_char(a, b, c);
 		return;
 	}
 
@@ -57,11 +57,11 @@ zmul_impl(z_t a, z_t b, z_t c)
 	zsplit_pz(c_high, c_low, c, m2);
 
 
-	zmul_impl(z0, b_low, c_low);
+	zmul_ll(z0, b_low, c_low);
 	zadd_unsigned_assign(b_low, b_high);
 	zadd_unsigned_assign(c_low, c_high);
-	zmul_impl(z1, b_low, c_low);
-	zmul_impl(z2, b_high, c_high);
+	zmul_ll(z1, b_low, c_low);
+	zmul_ll(z2, b_high, c_high);
 
 	zsub_nonnegative_assign(z1, z0);
 	zsub_nonnegative_assign(z1, z2);
@@ -77,16 +77,4 @@ zmul_impl(z_t a, z_t b, z_t c)
 	zfree_temp(c_high);
 	zfree_temp(b_low);
 	zfree_temp(b_high);
-}
-
-void
-zmul(z_t a, z_t b, z_t c)
-{
-	int b_sign, c_sign;
-	b_sign = b->sign, b->sign *= b_sign;
-	c_sign = c->sign, c->sign *= c_sign;
-	zmul_impl(a, b, c);
-	c->sign *= c_sign;
-	b->sign *= b_sign;
-	SET_SIGNUM(a, zsignum(b) * zsignum(c));
 }

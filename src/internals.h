@@ -107,9 +107,6 @@ extern void *libzahl_temp_allocation;
 #define zmemcpy(d, s, n)             libzahl_memcpy(d, s, n)
 #define zmemset(a, v, n)             libzahl_memset(a, v, n)
 
-void zmul_impl(z_t a, z_t b, z_t c);
-void zsqr_impl(z_t a, z_t b);
-
 static inline int
 zzero1(z_t a, z_t b)
 {
