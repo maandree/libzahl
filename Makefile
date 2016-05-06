@@ -11,14 +11,12 @@ FUN =\
 	zadd\
 	zand\
 	zbset\
-	zdiv\
 	zdivmod\
 	zerror\
 	zfree\
 	zgcd\
 	zload\
 	zlsh\
-	zmod\
 	zmodmul\
 	zmodpow\
 	zmodpowu\
@@ -50,10 +48,12 @@ INLINE_FUN =\
 	zcmpi\
 	zcmpmag\
 	zcmpu\
+	zdiv\
 	zeven\
 	zeven_nonzero\
 	zinit\
 	zlsb\
+	zmod\
 	zneg\
 	zodd\
 	zodd_nonzero\

@@ -107,6 +107,10 @@ struct zahl {
 };
 
 
+extern struct zahl libzahl_tmp_div[1];
+extern struct zahl libzahl_tmp_mod[1];
+
+
 void libzahl_realloc(struct zahl *, size_t);
 
 ZAHL_INLINE void

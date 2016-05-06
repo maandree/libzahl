@@ -93,9 +93,9 @@ void zadd(z_t, z_t, z_t);               /* a := b + c */
 void zsub(z_t, z_t, z_t);               /* a := b - c */
 ZAHL_INLINE void zmul(z_t, z_t, z_t);   /* a := b * c */
 void zmodmul(z_t, z_t, z_t, z_t);       /* a := (b * c) % d */
-void zdiv(z_t, z_t, z_t);               /* a := b / c */
+ZAHL_INLINE void zdiv(z_t, z_t, z_t);   /* a := b / c */
 void zdivmod(z_t, z_t, z_t, z_t);       /* a := c / d, b = c % d */
-void zmod(z_t, z_t, z_t);               /* a := b % c */
+ZAHL_INLINE void zmod(z_t, z_t, z_t);   /* a := b % c */
 ZAHL_INLINE void zsqr(z_t, z_t);        /* a := b² */
 void zmodsqr(z_t, z_t, z_t);            /* a := b² % c */
 void zpow(z_t, z_t, z_t);               /* a := b ↑ c */

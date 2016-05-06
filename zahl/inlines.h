@@ -291,3 +291,17 @@ zsqr(z_t a, z_t b)
 		ZAHL_SET_SIGNUM(a, 1);
 	}
 }
+
+
+ZAHL_INLINE void
+zdiv(z_t a, z_t b, z_t c)
+{
+	zdivmod(a, libzahl_tmp_div, b, c);
+}
+
+
+ZAHL_INLINE void
+zmod(z_t a, z_t b, z_t c)
+{
+	zdivmod(libzahl_tmp_mod, a, b, c);
+}
