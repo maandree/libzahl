@@ -34,16 +34,47 @@
 
 
 ZAHL_INLINE void
-libzahl_memcpy(register zahl_char_t *restrict d, register const zahl_char_t *restrict s, size_t n)
+libzahl_memcpy(register zahl_char_t *restrict d, register const zahl_char_t *restrict s, register size_t n)
 {
-	size_t i;
 #define LIBZAHL_X(I)  case I:  d[I - 1] = s[I - 1];
 	LIBZAHL_SMALL_INPUT_BEGIN(n);
-	for (i = 0; i < n; i += 4) {
-		d[i + 0] = s[i + 0];
-		d[i + 1] = s[i + 1];
-		d[i + 2] = s[i + 2];
-		d[i + 3] = s[i + 3];
+	{
+#if defined(__x86_64__) && !defined(ZAHL_NO_ASM)
+		/* This crap is needed for clang. */
+		register zahl_char_t t;
+		__asm__ __volatile__ (
+# if defined(ZAHL_ISA_MISSING_INDIRECT_JUMP)
+			"\n    testq %[e], %[e]"
+			"\n    jz 2f"
+# endif
+			"\n    shlq $3, %[e]"
+			"\n    addq %[d], %[e]"
+			"\n 1:"
+			"\n    movq 0(%[s]), %[t]"
+			"\n    movq %[t], 0(%[d])"
+			"\n    movq 8(%[s]), %[t]"
+			"\n    movq %[t], 8(%[d])"
+			"\n    movq 16(%[s]), %[t]"
+			"\n    movq %[t], 16(%[d])"
+			"\n    movq 24(%[s]), %[t]"
+			"\n    movq %[t], 24(%[d])"
+			"\n    addq $32, %[s]"
+			"\n    addq $32, %[d]"
+			"\n    cmpq %[e], %[d]"
+			"\n    jl 1b"
+# if defined(ZAHL_ISA_MISSING_INDIRECT_JUMP)
+			"\n 2:"
+# endif
+			: [t]"=r"(t), [d]"+r"(d), [s]"+r"(s), [e]"+r"(n));
+#else
+		size_t i;
+		for (i = 0; i < n; i += 4) {
+			d[i + 0] = s[i + 0];
+			d[i + 1] = s[i + 1];
+			d[i + 2] = s[i + 2];
+			d[i + 3] = s[i + 3];
+		}
+#endif
 	}
 	LIBZAHL_SMALL_INPUT_END;
 #undef LIBZAHL_X

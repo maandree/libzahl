@@ -18,7 +18,7 @@ processes are fixed to one CPU.
 
   The following functions are probably implemented optimally:
 
-zset .................... always fastest (gcc); until ~1200 (clang [can be fixed with assembly])
+zset .................... always fastest
 zseti(a, +) ............. tomsfastmath is faster
 zseti(a, -) ............. tomsfastmath is faster
 zsetu ................... tomsfastmath is faster
@@ -30,8 +30,20 @@ zodd .................... always fastest (shared with gmp)
 zeven_nonzero ........... always fastest (shared with gmp)
 zodd_nonzero ............ always fastest (shared with gmp)
 zbtest .................. always fastest
-zsave ................... always fastest [clang needs zset fix]
-zload ................... always fastest [clang needs zset fix]
+zsave ................... always fastest
+zload ................... always fastest
+
+
+  The following functions are probably implemented optimally, but
+  depends on other functions or call-cases for better performance:
+
+zneg(a, b) .............. always fastest
+zabs(a, b) .............. always fastest
+ztrunc(a, b, c) ......... always fastest
+zbset(a, b, 1) .......... always fastest
+zbset(a, b, 0) .......... always fastest
+zbset(a, b, -1) ......... always fastest
+zsplit .................. alternating with gmp for fastest, but gmp is a bit faster on average
 
 
   The following functions are probably implemented close to
@@ -40,26 +52,14 @@ zload ................... always fastest [clang needs zset fix]
 zadd_unsigned ........... fastest after ~140 (depends on cc and libc) compared against zadd too
 ztrunc(a, a, b) ......... fastest until ~100, then 77 % (gcc) or 68 % (clang) of tomsfastmath
 zbset(a, a, 1) .......... always fastest
-zbset(a, a, 0) .......... always fastest (faster with clang than gcc)
+zbset(a, a, 0) .......... always fastest
 zbset(a, a, -1) ......... always fastest (only marginally faster than gmp with clang)
 zlsb .................... always fastest <<suspicious>>
 zlsh .................... not too fast anymore
-zand .................... fastest after ~400, tomsfastmath before (gcc+glibc is slow)
-zor ..................... fastest after ~1150, tomsfastmath before (gcc+glibc is slow)
-zxor .................... fastest after ~400, tomsfastmath before (clang), gcc is slow
-znot .................... always fastest (faster with musl than glibc)
-
-
-  The following functions are probably implemented optimally, but
-  depends on other functions or call-cases for better performance:
-
-zneg(a, b) .............. always fastest (gcc+musl); gcc is a bit slow [clang needs zset fix]
-zabs(a, b) .............. always fastest (gcc+musl); gcc is a bit slow [clang needs zset fix]
-ztrunc(a, b, c) ......... always fastest (gcc+musl); gcc is a bit slow [clang needs zset fix]
-zbset(a, b, 1) .......... always fastest (gcc+musl); gcc is a bit slow [clang needs zset fix]
-zbset(a, b, 0) .......... always fastest (gcc+musl); gcc is a bit slow [clang needs zset fix]
-zbset(a, b, -1) ......... always fastest (gcc+musl); gcc is a bit slow [clang needs zset fix]
-zsplit .................. alternating with gmp for fastest (clang and glibc is slower)
+zand .................... fastest after ~400, tomsfastmath before
+zor ..................... fastest after ~1150, tomsfastmath before
+zxor .................... alternative with gmp after ~700, tomsfastmath before (musl), a bit slow with glibc
+znot .................... always fastest
 
 
   The following functions require structural changes for

@@ -33,4 +33,6 @@ libzahl contains some (very little) assembly code. In the event
 that the used instructions are not supported on your machine, please
 report it, and in the meanwhile add -DZAHL_NO_ASM to CPPFLAGS. You
 make also have to do this if you are compiling with a compiler that
-does not support extended inline assembly.
+does not support extended inline assembly. You may also have to add
+    #define ZAHL_NO_ASM
+to your program before includeing <zahl.h>
