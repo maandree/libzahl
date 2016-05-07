@@ -1,10 +1,12 @@
 Optimisation progress for libzahl. Benchmarks are done in the
-range 1 to 4097 bits. So far all benchmarks are done with the
-following combinations of cc and libc:
+range 1 to 4097 bits. So far all benchmarks on libzahl are
+done with the following combinations of cc and libc:
 
     gcc + glibc
     gcc + musl
     clang + glibc
+
+Benchmarks on the other libraries are done with gcc and glibc.
 
 All benchmarks are done on an x86-64 (specifically an Intel
 Core 2 Quad CPU Q9300), without any extensions turned on
@@ -63,7 +65,7 @@ zand .................... fastest until ~900, alternating with gmp
 zor ..................... fastest until ~1750, alternating with gmp (gcc) and tomsfastmath (clang)
 zxor .................... fastest until ~700, alternating with gmp (gcc+glibc)
 znot .................... always fastest
-zsave ................... fastest until ~300, then tomsfastmath; libtommath is suspicious
+zsave ................... always fastest
 zload ................... always fastest
 
 

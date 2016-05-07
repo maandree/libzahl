@@ -377,7 +377,7 @@ zptest(z_t w, z_t a, int t)
 static inline size_t
 zsave(z_t a, char *b)
 {
-	_tmp = b ? mp_signed_bin_size(a) : mp_to_signed_bin(a, (unsigned char *)b);
+	_tmp = !b ? mp_signed_bin_size(a) : mp_to_signed_bin(a, (unsigned char *)b);
 	return _tmp;
 }
 

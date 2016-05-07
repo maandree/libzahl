@@ -325,7 +325,7 @@ zxor(z_t r, z_t a, z_t b)
 static inline size_t
 zsave(z_t a, char *s)
 {
-	_tmp = s ? fp_signed_bin_size(a) : (fp_to_signed_bin(a, (unsigned char *)s), 0);
+	_tmp = !s ? fp_signed_bin_size(a) : (fp_to_signed_bin(a, (unsigned char *)s), 0);
 	return _tmp;
 }
 
