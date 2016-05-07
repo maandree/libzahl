@@ -4,7 +4,6 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 /* clang pretends to be GCC... */
 #if defined(__GNUC__) && defined(__clang__)
@@ -105,7 +104,11 @@ extern void *libzahl_temp_allocation;
 #define zpositive2(a, b)             (zsignum(a) + zsignum(b) == 2)
 #define zzero2(a, b)                 (!(zsignum(a) | zsignum(b)))
 #define zmemcpy(d, s, n)             libzahl_memcpy(d, s, n)
+#define zmemmove(d, s, n)            libzahl_memmove(d, s, n)
+#define zmemmovef(d, s, n)           libzahl_memmovef(d, s, n)
+#define zmemmoveb(d, s, n)           libzahl_memmoveb(d, s, n)
 #define zmemset(a, v, n)             libzahl_memset(a, v, n)
+#define zmemset_precise(a, v, n)     libzahl_memset_precise(a, v, n)
 
 static inline int
 zzero1(z_t a, z_t b)
@@ -113,11 +116,10 @@ zzero1(z_t a, z_t b)
 	return zzero(a) || zzero(b);
 }
 
-O2 static inline void
+static inline void
 zmemcpy_range(register zahl_char_t *restrict d, register const zahl_char_t *restrict s, size_t i, size_t n)
 {
-	for (; i < n; i++)
-		d[i] = s[i];
+	zmemcpy(d + i, s + i, n - i);
 }
 
 static void
@@ -337,7 +339,7 @@ zfree_temp(z_t a)
 
 /* } */
 
-#define ZMEM_2OP(a, b, c, n, OP)                                              \
+#define ZMEM_2OP_PRECISE(a, b, c, n, OP)                                      \
 	do {                                                                  \
 		zahl_char_t *a__ = (a);                                       \
 		const zahl_char_t *b__ = (b);                                 \
@@ -365,66 +367,29 @@ zfree_temp(z_t a)
 		}                                                             \
 	} while (0)
 
-#define ZMEM_1OP(a, b, n, OP)                                     \
-	do {                                                      \
-		zahl_char_t *a__ = (a);                           \
-		const zahl_char_t *b__ = (b);                     \
-		size_t i__, n__ = (n);                            \
-		if (n__ <= 4) {                                   \
-			if (n__ >= 1)                             \
-				a__[0] = OP(b__[0]);              \
-			if (n__ >= 2)                             \
-				a__[1] = OP(b__[1]);              \
-			if (n__ >= 3)                             \
-				a__[2] = OP(b__[2]);              \
-			if (n__ >= 4)                             \
-				a__[3] = OP(b__[3]);              \
-		} else {                                          \
-			for (i__ = 0; (i__ += 4) < n__;) {        \
-				a__[i__ - 1] = OP(b__[i__ - 1]);  \
-				a__[i__ - 2] = OP(b__[i__ - 2]);  \
-				a__[i__ - 3] = OP(b__[i__ - 3]);  \
-				a__[i__ - 4] = OP(b__[i__ - 4]);  \
-			}                                         \
-			if (i__ > n__)                            \
-				for (i__ -= 4; i__ < n__; i__++)  \
-					a__[i__] = OP(b__[i__]);  \
-		}                                                 \
+#define ZMEM_2OP(a, b, c, n, OP)                                      \
+	do {                                                          \
+		zahl_char_t *a__ = (a);                               \
+		const zahl_char_t *b__ = (b);                         \
+		const zahl_char_t *c__ = (c);                         \
+		size_t i__, n__ = (n);                                \
+		for (i__ = 0; i__ < n__; i__ += 4) {                  \
+			a__[i__ + 0] = b__[i__ + 0] OP c__[i__ + 0];  \
+			a__[i__ + 1] = b__[i__ + 1] OP c__[i__ + 1];  \
+			a__[i__ + 2] = b__[i__ + 2] OP c__[i__ + 2];  \
+			a__[i__ + 3] = b__[i__ + 3] OP c__[i__ + 3];  \
+		}                                                     \
 	} while (0)
 
-static inline void
-zmemcpyb(register zahl_char_t *restrict d, register const zahl_char_t *restrict s, size_t n_)
-{
-	ssize_t i, n = (ssize_t)n_;
-	switch (n & 3) {
-	case 3:
-		d[n - 1] = s[n - 1];
-		d[n - 2] = s[n - 2];
-		d[n - 3] = s[n - 3];
-		break;
-	case 2:
-		d[n - 1] = s[n - 1];
-		d[n - 2] = s[n - 2];
-		break;
-	case 1:
-		d[n - 1] = s[n - 1];
-		break;
-	default:
-		break;
-	}
-	for (i = n & ~3; (i -= 4) >= 0;) {
-		d[i + 3] = s[i + 3];
-		d[i + 2] = s[i + 2];
-		d[i + 1] = s[i + 1];
-		d[i + 0] = s[i + 0];
-	}
-}
-
-static inline void
-zmemmove(register zahl_char_t *d, register const zahl_char_t *s, size_t n)
-{
-	if (d < s)
-		zmemcpy(d, s, n);
-	else
-		zmemcpyb(d, s, n);
-}
+#define ZMEM_1OP(a, b, n, OP)                             \
+	do {                                              \
+		zahl_char_t *a__ = (a);                   \
+		const zahl_char_t *b__ = (b);             \
+		size_t i__, n__ = (n);                    \
+		for (i__ = 0; i__ < n__; i__ += 4) {      \
+			a__[i__ + 0] = OP(b__[i__ + 0]);  \
+			a__[i__ + 1] = OP(b__[i__ + 1]);  \
+			a__[i__ + 2] = OP(b__[i__ + 2]);  \
+			a__[i__ + 3] = OP(b__[i__ + 3]);  \
+		}                                         \
+	} while (0)

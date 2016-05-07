@@ -2,7 +2,7 @@
 #include "internals.h"
 
 
-#if defined(__x86_64__)
+#if defined(__x86_64__) && !defined(ZAHL_NO_ASM)
 # define ASM3(code)  \
 	__asm__ __volatile__ (code : [x]"+r"(carry), [a]"+r"(ac), [b]"+r"(bc), [c]"+r"(cc))
 

@@ -2,7 +2,8 @@ include config.mk
 
 HDR_SEMIPUBLIC =\
 	zahl/inlines.h\
-	zahl/internals.h
+	zahl/internals.h\
+	zahl/memory.h
 
 HDR_PRIVATE =\
 	src/internals.h

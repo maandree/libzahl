@@ -47,8 +47,7 @@ zptest(z_t witness, z_t n, int t)
 			continue;
 
 		for (i = 1; i < r; i++) {
-			zsqr(x, x);
-			zmod(x, x, n);
+			zmodsqr(x, x, n);
 			if (!zcmp(x, libzahl_const_1)) {
 				if (witness)
 					zswap(witness, a);

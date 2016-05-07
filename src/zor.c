@@ -19,11 +19,11 @@ zor(z_t a, z_t b, z_t c)
 	ENSURE_SIZE(a, m);
 
 	if (a == b) {
-		ZMEM_2OP(a->chars, a->chars, c->chars, n, |);
+		ZMEM_2OP_PRECISE(a->chars, a->chars, c->chars, n, |);
 		if (a->used < c->used)
 			zmemcpy_range(a->chars, c->chars, n, m);
 	} else if (unlikely(a == c)) {
-		ZMEM_2OP(a->chars, a->chars, b->chars, n, |);
+		ZMEM_2OP_PRECISE(a->chars, a->chars, b->chars, n, |);
 		if (a->used < b->used)
 			zmemcpy_range(a->chars, b->chars, n, m);
 	} else  if (m == b->used) {

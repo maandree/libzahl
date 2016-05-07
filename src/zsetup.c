@@ -21,7 +21,7 @@ struct zahl **libzahl_temp_stack_end;
 void *libzahl_temp_allocation = 0;
 
 #define X(i, x, f, v)  1 +
-static zahl_char_t constant_chars[LIST_CONSTS 0];
+static zahl_char_t constant_chars[LIST_CONSTS ZAHL_FLUFF];
 #undef X
 
 

@@ -20,7 +20,7 @@ zsqr_ll(z_t a, z_t b)
 
 #define z2 a
 	z_t z0, z1, high, low;
-	zahl_char_t auxchars[3];
+	zahl_char_t auxchars[3 * ZAHL_FLUFF];
 	size_t bits;
 
 	bits = zbits(b);
@@ -38,7 +38,7 @@ zsqr_ll(z_t a, z_t b)
 	 * which require constant auxiliary memory. */
 	if (bits < BITS_PER_CHAR) {
 		low->chars = auxchars;
-		high->chars = auxchars + 1;
+		high->chars = auxchars + ZAHL_FLUFF;
 		zsplit_unsigned_fast_small_auto(high, low, b, bits);
 	} else {
 		bits = TRUNCATE_TO_CHAR(bits);

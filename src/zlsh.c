@@ -19,11 +19,11 @@ zlsh(z_t a, z_t b, size_t bits)
 
 	ENSURE_SIZE(a, b->used + chars + 1);
 	if (likely(a == b)) {
-		zmemcpyb(a->chars + chars, b->chars, b->used);
+		zmemmoveb(a->chars + chars, b->chars, b->used);
 	} else {
 		zmemcpy(a->chars + chars, b->chars, b->used);
 	}
-	zmemset(a->chars, 0, chars);
+	zmemset_precise(a->chars, 0, chars);
 	a->used = b->used + chars;
 
 	if (likely(bits)) { /* This if statement is very important in C. */

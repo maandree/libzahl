@@ -21,7 +21,7 @@ libzahl_realloc(z_t a, size_t need)
 		zfree(a);
 		a->chars = new;
 	} else {
-		a->chars = realloc(a->chars, new_size * sizeof(zahl_char_t));
+		a->chars = realloc(a->chars, (new_size + ZAHL_FLUFF) * sizeof(zahl_char_t));
 		if (check(!a->chars))
 			libzahl_memfailure();
 	}

@@ -26,11 +26,11 @@ zxor(z_t a, z_t b, z_t c)
 	ENSURE_SIZE(a, m);
 
 	if (a == b) {
-		ZMEM_2OP(a->chars, a->chars, cc, n, ^);
+		ZMEM_2OP_PRECISE(a->chars, a->chars, cc, n, ^);
 		if (a->used < cn)
 			zmemcpy_range(a->chars, cc, n, m);
 	} else if (unlikely(a == c)) {
-		ZMEM_2OP(a->chars, b->chars, cc, n, ^);
+		ZMEM_2OP_PRECISE(a->chars, a->chars, bc, n, ^);
 		if (a->used < bn)
 			zmemcpy_range(a->chars, bc, n, m);
 	} else if (m == bn) {

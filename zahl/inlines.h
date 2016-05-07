@@ -259,12 +259,16 @@ zsave(z_t a, void *buffer)
 {
 	if (ZAHL_LIKELY(buffer)) {
 		char *buf = buffer;
-		*((int *)buf)    = a->sign, buf += sizeof(int);
+		*((long *)buf)   = a->sign, buf += sizeof(long); /* Use `long` for alignment. */
 		*((size_t *)buf) = a->used, buf += sizeof(size_t);
-		if (ZAHL_LIKELY(!zzero(a)))
+		if (ZAHL_LIKELY(!zzero(a))) {
+			a->chars[a->used + 2] = 0;
+			a->chars[a->used + 1] = 0;
+			a->chars[a->used + 0] = 0;
 			libzahl_memcpy((zahl_char_t *)buf, a->chars, a->used);
+		}
 	}
-	return sizeof(int) + sizeof(size_t) + (zzero(a) ? 0 : a->used * sizeof(zahl_char_t));
+	return sizeof(long) + sizeof(size_t) + (zzero(a) ? 0 : ((a->used + 3) & ~3) * sizeof(zahl_char_t));
 }
 
 

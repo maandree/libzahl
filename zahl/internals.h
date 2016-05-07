@@ -51,6 +51,7 @@
 #define ZAHL_BITS_PER_CHAR                64
 #define ZAHL_LB_BITS_PER_CHAR             6
 #define ZAHL_CHAR_MAX                     UINT64_MAX
+#define ZAHL_FLUFF                        4
 /* Note: These cannot be changed willy-nilly, some code depends
  * on them, be cause being flexible would just be too painful. */
 
@@ -113,62 +114,4 @@ extern struct zahl libzahl_tmp_mod[1];
 
 void libzahl_realloc(struct zahl *, size_t);
 
-ZAHL_INLINE void
-libzahl_memcpy(register zahl_char_t *d, register const zahl_char_t *s, size_t n)
-{
-	size_t i;
-	if (n <= 4) {
-		if (n >= 1)
-			d[0] = s[0];
-		if (n >= 2)
-			d[1] = s[1];
-		if (n >= 3)
-			d[2] = s[2];
-		if (n >= 4)
-			d[3] = s[3];
-	} else {
-		for (i = 0; (i += 4) <= n;) {
-			d[i - 4] = s[i - 4];
-			d[i - 3] = s[i - 3];
-			d[i - 2] = s[i - 2];
-			d[i - 1] = s[i - 1];
-		}
-		if (i > n) {
-			i -= 4;
-			if (i < n)
-				d[i] = s[i], i++;
-			if (i < n)
-				d[i] = s[i], i++;
-			if (i < n)
-				d[i] = s[i], i++;
-			if (i < n)
-				d[i] = s[i];
-		}
-	}
-}
-
-ZAHL_INLINE void
-libzahl_memset(register zahl_char_t *a, register zahl_char_t v, size_t n)
-{
-	size_t i;
-	if (n <= 4) {
-		if (n >= 1)
-			a[0] = v;
-		if (n >= 2)
-			a[1] = v;
-		if (n >= 3)
-			a[2] = v;
-		if (n >= 4)
-			a[3] = v;
-	} else {
-		for (i = 0; (i += 4) <= n;) {
-			a[i - 1] = v;
-			a[i - 2] = v;
-			a[i - 3] = v;
-			a[i - 4] = v;
-		}
-		if (i > n)
-			for (i -= 4; i < n; i++)
-				a[i] = v;
-	}
-}
+#include "memory.h"

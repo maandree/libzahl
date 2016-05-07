@@ -11,6 +11,7 @@
 #include <setjmp.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <unistd.h>
 
 #include "zahl/internals.h"
 
