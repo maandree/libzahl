@@ -1,0 +1,36 @@
+Configure libzahl
+=================
+
+libzahl is configured by editing config.mk. You may choose
+to make a copy of config.mk, and reference the copy with
+CONFIG when running make. For example:
+    cp config.mk my-config.mk
+    # edit my-config.mk
+    make CONFIG=my-config.mk
+
+Unless you are compiling for Linux you make have to add
+    -D'FAST_RANDOM_PATHNAME="<path to a non-blocking random number generator>"'
+(/dev/urandom on Linux) and
+    -D'SECURE_RANDOM_PATHNAME="<path to a blocking random number generator>"'
+(/dev/random on Linux) to CPPFLAGS.
+
+If you are using a C standard library where the higher bits have higher
+entropy in the lower bits in rand(3) (as historically was the case),
+remove -DGOOD_RAND from CPPFLAGS.
+
+If you don't care if your program crashes on failure, you can add
+-DZAHL_UNSAFE to CPPFLAGS. This will give you a marginal performance
+boost. You should also add, preferably,
+    #define ZAHL_UNSAFE
+before including <zahl.h> in your program if you are doing this.
+
+If your CPU does not support indirect jumps (computed jumps) you should
+add -DZAHL_ISA_MISSING_INDIRECT_JUMP to CPPFLAGS, and preferably add
+    #define ZAHL_ISA_MISSING_INDIRECT_JUMP
+before including <zahl.h> in your program.
+
+libzahl contains some (very little) assembly code. In the event
+that the used instructions are not supported on your machine, please
+report it, and in the meanwhile add -DZAHL_NO_ASM to CPPFLAGS. You
+make also have to do this if you are compiling with a compiler that
+does not support extended inline assembly.

@@ -26,7 +26,7 @@
 #define Os     ZAHL_Os
 #define Oz     ZAHL_Oz
 
-#define LIST_TEMPS\
+#define LIST_TEMPS_HERE\
 	X(libzahl_tmp_str_num, 0)\
 	X(libzahl_tmp_str_mag, 0)\
 	X(libzahl_tmp_str_div, 0)\
@@ -35,8 +35,6 @@
 	X(libzahl_tmp_gcd_v, 0)\
 	X(libzahl_tmp_sub, 0)\
 	X(libzahl_tmp_modmul, 0)\
-	X(libzahl_tmp_div, 0)\
-	X(libzahl_tmp_mod, 0)\
 	X(libzahl_tmp_pow_b, 0)\
 	X(libzahl_tmp_pow_c, 0)\
 	X(libzahl_tmp_pow_d, 0)\
@@ -50,6 +48,11 @@
 	X(libzahl_tmp_ptest_n1, 0)\
 	X(libzahl_tmp_ptest_n4, 0)
 
+#define LIST_TEMPS\
+	X(libzahl_tmp_div, 0)\
+	X(libzahl_tmp_mod, 0)\
+	LIST_TEMPS_HERE
+
 #define LIST_CONSTS\
 	X(0, libzahl_const_1e19, zsetu, 10000000000000000000ULL) /* The largest power of 10 < 2⁶⁴. */\
 	X(1, libzahl_const_1,    zsetu, 1)\
@@ -57,7 +60,7 @@
 	X(3, libzahl_const_4,    zsetu, 4)
 
 #define X(x, s)  extern z_t x;
-LIST_TEMPS
+LIST_TEMPS_HERE
 #undef X
 #define X(i, x, f, v)  extern z_t x;
 LIST_CONSTS
@@ -119,7 +122,10 @@ zzero1(z_t a, z_t b)
 static inline void
 zmemcpy_range(register zahl_char_t *restrict d, register const zahl_char_t *restrict s, size_t i, size_t n)
 {
-	zmemcpy(d + i, s + i, n - i);
+	d += i;
+	s += i;
+	n -= i;
+	zmemcpy(d, s, n);
 }
 
 static void

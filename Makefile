@@ -1,4 +1,5 @@
-include config.mk
+CONFIG = config.mk
+include $(CONFIG)
 
 HDR_SEMIPUBLIC =\
 	zahl/inlines.h\
@@ -121,7 +122,7 @@ CFLAGS_WITHOUT_O = $$(printf '%s\n' $(CFLAGS) | sed '/^-O.*$$/d')
 
 all: libzahl.a $(DOC)
 
-.o: .c $(HDR) config.mk
+.o: .c $(HDR) $(CONFIG)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 libzahl.a: $(OBJ)

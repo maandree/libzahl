@@ -268,7 +268,8 @@ zsave(z_t a, void *buffer)
 			libzahl_memcpy((zahl_char_t *)buf, a->chars, a->used);
 		}
 	}
-	return sizeof(long) + sizeof(size_t) + (zzero(a) ? 0 : ((a->used + 3) & ~3) * sizeof(zahl_char_t));
+	return sizeof(long) + sizeof(size_t) +
+		(zzero(a) ? 0 :((a->used + 3) & (size_t)~3) * sizeof(zahl_char_t));
 }
 
 

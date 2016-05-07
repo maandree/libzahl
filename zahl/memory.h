@@ -24,7 +24,7 @@
 	case 0: break;
 
 
-#if defined(LIBZAHL_ISA_MISSING_INDIRECT_JUMP)
+#if defined(ZAHL_ISA_MISSING_INDIRECT_JUMP)
 # define LIBZAHL_SMALL_INPUT_BEGIN(n)
 # define LIBZAHL_SMALL_INPUT_END
 #else

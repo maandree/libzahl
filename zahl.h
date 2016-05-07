@@ -13,6 +13,8 @@
 #include <stdint.h>
 #include <unistd.h>
 
+
+
 #include "zahl/internals.h"
 
 
@@ -179,5 +181,6 @@ void zsqr_ll(z_t, z_t);                 /* zsqr for non-negative operand */
 
 
 #include "zahl/inlines.h"
+
 
 #endif
