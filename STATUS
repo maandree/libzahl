@@ -163,3 +163,12 @@ operational.
 Also note, NOT does not mean the same thing in all libraries,
 for example in GMP it means (-x - 1), thus, znot does not
 use GMP's NOT in the translations layer.
+
+
+The following optimisation flags have been tested:
+
+-O0 ...................... Bad
+-O1 ...................... Bad
+-O2 ...................... Not so good
+-O3 ...................... Good
+-fno-builtin ............. Bad
