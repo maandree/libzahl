@@ -145,9 +145,15 @@ gettime(size_t m)
 		(void) bs;\
 	}
 
-#define FAST1D()   0, 0,    0,  0, 0, 0, 0, 0, 1000, M_MAX
-#define FAST2D(P)  1, 4097, 64, 0, 0, 0, P, 0, 1000, M_MAX
-#define SLOW2D(P)  1, 4097, 64, 0, 0, 0, P, 0, 10,   20
+#if defined(FINE_GRAINED)
+# define FAST1D()   0, 0,    0,  0, 0, 0, 0, 0, 1000, M_MAX
+# define FAST2D(P)  1, 4096, 1,  0, 0, 0, P, 0, 1000, M_MAX
+# define SLOW2D(P)  1, 4096, 1,  0, 0, 0, P, 0, 10,   20
+#else
+# define FAST1D()   0, 0,    0,  0, 0, 0, 0, 0, 1000, M_MAX
+# define FAST2D(P)  1, 4097, 64, 0, 0, 0, P, 0, 1000, M_MAX
+# define SLOW2D(P)  1, 4097, 64, 0, 0, 0, P, 0, 10,   20
+#endif
 
 #define LIST_1D_FUNCTIONS\
 	X(pos_zseti,        FAST1D(),          zseti(temp, 1000000000LL),)\
