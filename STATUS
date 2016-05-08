@@ -70,7 +70,7 @@ zabs(a, a) .............. 34 % (clang) or 8 % (gcc) of tomsfastmath
 
 
   The following functions are probably implemented optimally
-  or close to optimally, except they contains some code that
+  or close to optimally, except they contain some code that
   should not be necessary after some bugs have been fixed:
 
 zbits ................... always fastest
@@ -89,13 +89,13 @@ zcmpmag ................. always fastest <<suspicious, see zcmp>>
 
   The following functions could be optimised further:
 
-zrsh .................... mp is almost always faster; also tomsfastmath after ~3000 (gcc+glibc) or ~2800 (clang)
+zrsh .................... gmp is almost always faster; also tomsfastmath after ~3000 (gcc+glibc) or ~2800 (clang)
 zsub_unsigned ........... always fastest (compared against zsub too)
 zsub .................... always fastest (slower with gcc+glibc than gcc+musl or clang)
 
 
   The following functions could probably be optimised further,
-  but there performance can be significantly improved by
+  but their performance can be significantly improved by
   optimising their dependencies:
 
 zmul .................... slowest
