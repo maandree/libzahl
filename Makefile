@@ -147,8 +147,8 @@ benchmark-zrand: bench/benchmark-zrand.c bench/benchmark.h libzahl.a
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark-zrand.c libzahl.a
 
 refsheet.pdf: doc/refsheet.tex
-	yes X | pdflatex doc/refsheet.tex
-	yes X | pdflatex doc/refsheet.tex
+	pdflatex doc/refsheet.tex </dev/null
+	pdflatex doc/refsheet.tex </dev/null
 
 check: test
 	./test
