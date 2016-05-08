@@ -121,10 +121,10 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 
 \textbf{Marshallisation} \\
 \entry{zsave(a, b)}    {Marshal $a$ into $b$}    {returns \size{} number of saved bytes,}
-\cont                                            {{\tt b} is a {\tt void *\_t}}
+\cont                                            {{\tt b} is a {\tt void *}}
 \entry{zsave(a, NULL)} {Get marshal-size of $a$} {returns \size{}}
 \entry{zload(a, b)}    {Unmarshal $a$ from $b$}  {returns \size{} number of read bytes,}
-\cont                                            {{\tt b} is a {\tt const void *\_t}}
+\cont                                            {{\tt b} is a {\tt const void *}}
 %\\
 
 \textbf{Number theory} \\
