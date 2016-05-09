@@ -27,14 +27,14 @@ Whilst this is almost none of the elements in {\bf Z},
 it is substantially more than available using the intrinsic
 integer types in C. libzahl of course also implements
 functions for performing arithmetic operations over
-integers represented using  libzahl. Libraries such as
-libzahl as called bigint libraries, big integer libraries,
+integers represented using libzahl. Libraries such as
+libzahl are called bigint libraries, big integer libraries,
 multiple precision integer libraries, arbitrary precision
 integer libraries,\footnote{`Multiple precision integer'
 and `arbitrary precision integer' are misnomers, precision
 is only relevant for floating-point numbers.} or bignum
 libraries, or any of the previous with `number' substituted
-for `integer'. Some libraries that refer to themself bignum
+for `integer'. Some libraries that refer to themselves as bignum
 libraries or any of using the word `number' support other
 number types than integers. libzahl only supports integers.
 
@@ -44,8 +44,8 @@ number types than integers. libzahl only supports integers.
 \label{sec:Why does it exist?}
 
 libzahl's main competitors are GNU MP (gmp),\footnote{GNU
-Multiple Precision Arithmetic Library} LibTomMath (ltm),
-and TomsFastMath (tfm). All of these have problems:
+Multiple Precision Arithmetic Library} LibTomMath (ltm), 
+TomsFastMath (tfm) and Hebimath. All of these have problems:
 
 \begin{itemize}
 \item
@@ -65,6 +65,12 @@ this, it is not really that simple.
 TomsFastMath is slow, complicated, and is not a true
 big integer library and is specifically targeted at
 cryptography.
+
+\item
+Hebimath is far from stable, some fundamental functions 
+are not implemented and some functions are broken. The 
+author thinks Hebimath is promising, but that many things 
+can be done better.
 \end{itemize}
 
 libzahl is developed under the suckless.org umbrella.
@@ -89,7 +95,7 @@ followed by input parameters. The former variant is the
 conventional for C functions. The latter is more in style
 with primitive operations, pseudo-code, mathematics, and
 how it would look if the output was return. In libzahl,
-the latter convention is used. That is, why write
+the latter convention is used. That is, we write
 
 \begin{alltt}
    zadd(sum, augend, addend);
@@ -116,8 +122,8 @@ versus
 $augend + addend \rightarrow sum$.
 \vspace{1ex}
 
-libzahl, GNU MP, and Hebimath uses the output-first
-convention. LibTomMath and TomsFastMath uses the
+libzahl, GNU MP, and Hebimath use the output-first
+convention. LibTomMath and TomsFastMath use the
 input-first convention.
 
 Unlike other bignum libraries, errors in libzahl are
@@ -139,8 +145,8 @@ integer operators.
 
 libzahl is not recommended for cryptographic
 applications, it is not mature enough, and its author
-does not have the necessary expertise. And in,
-particular it does not implement constant time
+does not have the necessary expertise. And in
+particular, it does not implement constant time
 operations. Additionally, libzahl is not thread-safe.
 
 libzahl is also only designed for POSIX systems.

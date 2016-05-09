@@ -12,7 +12,7 @@ You should read the sections in order.
 \section{Initialisation}
 \label{sec:Initialisation}
 
-Before using libzahl, it most be initialised. When
+Before using libzahl, it must be initialised. When
 initialising, you must select a location whither libzahl
 long jumps on error.
 
@@ -34,7 +34,7 @@ long jumps on error.
 {\tt zsetup} also initialises temporary variables used
 by libzahl's functions, and constants used by libzahl's
 functions. Furthermore, it initialises the memory pool
-and a stack which libzahl to keep track of temporary
+and a stack which libzahl uses to keep track of temporary
 allocations that need to be pooled for use if a function
 fails.
 
@@ -55,8 +55,8 @@ are done using it, for example before the program exits.
    \}}
 \end{alltt}
 
-{\tt zunsetup} all memory that has be reclaim to the
-memory pool, and all memory allocated by {\tt zsetup}.
+{\tt zunsetup} all memory that has been reclaimed to
+the memory pool, and all memory allocated by {\tt zsetup}.
 Note that this does not free integers that are still
 in use. It is possible to simply call {\tt zunsetup}
 directly followed by {\tt zsetup} to free all pooled

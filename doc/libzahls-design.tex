@@ -20,7 +20,7 @@ Because of the memory pooling, this is a pattern to the
 allocation sizes. In an allocation, a power of two
 elements, plus a few elements that are discussed in
 \secref{sec:Integer structure}, are allocated. That is,
-the number multiplied the size of an element.
+the number multiplied by the size of an element.
 Powers of two (growth factor 2) is not the most memory
 efficient way to do this, but it is the simplest and
 performance efficient. This power of two (sans the few
@@ -40,14 +40,14 @@ of temporary variables predefined.
 \label{sec:Error handling}
 
 In C, it is traditional to return a sentiel value
-if case an error has occurred, and set the value
-of a globale variable to describe the error that
+in case an error has occurred, and set the value
+of a global variable to describe the error that
 has occurred. The programmer can choose whether to
 check for errors, ignore errors where it does not
-matter, or simple ignore errors all together and let
-the program eventual crash. This is a simple
+matter, or simple ignore errors altogether and let
+the program eventually crash. This is a simple
 technique that gives the programmer a better
-understanding of what can happend. A great advantage
+understanding of what can happen. A great advantage
 C has over most programming languages.
 
 Another technique is to use long jumps on error.
@@ -70,7 +70,7 @@ Rather than writing
 \end{alltt}
 
 \noindent
-or a but cleaner, if there are a lot of calls,
+or a bit cleaner, if there are a lot of calls,
 
 \begin{alltt}
    #define TRY(...) do if (__VA_ARGS__) goto out; while (0)
@@ -79,7 +79,7 @@ or a but cleaner, if there are a lot of calls,
 \end{alltt}
 
 \noindent
-you write
+we write
 
 \begin{alltt}
    jmp_buf env;
@@ -91,7 +91,7 @@ you write
 \end{alltt}
 
 You only need to call {\tt setjmp} and {\tt zsetup}
-once, but can may update the return point by calling
+once, but can update the return point by calling
 them once more.
 
 If you don't need to check for errors, you can
@@ -211,7 +211,7 @@ or
 
 Like any self respecting bignum library, libzahl
 supports using the same big integer reference as
-for output as input, as long as the all output
+for output as input, as long as all the output
 parameters are mutually unique. For example
 
 \begin{alltt}
@@ -235,7 +235,7 @@ is written, using libzahl, as
 For commutative functions, like {\tt zadd}, the
 implementation is optimised to assume that this
 order is more likely to be used than the alternative.
-That is, you should, for example, write
+That is, we should, for example, write
 
 \begin{alltt}
    zadd(a, a, b);
@@ -249,5 +249,5 @@ rather than
 \end{alltt}
 
 \noindent
-This is assumption is not made for non-commutative
+This assumption is not made for non-commutative
 functions.
