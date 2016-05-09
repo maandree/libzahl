@@ -166,3 +166,69 @@ jump, call {\tt setjmp} and {\tt zsetup} again.
    \}
    zsetup(jmpenv);
 \end{alltt}
+
+
+\newpage
+\section{Create an integer}
+\label{sec:Create an integer}
+
+To do any real work with libzahl, we need integers. The
+data type for a big integer in libzahl is {\tt z\_t}
+\psecref{sec:Integer structure}. Before a {\tt z\_t}
+can be assign a value, it must be initialised.
+
+\begin{alltt}
+   z_t a;
+   \textcolor{c}{/* \textrm{\ldots} */
+   zsetup(jmpenv);}
+   zinit(a);
+   \textcolor{c}{/* \textrm{\ldots} */
+   zunsetup();}
+\end{alltt}
+
+\noindent
+{\tt zinit(a)} is actually a less cumbersome and optimised
+alternative to calling {\tt memset(a, 0, sizeof(z\_t))}.
+It sets the values of two members: {\tt .alloced} and
+{\tt .chars}, to 0 and {\tt NULL}. This is necessary,
+otherwise the memory allocated could be fooled to deallocate
+a false pointer, causing the program to abort.
+
+Once the reference has been initialised, you may assign it
+a value. The simplest way to do this is by calling
+
+\begin{alltt}
+   void zseti(z_t a, int64_t value);
+\end{alltt}
+
+\noindent
+For example {\tt zseti(a, 1)}, assignes the value 1 to
+the {\tt z\_t} {\tt a}.
+
+When you are done using a big integer reference, you should
+call {\tt zfree} to let libzahl know that it should pool
+the allocation of the {\tt .chars} member.
+
+\begin{alltt}
+   z_t a;
+   zinit(a);
+   \textcolor{c}{/* \textrm{\ldots} */}
+   zfree(a); \textcolor{c}{/* \textrm{before \texttt{zunsetup}} */}
+\end{alltt}
+
+\noindent
+Instead of calling {\tt zfree(a)}, it is possible — but
+strongly discouraged — to call {\tt free(a->chars)}.
+Note however, by doing so, the allocation is not pooled
+for reuse.
+
+If you plan to reuse the variable later, you need to
+reinitialise it by calling {\tt zinit} again.
+
+Alternatives to {\tt zseti} include:
+
+\begin{alltt}
+   void zsetu(z_t a, uint64_t value);
+   void zsets(z_t a, const char *value);
+   void zset(z_t a, z_t value); \textcolor{c}{/* \textrm{copy \texttt{value} into \texttt{a}} */}
+\end{alltt}
