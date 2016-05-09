@@ -156,14 +156,11 @@ jump, call {\tt setjmp} and {\tt zsetup} again.
 
 \begin{alltt}
    jmp_buf jmpenv;
-
    if (setjmp(jmpenv)) \{
        \textcolor{c}{/* \textrm{\ldots} */}
    \}
    zsetup(jmpenv);
-
    \textcolor{c}{/* \textrm{\ldots} */}
-
    if (setjmp(jmpenv)) \{
        \textcolor{c}{/* \textrm{\ldots} */}
    \}

@@ -5,7 +5,6 @@
 \usepackage{algorithmic, algorithm, colonequals, alltt}
 \usepackage{amsmath, amssymb, mathtools, MnSymbol, mathrsfs, esvect}
 \usepackage{tipa, color, graphicx}
-\usepackage{microtype}
 \usepackage{shorttoc, minitoc}
 \usepackage[english]{babel}
 \selectlanguage{english}
@@ -28,7 +27,9 @@
 \makeindex
 \usepackage{geometry}
 \geometry{margin=1in}
-%\DisableLigatures{encoding = *, family = *}
+\usepackage{microtype}
+\DisableLigatures{encoding = *, family = *} % NB! disables -- and ---
+\frenchspacing
 
 \newcommand{\chapref}[1]{\hyperref[#1]{Chapter~\ref*{#1} [\nameref*{#1}], page \pageref*{#1}}}
 \newcommand{\secref}[1]{\hyperref[#1]{Section~\ref*{#1} [\nameref*{#1}], page \pageref*{#1}}}

@@ -24,8 +24,8 @@ the number multiplied by the size of an element.
 Powers of two (growth factor 2) is not the most memory
 efficient way to do this, but it is the simplest and
 performance efficient. This power of two (sans the few
-extra elements) is used to calculate --- getting the index
-of the only set bit --- the index of the bucket in
+extra elements) is used to calculate — getting the index
+of the only set bit — the index of the bucket in
 which the allocation is stored when pooled. The buckets
 are dynamic arrays with the growth factor 1.5. The
 growth factor 1.5 is often used for dynamic arrays, it
@@ -106,7 +106,10 @@ software that uses libzahl.
 \label{sec:Integer structure}
 
 The data type used to represent a big integer with
-libzahl is {\tt z\_t}, defined as
+libzahl is {\tt z\_t},\footnote{This name actually
+violates the naming convention; it should be {\tt Z},
+or {\tt Zahl} to avoid single-letter names. But this
+violation is common place.} defined as
 
 \begin{alltt}
    typedef struct zahl z_t[1];
@@ -117,10 +120,10 @@ where {\tt struct zahl} is defined as
 
 \begin{alltt}
    struct zahl \{
-       int sign;
+       int sign;            \textcolor{c}{/* \textrm{\emph{not} short for `signum'} */}
        size_t used;
-       size_t alloced;
-       zahl_char_t *chars;
+       size_t alloced;      \textcolor{c}{/* \textrm{short for `allocated'} */}
+       zahl_char_t *chars;  \textcolor{c}{/* \textrm{short for `characters'} */}
    \};
 \end{alltt}
 
