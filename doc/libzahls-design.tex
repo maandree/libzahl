@@ -109,7 +109,7 @@ The data type used to represent a big integer with
 libzahl is {\tt z\_t},\footnote{This name actually
 violates the naming convention; it should be {\tt Z},
 or {\tt Zahl} to avoid single-letter names. But this
-violation is common place.} defined as
+violation is common-place.} defined as
 
 \begin{alltt}
    typedef struct zahl z_t[1];
@@ -144,14 +144,14 @@ As a user, try not to think about anything else than
 \noindent
 details can change in future versions of libzahl.
 
-{\tt z\_t} is defined as a single-element array.
-This is often called a reference. There are some
-flexibility issues with this, why {\tt struct zahl}
-has beed added, but for most uses with big integers,
-it makes things simpler. Particularly, you need not
-work prepend {\tt \&} to variable when making function
-calls, but the existence of {\tt struct zahl} allows
-you do so if you so choose.
+{\tt z\_t} is defined as a single-element array. This
+is often called a reference, or a call-by-reference.
+There are some flexibility issues with this, why
+{\tt struct zahl} has beed added, but for most uses
+with big integers, it makes things simpler. Particularly,
+you need not work prepend {\tt \&} to variable when making
+function calls, but the existence of {\tt struct zahl}
+allows you do so if you so choose.
 
 The {\tt .sign} member, is either $-1$, 0, or 1,
 when the integer is negative, zero, or positive,
@@ -254,3 +254,9 @@ rather than
 \noindent
 This assumption is not made for non-commutative
 functions.
+
+When writting your own functions, be aware,
+input-parameters are generally not declared {\tt const}
+in libzahl. Currently, some functions actually make
+modifications (that do not affect the value) to
+input-parameters.
