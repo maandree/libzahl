@@ -44,7 +44,7 @@ number types than integers. libzahl only supports integers.
 \label{sec:Why does it exist?}
 
 libzahl's main competitors are GNU MP (gmp),\footnote{GNU
-Multiple Precision Arithmetic Library} LibTomMath (ltm), 
+Multiple Precision Arithmetic Library} LibTomMath (ltm),
 TomsFastMath (tfm) and Hebimath. All of these have problems:
 
 \begin{itemize}
@@ -65,12 +65,6 @@ this, it is not really that simple.
 TomsFastMath is slow, complicated, and is not a true
 big integer library and is specifically targeted at
 cryptography.
-
-\item
-Hebimath is far from stable, some fundamental functions 
-are not implemented and some functions are broken. The 
-author thinks Hebimath is promising, but that many things 
-can be done better.
 \end{itemize}
 
 libzahl is developed under the suckless.org umbrella.
@@ -81,6 +75,18 @@ very fast, simple to use, and can be used in robust
 applications. Currently however, it does not support
 multithreading, but it has better support multiprocessing
 and distributed computing than its competitor.
+
+Lesser ``competitors'' to libzahl include Hebimath and
+bsdnt.
+
+\begin{itemize}
+\item
+Hebimath is far from stable, some fundamental functions
+are not implemented and some functions are broken. The
+author of libzahl thinks Hebimath is promising, but that
+it could be better designed. Like libzahl, Hebimath aims
+to follow the suckless philosophy.
+\end{itemize}
 
 
 \newpage
@@ -136,7 +142,26 @@ occur, not also after each function-return.
 Additionally, libzahl tries to keep the functions'
 names simple and natural rather than techniqual or
 mathematical. The names resemble those of the standard
-integer operators.
+integer operators. For example, the left-shift, right-shift
+and truncation bit-operations in libzahl is called
+{\tt zlsh}, {\tt zrsh} and {\tt ztrunc}, respectively.
+In GNU MP, they are called {\tt mpz\_mul\_2exp},
+{\tt mpz\_tdiv\_q\_2exp} and {\tt mpz\_tdiv\_r\_2exp}.
+The need of complicated names are diminished by resisting
+to implement all possible variants of each operations.
+Variants of a function simply append a short description
+of the difference in plain text. For example, a variant of
+{\tt zadd} that makes the assumption that both operands
+are non-negative (or if not so, calculates the sum of
+their absolute values) is called {\tt zadd\_unsigned}.
+If libzahl would have had floored and ceiled variants of
+{\tt zdiv} (truncated division), they would have been
+called {\tt zdiv\_floor} and {\tt zdiv\_ceiling}.
+{\tt zdiv} and {\tt zmod} (modulus) are variants of
+{\tt zdivmod} that throw away one of the outputs. These
+names can be compared to GNU MP's variants of truncated
+division: {\tt mpz\_tdiv\_q}, {\tt mpz\_tdiv\_r} and
+{\tt mpz\_tdiv\_qr}.
 
 
 \newpage
