@@ -50,7 +50,8 @@ TomsFastMath (tfm) and Hebimath. All of these have problems:
 \begin{itemize}
 \item
 GNU MP is extremely bloated, can only be complied with
-GCC, can only be dynamically linked, and requires that
+GCC, can only be dynamically linked by default, it is
+required to opt in for static linking, and requires that
 you use glibc unless another C standard library was used
 when GNU MP was compiled. Additionally, whilst its
 performance is generally good, it can still be improved.
