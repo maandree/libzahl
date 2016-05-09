@@ -1,0 +1,171 @@
+\chapter{Get started}
+\label{chap:Get started}
+
+In this chapter, you will learn the basics of libzahl.
+You should read the sections in order.
+
+\vspace{1cm}
+\minitoc
+
+
+\newpage
+\section{Initialisation}
+\label{sec:Initialisation}
+
+Before using libzahl, it most be initialised. When
+initialising, you must select a location whither libzahl
+long jumps on error.
+
+\begin{alltt}
+   #include <zahl.h>
+
+   int
+   main(void)
+   \{
+       jmp_buf jmpenv;
+       if (setjmp(jmpenv))
+           return 1; \textcolor{c}{/* \textrm{Exit on error} */}
+       zsetup(jmpenv);
+       \textcolor{c}{/* \textrm{\ldots} */}
+       return 0;
+   \}
+\end{alltt}
+
+{\tt zsetup} also initialises temporary variables used
+by libzahl's functions, and constants used by libzahl's
+functions. Furthermore, it initialises the memory pool
+and a stack which libzahl to keep track of temporary
+allocations that need to be pooled for use if a function
+fails.
+
+It is recommended to also uninitialise libzahl when you
+are done using it, for example before the program exits.
+
+\begin{alltt}
+   \textcolor{c}{int
+   main(void)
+   \{
+       jmp_buf jmpenv;
+       if (setjmp(jmpenv))
+           return 1; /* \textrm{Exit on error} */
+       zsetup(jmpenv);
+       /* \textrm{\ldots} */}
+       zunsetup();
+       \textcolor{c}{return 0;
+   \}}
+\end{alltt}
+
+{\tt zunsetup} all memory that has be reclaim to the
+memory pool, and all memory allocated by {\tt zsetup}.
+Note that this does not free integers that are still
+in use. It is possible to simply call {\tt zunsetup}
+directly followed by {\tt zsetup} to free all pooled
+memory.
+
+
+\newpage
+\section{Exceptional conditions}
+\label{sec:Exceptional conditions}
+
+Exceptional conditions, casually called `errors',
+are treated in libzahl using long jumps.
+
+\begin{alltt}
+   int
+   main(int argc, char *argv[])
+   \{
+       jmp_buf jmpenv;
+       if (setjmp(jmpenv))
+           return 1; \textcolor{c}{/* \textrm{Exit on error} */}
+       zsetup(jmpenv);
+       return 0;
+   \}
+\end{alltt}
+
+Just exiting on error is not a particularly good
+idea. Instead, you may want to print an error message.
+This is done with {\tt zperror}.
+
+\begin{alltt}
+   if (setjmp(jmpenv)) \{
+       zperror(\textcolor{c}{*argv});
+       \textcolor{c}{return 1;}
+   \}
+\end{alltt}
+
+\noindent
+{\tt zperror} works just like {\tt perror}. It
+outputs an error description to standard error.
+A line break is printed at the end of the message.
+If the argument passed to {\tt zperror} is neither
+{\tt NULL} nor an empty string, it is printed in
+front of the description, with a colon and a
+space separating the passed string and the description.
+For example, {\tt zperror("my-app")} may output
+
+\begin{verbatim}
+   my-app: Cannot allocate memory
+\end{verbatim}
+
+libzahl also provides {\tt zerror}. Calling this
+function will provide you with an error code and
+a textual description.
+
+\begin{alltt}
+   \textcolor{c}{if (setjmp(jmpenv)) \{}
+       const char *description;
+       zerror(&description);
+       fprintf(stderr, "\%s: \%s\verb|\|n", *argv, description);
+       \textcolor{c}{return 1;}
+   \textcolor{c}{\}}
+\end{alltt}
+
+\noindent
+This code behaves like the example above that
+calls {\tt zperror}. If you are interested in the
+error code, you instead look at the return value.
+
+\begin{alltt}
+   \textcolor{c}{if (setjmp(jmpenv)) \{}
+       enum zerror e = zerror(NULL);
+       switch (e) \{
+       case ZERROR_ERRNO_SET:
+           perror("");
+           \textcolor{c}{return 1;}
+       case ZERROR_0_POW_0:
+           fprintf(stderr, "Indeterminate form: 0^0\verb|\|n");
+           \textcolor{c}{return 1;}
+       case ZERROR_0_DIV_0:
+           fprintf(stderr, "Indeterminate form: 0/0\verb|\|n");
+           \textcolor{c}{return 1;}
+       case ZERROR_DIV_0:
+           fprintf(stderr, "Do not divide by zero, dummy\verb|\|n");
+           \textcolor{c}{return 1;}
+       case ZERROR_NEGATIVE:
+           fprintf(stderr, "Undefined (negative input)\verb|\|n");
+           \textcolor{c}{return 1;}
+       default:
+           zperror("");
+           \textcolor{c}{return 1;}
+       \}
+   \textcolor{c}{\}}
+\end{alltt}
+
+To change the point whither libzahl's functions
+jump, call {\tt setjmp} and {\tt zsetup} again.
+
+\begin{alltt}
+   jmp_buf jmpenv;
+
+   if (setjmp(jmpenv)) \{
+       \textcolor{c}{/* \textrm{\ldots} */}
+   \}
+   zsetup(jmpenv);
+
+   \textcolor{c}{/* \textrm{\ldots} */}
+
+   if (setjmp(jmpenv)) \{
+       \textcolor{c}{/* \textrm{\ldots} */}
+   \}
+   zsetup(jmpenv);
+\end{alltt}

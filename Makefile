@@ -75,7 +75,8 @@ DOC =\
 TEXSRC =\
 	doc/libzahl.tex\
 	doc/what-is-libzahl.tex\
-	doc/libzahls-design.tex
+	doc/libzahls-design.tex\
+	doc/get-started.tex
 
 HDR_PUBLIC = zahl.h $(HDR_SEMIPUBLIC)
 HDR        = $(HDR_PUBLIC) $(HDR_PRIVATE)
