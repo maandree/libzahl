@@ -1,0 +1,252 @@
+\chapter{libzahl's design}
+\label{chap:libzahl's design}
+
+In this chapter, the design of libzahl is discussed.
+
+\vspace{1cm}
+\minitoc
+
+
+\newpage
+\section{Memory pool}
+\label{sec:Memory pool}
+
+Allocating memory dynamically is an expensive operation.
+To improve performance, libzahl never deallocates memory
+before the library is uninitialised, instead it pools
+memory, that is no longer needed, for reuse.
+
+Because of the memory pooling, this is a pattern to the
+allocation sizes. In an allocation, a power of two
+elements, plus a few elements that are discussed in
+\secref{sec:Integer structure}, are allocated. That is,
+the number multiplied the size of an element.
+Powers of two (growth factor 2) is not the most memory
+efficient way to do this, but it is the simplest and
+performance efficient. This power of two (sans the few
+extra elements) is used to calculate --- getting the index
+of the only set bit --- the index of the bucket in
+which the allocation is stored when pooled. The buckets
+are dynamic arrays with the growth factor 1.5. The
+growth factor 1.5 is often used for dynamic arrays, it
+is a good compromise between memory usage and performance.
+
+libzahl also avoids allocating memory by having a set
+of temporary variables predefined.
+
+
+\newpage
+\section{Error handling}
+\label{sec:Error handling}
+
+In C, it is traditional to return a sentiel value
+if case an error has occurred, and set the value
+of a globale variable to describe the error that
+has occurred. The programmer can choose whether to
+check for errors, ignore errors where it does not
+matter, or simple ignore errors all together and let
+the program eventual crash. This is a simple
+technique that gives the programmer a better
+understanding of what can happend. A great advantage
+C has over most programming languages.
+
+Another technique is to use long jumps on error.
+This technique is not too common, but is has one
+significant advantage. Error-checks need only be
+preformed where the error can first be detected.
+There is no need to check the return value at every
+function return. This leads to cleaner code, if
+there are many functions that can raise exceptional
+conditions, and greater performance under some
+conditions. This is why this technique is sometimes
+used in high-performance libraries. libzahl uses
+this technique.
+
+Rather than writing
+
+\begin{alltt}
+   if (zadd(a, b, c))
+       goto out;
+\end{alltt}
+
+\noindent
+or a but cleaner, if ther is a lot of calls,
+
+\begin{alltt}
+   #define TRY(...) do if (__VA_ARGS__) goto out; while (0)
+   \textcolor{c}{/* \textrm{\ldots} */}
+   TRY(zadd(a, b, c));
+\end{alltt}
+
+\noindent
+you write
+
+\begin{alltt}
+   jmp_buf env;
+   if (setjmp(env))
+       goto out;
+   zsetup(env);
+   \textcolor{c}{/* \textrm{\ldots} */}
+   zadd(a, b, c);
+\end{alltt}
+
+You only need to call {\tt setjmp} and {\tt zsetup}
+once, but can may update the return point by calling
+them once more.
+
+If you don't need to check for errors, you can
+disable error detection at compile-time. By defining
+the {\tt ZAHL\_UNSAFE} C preprocessor definition
+when compiling libzahl, and when compiling your
+software that uses libzahl.
+
+
+\newpage
+\section{Integer structure}
+\label{sec:Integer structure}
+
+The data type used to represent a big integer with
+libzahl is {\tt z\_t}, defined as
+
+\begin{alltt}
+   typedef struct zahl z_t[1];
+\end{alltt}
+
+\noindent
+where {\tt struct zahl} is defined as
+
+\begin{alltt}
+   struct zahl \{
+       int sign;
+       size_t used;
+       size_t alloced;
+       zahl_char_t *chars;
+   \};
+\end{alltt}
+
+\noindent
+where {\tt zahl\_char\_t} is defined as
+
+\begin{alltt}
+   typedef uint64_t zahl_char_t;
+\end{alltt}
+
+\noindent
+As a user, try not to think about anything else than
+
+\begin{alltt}
+   typedef \textcolor{c}{/* \textrm{ignore what is here} */} z_t[1];
+\end{alltt}
+
+\noindent
+details can change in future versions of libzahl.
+
+{\tt z\_t} is defined as a single-element array.
+This is often called a reference. There are some
+flexibility issues with this, why {\tt struct zahl}
+has beed added, but for most uses with big integers,
+it makes things simpler. Particularly, you need not
+work prepend {\tt \&} to variable when making function
+calls, but the existence of {\tt struct zahl} allows
+you do so if you so choose.
+
+The {\tt .sign} member, is either $-1$, 0, or 1,
+when the integer is negative, zero, or positive,
+respectively. Whenever, {\tt .sign} is 0, the value
+of {\tt .used} and {\tt .chars} are undefined.
+
+{\tt .used} holds to the number of elements used in
+{\tt .chars}, and {\tt .alloced} holds the allocation
+side of {\tt .chars} measured in elements minus a few
+extra elements that are always added to the allocation.
+{\tt .chars} is a little-endian array of 64-bit digits,
+these 64-bit digits are called `characters' in libzahl.
+{\tt .chars} holds the absolute value of the
+represented value.
+
+Unless {\tt .sign} is 0, {\tt .chars} always contains
+four extra elements, refered to as fluff. These are
+merely allocated so functions can assume that they can
+always manipulate groups of four characters, and need
+not care about cases where the number of characters is
+not a multiple of four. There are of course a few cases
+when the precise number of characters is important.
+
+
+\newpage
+\section{Parameters}
+\label{sec:Parameters}
+
+The general order of parameters in libzahl functions
+are: output integers, input integers, input data,
+output data, parametric values. For example, in
+addition, the out parameter is the first parameter.
+But for marshalling and unmarshalling the buffer
+is last. For random number generation the order is:
+output, device, distribution, distribution parameters.
+Whilst the distribution parameters are big integers,
+they are not considered input integers. The order
+of the input parameters are that of the order you
+would write them using mathematical notation, this
+also holds true if you include the output parameter
+(as long as there is exactly one output,) for example
+
+\vspace{1ex}
+$a \gets b^c \mod d$
+\vspace{1ex}
+
+\noindent
+is written
+
+\begin{verbatim}
+   zmodpow(a, b, c, d);
+\end{verbatim}
+
+\noindent
+or
+
+\begin{verbatim}
+   zmodpowu(a, b, c, d);
+\end{verbatim}
+
+Like any self respecting bignum library, libzahl
+supports using the same big integer reference as
+for output as input, as long as the all output
+parameters are unique to each other. For example
+
+\begin{alltt}
+   a += b;
+\end{alltt}
+
+\noindent
+or
+
+\begin{alltt}
+   a = a + b;
+\end{alltt}
+
+\noindent
+is written, using libzahl, as
+
+\begin{alltt}
+   zadd(a, a, b);
+\end{alltt}
+
+For commutative functions, like {\tt zadd}, the
+implementation is optimised to assume that this
+order is more likely to be used than the alternative.
+That is, you should, for example, write
+
+\begin{alltt}
+   zadd(a, a, b);
+\end{alltt}
+
+\noindent
+rather than
+
+\begin{alltt}
+   zadd(a, b, a);
+\end{alltt}
+
+This is assumption is not made for non-commutative
+functions.

@@ -69,7 +69,13 @@ INLINE_FUN =\
 	zzero
 
 DOC =\
-	refsheet.pdf
+	refsheet.pdf\
+	libzahl.pdf
+
+TEXSRC =\
+	doc/libzahl.tex\
+	doc/what-is-libzahl.tex\
+	doc/libzahls-design.tex
 
 HDR_PUBLIC = zahl.h $(HDR_SEMIPUBLIC)
 HDR        = $(HDR_PUBLIC) $(HDR_PRIVATE)
@@ -150,6 +156,10 @@ refsheet.pdf: doc/refsheet.tex
 	pdflatex doc/refsheet.tex </dev/null
 	pdflatex doc/refsheet.tex </dev/null
 
+libzahl.pdf: $(TEXSRC)
+	pdflatex doc/libzahl.tex </dev/null
+	pdflatex doc/libzahl.tex </dev/null
+
 check: test
 	./test
 
@@ -182,7 +192,8 @@ uninstall:
 clean:
 	-rm -- *.o *.su *.a *.so test test-random.c 2>/dev/null
 	-rm -- benchmark benchmark-zrand benchmark-func 2>/dev/null
-	-rm -- *.aux *.log *.out 2>/dev/null
+	-rm -- *.aux *.log *.out *.idx *.maf *.mtc* *.toc 2>/dev/null
 	-rm -- refsheet.pdf refsheet.dvi refsheet.ps 2>/dev/null
+	-rm -- libzahl.pdf libzahl.dvi libzahl.ps 2>/dev/null
 
 .PHONY: all check clean install uninstall

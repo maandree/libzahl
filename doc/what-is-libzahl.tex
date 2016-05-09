@@ -1,0 +1,174 @@
+\chapter{What is libzahl?}
+\label{chap:What is libzahl?}
+
+In this chapter, it is discussed what libzahl is,
+why it is called libzahl, why it exists, why
+you should use it, what makes it different, and
+what is its limitations.
+
+\vspace{1cm}
+\minitoc
+
+
+\newpage
+\section{The name and the what}
+\label{sec:The name and the what}
+
+In mathematics, the set of all integers is represented
+by a bold uppercase `Z' ({\bf Z}), or sometimes
+double-stroked (blackboard bold) ($\mathbb{Z}$). This symbol
+is derived from the german word for integers: `Zahlen'
+[\textprimstress{}tsa\textlengthmark{}l\textschwa{}n],
+whose singular is `Zahl' [tsa\textlengthmark{}l]. libzahl
+[l\textsecstress{}\textsci{}b\textprimstress{}tsa\textlengthmark{}l]
+is a C library capable of representing very large integers,
+limited by the memory address space and available memory.
+Whilst this is almost none of the elements in {\bf Z},
+it is substantially more than available using the intrinsic
+integer types in C. libzahl of course also implements
+functions for performing arithmetic operations over
+integers represented using  libzahl. Libraries such as
+libzahl as called bigint libraries, big integer libraries,
+multiple precision integer libraries, arbitrary precision
+integer libraries,\footnote{`Multiple precision integer'
+and `arbitrary precision integer' are misnomers, precision
+is only relevant for floating-point numbers.} or bignum
+libraries, or any of the previous with `number' substituted
+for `integer'. Some libraries that refer to themself bignum
+libraries or any of using the word `number' support other
+number types than integers. libzahl only supports integers.
+
+
+\newpage
+\section{Why does it exist?}
+\label{sec:Why does it exist?}
+
+libzahl's main competitors are GNU MP (gmp),\footnote{GNU
+Multiple Precision Arithmetic Library} LibTomMath (ltm),
+and TomsFastMath (tfm). All of these have problems:
+
+\begin{itemize}
+\item
+GNU MP is extremely bloated, can only be complied with
+GCC, can only be dynamically linked, and requires glibc.
+Additionally, whilst its performance is generally good,
+it can still be improved. Furthermore, GNU MP cannot be
+used for robust applications.
+
+\item
+LibTomMath is very slow, infact performance is not its
+priority, rather its simplicit is the priority. Despite
+this, it is not really that simple.
+
+\item
+TomsFastMath is slow, complicated, and is not a true
+big integer library and is specifically targeted at
+cryptography.
+\end{itemize}
+
+libzahl is developed under the suckless.org umbrella.
+As such, it attempts to follow the suckless
+philosophy.\footnote{\href{http://suckless.org/philosophy}
+{http://suckless.org/philosophy}} libzahl is simple,
+very fast, simple to use, and can be used in robust
+applications. Currently however, it does not support
+multithreading, but it has better support multiprocessing
+and distributed computing than its competitor.
+
+
+\newpage
+\section{How is it different?}
+\label{sec:How is it different?}
+
+All big number libraries have in common that both input
+and output integers are parameters for the functions.
+There are however two variants of this: input parameters
+followed by output parameters, and output parameters
+followed by input parameters. The former variant is the
+conventional for C functions. The latter is more in style
+with primitive operations, pseudo-code, mathematics, and
+how it would look if the output was return. In libzahl,
+the latter convention is used. That is, why write
+
+\begin{alltt}
+   zadd(sum, augend, addend);
+\end{alltt}
+
+\noindent
+rather than
+
+\begin{alltt}
+   zadd(augend, addend, sum);
+\end{alltt}
+
+\noindent
+This can be compared to
+
+\vspace{1ex}
+$sum \gets augend + addend$
+\vspace{1ex}
+
+\noindent
+versus
+
+\vspace{1ex}
+$augend + addend \rightarrow sum$.
+\vspace{1ex}
+
+libzahl, GNU MP, and Hebimath uses the output-first
+convention. LibTomMath and TomsFastMath uses the
+input-first convention.
+
+Unlike other bignum libraries, errors in libzahl are
+caught using {\tt setjmp}. This ensure that it can be
+used in robust applications, catching errors does not
+become a mess, and it minimises the overhead of
+catching errors. Errors are only checked when they can
+occur, not also after each function-return.
+
+Additionally, libzahl tries to keep the functions'
+names simple and natural rather than techniqual or
+mathematical. The names resemble those of the standard
+integer operators.
+
+
+\newpage
+\section{Limitations}
+\label{sec:Limitations}
+
+libzahl is not recommended for cryptographic
+applications, it is not mature enough, and its author
+does not have the necessary expertise. And in,
+particular it does not implement constant time
+operations. Additionally, libzahl is not thread-safe.
+
+libzahl is also only designed for POSIX systems.
+It will probably run just fine on any modern
+system. But it makes some assumption that POSIX
+stipulates or are unpractical not to implement
+for machines that should support POSIX (or even
+support modern software):
+
+\begin{itemize}
+\item
+Bytes are octets.
+
+\item
+There is an integer type that is 64-bits wide.
+(The compiler needs to support it, but it is not
+strictly necessary for it to be an CPU-intrinsic,
+but that would be favourable for performance.)
+
+\item
+Two's complement is used.
+(The compiler needs to support it, but it is not
+strictly necessary for it to be an CPU-intrinsic,
+but that would be favourable for performance.)
+\end{itemize}
+
+These limitations may be removed later. And there
+is some code that does not make these assumptions
+but acknowledge that it may be a case. On the other
+hand, these limitations could be fixed, and agnostic
+code could be rewritten to assume that these
+restrictions are met.

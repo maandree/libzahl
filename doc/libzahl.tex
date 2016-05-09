@@ -1,0 +1,91 @@
+\documentclass[11pt,b5paper,openright]{book}
+\special{papersize=176mm,250mm}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{algorithmic, algorithm, colonequals, alltt}
+\usepackage{amsmath, amssymb, mathtools, MnSymbol, mathrsfs, esvect}
+\usepackage{tipa, color, graphicx}
+\usepackage{microtype}
+\usepackage{shorttoc, minitoc}
+\usepackage[english]{babel}
+\selectlanguage{english}
+\definecolor{linkcolour}{RGB}{112, 0, 0}
+\definecolor{urlcolour}{RGB}{0, 0, 112}
+\usepackage[unicode,pdfencoding=auto]{hyperref}
+\hypersetup{
+  pdfborder={0 0 0},
+  colorlinks=true,
+  linkcolor=linkcolour,
+  urlcolor=urlcolour,
+  linktoc=all,
+  pdfsubject={Computer science},
+  pdfauthor={Mattias Andrée},
+  pdftitle={libzahl},
+  pdfkeywords={libzahl, big integer, big number, bigint, bignum, multiple-precision, arbitrary precision}
+}
+\hypersetup{linktocpage}
+\usepackage{makeidx}
+\makeindex
+\usepackage{geometry}
+\geometry{margin=1in}
+%\DisableLigatures{encoding = *, family = *}
+
+\newcommand{\chapref}[1]{\hyperref[#1]{Chapter~\ref*{#1} [\nameref*{#1}], page \pageref*{#1}}}
+\newcommand{\secref}[1]{\hyperref[#1]{Section~\ref*{#1} [\nameref*{#1}], page \pageref*{#1}}}
+\newcommand{\appxref}[1]{\hyperref[#1]{Appendix~\ref*{#1} [\nameref*{#1}], page \pageref*{#1}}}
+\newcommand{\pchapref}[1]{(see \hyperref[#1]{Chapter~\ref*{#1} [\nameref*{#1}], page \pageref*{#1}})}
+\newcommand{\psecref}[1]{(see \hyperref[#1]{Section~\ref*{#1} [\nameref*{#1}], page \pageref*{#1}})}
+\newcommand{\pappxref}[1]{(see \hyperref[#1]{Appendix~\ref*{#1} [\nameref*{#1}], page \pageref*{#1}})}
+\definecolor{c}{rgb}{0.45, 0.45, 0.45}
+
+\begin{document}
+
+\frontmatter
+
+\title{{\Huge \bf libzahl version 1.1}}
+\author{Mattias Andrée $\langle$\href{mailto:maandree@kth.se}{\texttt{maandree@kth.se}}$\rangle$}
+\date{\vspace{3in}}
+\maketitle
+
+\thispagestyle{empty}
+\null
+\vfill
+\noindent
+Copyright \copyright{} 2016 $~$  Mattias Andrée $\langle$\href{mailto:maandree@kth.se}{\texttt{maandree@kth.se}}$\rangle$
+\vspace{1ex}
+
+\noindent
+{\small
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this document and associated files (the ``Document''), to deal in
+the Document without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Document, and to permit persons to whom the Document is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Document.
+}
+\newpage
+
+\shorttoc{Short contents}{0}
+\setcounter{tocdepth}{2}
+\dominitoc
+\tableofcontents
+
+
+\mainmatter
+
+\input doc/what-is-libzahl.tex
+\input doc/libzahls-design.tex
+
+
+\appendix
+
+
+\backmatter
+
+\addcontentsline{toc}{chapter}{Index}
+\printindex
+
+\end{document}

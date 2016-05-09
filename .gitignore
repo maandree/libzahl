@@ -20,3 +20,7 @@
 *.pdf
 *.ps
 *.dvi
+*.idx
+*.maf
+*.mtc*
+*.toc
