@@ -91,10 +91,10 @@ be detrimental to libzahl's simplicity.
 in-place operation:
 
 \begin{alltt}
-  zadd(a, a, b);
-  zadd(b, a, b);           \textcolor{c}{/* \textrm{should be avoided} */}
-  zadd_unsigned(a, a, b);
-  zadd_unsigned(b, a, b);  \textcolor{c}{/* \textrm{should be avoided} */}
+   zadd(a, a, b);
+   zadd(b, a, b);           \textcolor{c}{/* \textrm{should be avoided} */}
+   zadd_unsigned(a, a, b);
+   zadd_unsigned(b, a, b);  \textcolor{c}{/* \textrm{should be avoided} */}
 \end{alltt}
 
 \noindent
@@ -137,4 +137,59 @@ TODO % zpow zpowu zmodpow zmodpowu
 \section{Sign manipulation}
 \label{sec:Sign manipulation}
 
-TODO % zabs zneg
+libzahl provides two functions for manipulating
+the sign of integers:
+
+\begin{alltt}
+   void zabs(z_t r, z_t a);
+   void zneg(z_t r, z_t a);
+\end{alltt}
+
+{\tt zabs} stores the absolute value of {\tt a}
+in {\tt r}, that is, it creates a copy of
+{\tt a} to {\tt r}, unless {\tt a} and {\tt r}
+are the same reference, and then removes its sign;
+if the value is negative, it becomes positive.
+
+\vspace{1em}
+\(
+    r \gets \lvert a \rvert =
+    \left \lbrace \begin{array}{rl}
+        -a & \quad \textrm{if}~a \le 0 \\
+        +a & \quad \textrm{if}~a \ge 0 \\
+    \end{array} \right .
+\)
+\vspace{1em}
+
+{\tt zneg} stores the negated of {\tt a}
+in {\tt r}, that is, it creates a copy of
+{\tt a} to {\tt r}, unless {\tt a} and {\tt r}
+are the same reference, and then flips sign;
+if the value is negative, it becomes positive,
+if the value is positive, it becomes negative.
+
+\vspace{1em}
+\(
+    r \gets -a
+\)
+\vspace{1em}
+
+Note that there is no function for
+
+\vspace{1em}
+\(
+    r \gets -\lvert a \rvert =
+    \left \lbrace \begin{array}{rl}
+         a & \quad \textrm{if}~a \le 0 \\
+        -a & \quad \textrm{if}~a \ge 0 \\
+    \end{array} \right .
+\)
+\vspace{1em}
+
+\noindent
+calling {\tt zabs} followed by {\tt zneg}
+should be sufficient for most users:
+
+\begin{alltt}
+   #define my_negabs(r, a)  (zabs(r, a), zneg(r, r))
+\end{alltt}
