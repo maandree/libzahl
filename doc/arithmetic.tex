@@ -15,14 +15,84 @@ special importance.
 \section{Addition}
 \label{sec:Addition}
 
-TODO % zadd
+To calculate the sum of two terms, we perform
+addition using {\tt zadd}.
+
+\vspace{1em}
+$r \gets a + b$
+\vspace{1em}
+
+\noindent
+is written as
+
+\begin{alltt}
+   zadd(r, a, b);
+\end{alltt}
+
+libzahl also provides {\tt zadd\_unsigned} which
+has slightly lower overhead. The calculates the
+sum of the absolute values of two integers.
+
+\vspace{1em}
+$r \gets \lvert a \rvert + \lvert b \rvert$
+\vspace{1em}
+
+\noindent
+is written as
+
+\begin{alltt}
+   zadd_unsigned(r, a, b);
+\end{alltt}
+
+\noindent
+{\tt zadd\_unsigned} has lower overhead than
+{\tt zadd} because it does not need to inspect
+or change the sign of the input, the low-level
+function that performs the addition inherently
+calculates the sum of the absolute values of
+the input.
+
+In libzahl, addition is implemented using a
+technique called ripple-carry. It is derived
+from that observation that
+
+\vspace{1em}
+$f : \textbf{Z}_n, \textbf{Z}_n \rightarrow \textbf{Z}_n$
+\\ \indent
+$f : a, b \mapsto a + b + 1$
+\vspace{1em}
+
+\noindent
+only overflows at most once, that is, the
+carry cannot exceed 1. CPU:s provide an
+instruction specifically for performing
+addition with ripple-carry over multiple words,
+adds twos numbers plus the carry from the
+last addition. libzahl uses assembly to
+implement this efficiently. If however, an
+assembly implementation is not available for
+the on which machine it is running, libzahl
+implements ripple-carry less efficiently
+using compiler extensions that check for
+overflow. In the event that neither an
+assembly implementation is available nor
+the compiler is known to support this
+extension, it is implemented using inefficient
+pure C code. This last resort manually
+predicts whether an addition will overflow;
+this could be made more efficent, but never
+using the highest bit, in each character,
+except to detect overflow. This optimisation
+is however not implemented because it is
+not deemed important enough and would
+be detrimental to libzahl's simplicity.
 
 
 \newpage
 \section{Subtraction}
 \label{sec:Subtraction}
 
-TODO % zsub
+TODO % zsub zsub_unsigned
 
 
 \newpage
