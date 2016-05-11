@@ -87,6 +87,23 @@ is however not implemented because it is
 not deemed important enough and would
 be detrimental to libzahl's simplicity.
 
+{\tt zadd} and {\tt zadd\_unsigned} support
+in-place operation:
+
+\begin{alltt}
+  zadd(a, a, b);
+  zadd(b, a, b);           \textcolor{c}{/* \textrm{should be avoided} */}
+  zadd_unsigned(a, a, b);
+  zadd_unsigned(b, a, b);  \textcolor{c}{/* \textrm{should be avoided} */}
+\end{alltt}
+
+\noindent
+Use this whenever possible, it will improve
+your performance, as it will involve less
+CPU instructions for each character-addition
+and it may be possible to elementation some
+character-additions.
+
 
 \newpage
 \section{Subtraction}
