@@ -187,8 +187,61 @@ can be expressed as a simple formula
 \vspace{-1em}
 \[ \hspace*{-0.4cm}
     a^b = \prod_{i = 0}^{\lceil \log_2 b \rceil}
-    a^{2^i} \left \lfloor {b \over 2^i} \hspace*{-1ex} \mod 2 \right \rfloor
+    \left ( a^{2^i} \right )^{\left \lfloor {\displaystyle{b \over 2^i}} \hspace*{-1ex} \mod 2 \right \rfloor}
 \]
+
+\noindent
+This is a natural extension to the observations
+
+\vspace{-1em}
+\[ \hspace*{-0.4cm}
+    \forall n \in \textbf{Z}_{+} \exists B \subset \textbf{Z}_{+} : b = \sum_{i \in B} 2^i
+    ~~~~ \textrm{and} ~~~~
+    a^{\sum x} = \prod a^x.
+\]
+
+\noindent
+The algorithm can be expressed in psuedocode as
+
+\vspace{1em}
+\hspace{-2.8ex}
+\begin{minipage}{\linewidth}
+\begin{algorithmic}
+    \STATE $r \gets 1$
+    \STATE $f \gets a$
+    \WHILE{$b \neq 0$}
+      \IF{$b \equiv 1 ~(\textrm{Mod}~ 2)$}
+        \STATE $r \gets r \cdot f$
+      \ENDIF
+      \STATE $f \gets f^2$ \qquad \textcolor{c}{\{$f \gets f \cdot f$\}}
+      \STATE $b \gets \lfloor b / 2 \rfloor$
+    \ENDWHILE
+    \RETURN $r$ 
+\end{algorithmic}
+\end{minipage}
+\vspace{1em}
+
+\noindent
+Modular exponentiation ($a^b \mod m$) by squaring can be
+expressed as
+
+\vspace{1em}
+\hspace{-2.8ex}
+\begin{minipage}{\linewidth}
+\begin{algorithmic}
+    \STATE $r \gets 1$
+    \STATE $f \gets a$
+    \WHILE{$b \neq 0$}
+      \IF{$b \equiv 1 ~(\textrm{Mod}~ 2)$}
+        \STATE $r \gets r \cdot f \hspace*{-1ex}~ \mod m$
+      \ENDIF
+      \STATE $f \gets f^2 \hspace*{-1ex}~ \mod m$
+      \STATE $b \gets \lfloor b / 2 \rfloor$
+    \ENDWHILE
+    \RETURN $r$ 
+\end{algorithmic}
+\end{minipage}
+\vspace{1em}
 
 {\tt zmodpow} does \emph{not} calculate the
 modular inverse if the exponent is negative,
