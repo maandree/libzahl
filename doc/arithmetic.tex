@@ -130,7 +130,71 @@ TODO % zdiv zmod zdivmod
 \section{Exponentiation}
 \label{sec:Exponentiation}
 
-TODO % zpow zpowu zmodpow zmodpowu
+Exponentiation refers to raising a number to
+a power. libzahl provides two functions for
+regular exponentiation, and two functions for
+modular exponentiation. libzahl also provides
+a function for raising a number to the second
+power, see \secref{sec:Multiplication} for
+more details on this. The functions for regular
+exponentiation are
+
+\begin{alltt}
+   void zpow(z_t power, z_t base, z_t exponent);
+   void zpowu(z_t, z_t, unsigned long long int);
+\end{alltt}
+
+\noindent
+They are identical, except {\tt zpowu} expects
+and intrinsic type as the exponent. Both functions
+calculate
+
+\vspace{1em}
+$power \gets base^{exponent}$
+\vspace{1em}
+
+\noindent
+The functions for modular exponentiation are
+\begin{alltt}
+   void zmodpow(z_t, z_t, z_t, z_t modulator);
+   void zmodpowu(z_t, z_t, unsigned long long int, z_t);
+\end{alltt}
+
+\noindent
+They are identical, except {\tt zmodpowu} expects
+and intrinsic type as the exponent. Both functions
+calculate
+
+\vspace{1em}
+$power \gets base^{exponent} \mod modulator$
+\vspace{1em}
+
+The sign of {\tt modulator} does not affect the
+result, {\tt power} will be negative if and only
+if {\tt base} is negative and {\tt exponent} is
+odd, that is, under the same circumstances as for
+{\tt zpow} and {\tt zpowu}.
+
+These four functions are implemented using
+exponentiation by squaring. {\tt zmodpow} and
+{\tt zmodpowu} are optimised, they modulate
+results for multiplication and squaring at
+every multiplication and squaring, rather than
+modulating every at the end. Exponentiation
+by modulation is a very simple algorithm which
+can be expressed as a simple formula
+
+\vspace{-1em}
+\[ \hspace*{-0.4cm}
+    a^b = \prod_{i = 0}^{\lceil \log_2 b \rceil}
+    a^{2^i} \left \lfloor {b \over 2^i} \hspace*{-1ex} \mod 2 \right \rfloor
+\]
+
+{\tt zmodpow} does \emph{not} calculate the
+modular inverse if the exponent is negative,
+rather, you should expect the result to be
+1 and 0 depending of whether the base is 1
+or not 1.
 
 
 \newpage
