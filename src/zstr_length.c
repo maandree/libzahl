@@ -10,6 +10,8 @@ size_t
 zstr_length(z_t a, unsigned long long int radix)
 {
 	size_t size_total = 1, size_temp;
+	if (radix < 2)
+		libzahl_failure(-ZERROR_INVALID_RADIX);
 	zset(num, a);
 	while (!zzero(num)) {
 		zsetu(mag, radix);

@@ -50,7 +50,8 @@ enum zerror {
 	ZERROR_0_POW_0,                 /* Indeterminate form: 0:th power of 0. (Translatable to EDOM.) */
 	ZERROR_0_DIV_0,                 /* Indeterminate form: 0 divided by 0. (Translatable to EDOM.) */
 	ZERROR_DIV_0,                   /* Undefined result: Division by 0. (Translatable to EDOM.) */
-	ZERROR_NEGATIVE                 /* Argument must be non-negative. (Translatable to EDOM or EINVAL.) */
+	ZERROR_NEGATIVE,                /* Argument must be non-negative. (Translatable to EDOM or EINVAL.) */
+	ZERROR_INVALID_RADIX            /* Radix must be at least 2. (Translatable to EINVAL.) */
 };
 
 

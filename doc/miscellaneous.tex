@@ -1,0 +1,341 @@
+\chapter{Miscellaneous}
+\label{chap:Miscellaneous}
+
+In this chapter, we will learn some miscellaneous
+functions. It might seem counterintuitive to start
+with miscellanea, but it is probably a good idea
+to read this before arithmetics and more advanced
+topics. You may read \secref{sec:Marshalling}
+later. Before reading this chapter you should
+have read \chapref{chap:Get started}.
+
+
+\vspace{1cm}
+\minitoc
+
+
+\newpage
+\section{Assignment}
+\label{sec:Assignment}
+
+To be able to do anything useful, we must assign
+values to integers. There are three functions for
+this: {\tt zseti}, {\tt zsetu}, and {\tt zsets}.
+The last letter in the names of these function
+describe the data type of the input, `i', `u',
+and `s' stand for `integer', `unsigned integer',
+and `string`, respectively. These resemble the
+rules for the format strings in the family of
+{\tt printf}-functions. `Integer' of course refer
+to `signed integer'; for integer types in C,
+part from {\tt char}, the keyword {\tt signed}
+is implicit.
+
+Consider {\tt zseti},
+
+\begin{alltt}
+   \textcolor{c}{z_t two;}
+   \textcolor{c}{zinit(two);}
+   zseti(two, 2);
+\end{alltt}
+
+\noindent
+assignes {\tt two} the value 2. The data type of
+the second parameter of {\tt zseti} is {\tt int64\_t}.
+It will accept any integer value in the range
+$[-2^{63},~2^{63} - 1] = [-9223372036854775808,~9223372036854775807]$,
+independently of the machine.\footnote{{\tt int64\_t}
+is defined to be a signed 64-bit integer using two's
+complement representation.} If this range so not wide
+enough, it may be possible to use {\tt zsetu}. Its
+second parameter of the type {\tt uint64\_t}, and thus
+its range is $[0,~2^{64} - 1] = [0,~18446744073709551615]$.
+If a need negative value is desired, {\tt zsetu} can be
+combined with {\tt zneg} \psecref{sec:Sign manipulation}.
+
+For enormous constants or textual input, {\tt zsets}
+can be used. {\tt zsets} will accept any numerical
+value encoded in decimal ASCII, that only contain
+digits, \emph{not} decimal points, whitespace,
+apostrophes, et cetera. However, an optional plus
+sign or, for negative numbers, an ASCII minus sign
+may be used as the very first character. Note that
+a proper UCS minus sign is not supported.
+
+Using what we have learned so far, and {\tt zstr}
+which we will learn about in \secref{sec:String output},
+we can construct a simple program that calculates the
+sum of a set of number.
+
+\begin{alltt}
+   \textcolor{c}{#include <stdio.h>
+   #include <stdlib.h>
+   #include <zahl.h>}
+
+   int
+   main(int argc, char *argv[]) \{
+       z_t sum, temp;
+       \textcolor{c}{jmp_buf failenv;
+       char *sbuf, *argv0 = *argv;
+       if (setjmp(failenv)) \{
+           zperror(argv0);
+           return 1;
+       \}
+       zsetup(failenv);
+       zinit(sum);
+       zinit(term);}
+       zsetu(sum, 0);
+       for (argv++; *argv; argv++) \{
+           zsets(term, *argv);
+           zadd(sum, sum, term);
+       \}
+       \textcolor{c}{printf("\%s\textbackslash{}n", (sbuf = zstr(sum, NULL, 0)));
+       free(sbuf);
+       zfree(sum);
+       zfree(term);
+       zunsetup();
+       return 0;}
+   \}
+\end{alltt}
+
+Another form of assignment available in libzahl is
+copy-assignment. This done using {\tt zset}. As
+easily observable, {\tt zset} is named like
+{\tt zseti}, {\tt zsetu}, and {\tt zsetu}, but
+without the input-type suffix. The lack of a
+input-type suffix means that the input type is
+{\tt z\_t}. {\tt zset} copies value of second
+parameter into the reference in the first. For
+example, if {\tt v}, of the type {\tt z\_t}, has
+value 10, then {\tt a} will too after the instruction
+
+\begin{alltt}
+   zset(a, v);
+\end{alltt}
+
+{\tt zset} does not necessarily make an exact
+copy of the input. If, in the example above, the
+{\tt a->alloced} is greater than or equal to
+{\tt v->used}, {\tt a->alloced} and {\tt a->chars}
+are preserved, of course, the content of
+{\tt a->chars} is overridden. If however,
+{\tt a->alloced} is less then {\tt v->used},
+{\tt a->alloced} is assigned a minimal value at
+least as great as {\tt v->used} that is a power
+of 2, and {\tt a->chars} is updated accordingly
+as described in \secref{sec:Integer structure}.
+This of course does not apply if {\tt v} has the
+value 0; in such cases {\tt a->sign} is simply
+set to 0.
+
+{\tt zset}, {\tt zseti}, {\tt zsetu}, and
+{\tt zsets} require that the output-parameter
+has been initialised with {\tt zinit} or an
+equally acceptable method as described in
+\secref{sec:Create an integer}.
+
+{\tt zset} is often unnecessary, of course
+there are cases where it is need. In some case
+{\tt zswap} is enough, and advantageous.
+{\tt zswap} is defined as
+
+\begin{alltt}
+   \textcolor{c}{static inline} void
+   zswap(z_t a, z_t b)
+   \{
+       z_t t;
+       *t = *a;
+       *a = *b;
+       *b = *t;
+   \}
+\end{alltt}
+
+\noindent
+however its implementation is optimised to be
+around three times. It just swaps the members
+of the parameters, and thereby the values, There
+is no rewriting of {\tt .chars} involved; thus
+it runs in constant time. It also does not
+require that any argument has be initialised.
+After the call, {\tt a} will be initialised
+if and only if {\tt b} was initialised, and
+vice versa.
+
+
+\newpage
+\section{String output}
+\label{sec:String output}
+
+Few useful things can be done without creating
+textual output of calculations. To convert a
+{\tt z\_t} to ASCII string in decimal, we use the
+function {\tt zstr}, declared as
+
+\begin{alltt}
+   char *zstr(z_t a, char *buf, size_t n);
+\end{alltt}
+
+\noindent
+{\tt zstr} will store the string it creates into
+{\tt buf} and return {\tt buf}. However, if {\tt buf}
+is {\tt NULL}, a new memory segment is allocated
+and returned. {\tt n} should be at least the length
+of the resulting string sans NUL termiantion, but
+not larger than the allocation size of {\tt buf}
+minus 1 byte for NUL termiantion. If {\tt buf} is
+{\tt NULL}, {\tt n} may be 0. However if {\tt buf}
+is not {\tt NULL}, it is unsafe to let {\tt n} be
+0, unless {\tt buf} has been allocated by {\tt zstr}
+for a value of {\tt a} at least as larger as the
+value of {\tt a} in the new call to {\tt zstr}.
+Combining non-\texttt{NULL} {\tt buf} with 0 {\tt n}
+is unsafe because {\tt zstr} will use a very fast
+formula for calculating a value that is at least
+as large as the resulting output length, rather
+than the exact length.
+
+The length of the string output by {\tt zstr} can
+be predicted by {\tt zstr\_length}, decleared as
+
+\begin{alltt}
+   size_t zstr_length(z_t a, unsigned long long int radix);
+\end{alltt}
+
+\noindent
+It will calculated the length of {\tt a} represented
+in radix {\tt radix}, sans NUL termination. If
+{\tt radix} is 10, the length for a decimal
+representation is calculated.
+
+Sometimes it is possible to never allocate a {\tt buf}
+for {\tt zstr}. For example, in an implementation
+of {\tt factor}, you can reuse the string of the
+value to factorise, since all of its factors are
+guaranteed to be no longer than the factored value.
+
+\begin{alltt}
+   void
+   factor(char *value)
+   \{
+       size_t n = strlen(value);
+       z_t product, factor;
+       zsets(product, value);
+       printf("\%s:", value);
+       while (next_factor(product, factor))
+           printf(" \%s", zstr(factor, value, n));
+       printf("\verb|\|n");
+   \}
+\end{alltt}
+
+Other times it is possible to allocate just
+once, for example of creating a sorted output.
+In such cases, the allocation can be done almost
+transparently.
+
+\begin{alltt}
+   void
+   output_presorted_decending(z_t *list, size_t n)
+   \{
+       char *buf = NULL;
+       while (n--)
+           printf("\%s\verb|\|n", (buf = zstr(*list++, buf, 0)));
+   \}
+\end{alltt}
+
+\noindent
+Note, this example assumes that all values are
+non-negative.
+
+
+
+\newpage
+\section{Comparison}
+\label{sec:Comparison}
+
+libzahl defines four functions for comparing
+integers: {\tt zcmp}, {\tt zcmpi}, {\tt zcmpu},
+and {\tt zcmpmag}. These follow the same naming
+convention as {\tt zset}, {\tt zseti}, and
+{\tt zsetu}, as described in \secref{sec:Assignment}.
+{\tt zcmpmag} compares the absolute value, the
+magnitude, rather than the proper value. These
+functions are declared as
+
+\begin{alltt}
+   int zcmp(z_t a, z_t b);
+   int zcmpi(z_t a, int64_t b);
+   int zcmpu(z_t a, uint64_t b);
+   int zcmpmag(z_t a, z_t b);
+\end{alltt}
+
+\noindent
+They behave similar to {\tt memcmp} and
+{\tt strcmp}.\footnote{And {\tt wmemcmp} and
+{\tt wcscmp} if you are into that mess.}
+The return value is defined
+
+\vspace{1em}
+\(
+    \mbox{sgn}(a - b) =
+    \left \lbrace \begin{array}{rl}
+        -1 & \quad \textrm{if}~a < b \\
+         0 & \quad \textrm{if}~a = b \\
+        +1 & \quad \textrm{if}~a > b
+    \end{array} \right .
+\)
+\vspace{1em}
+
+\noindent
+for {\tt zcmp}, {\tt zcmpi}, and {\tt zcmpu}.
+The return for {\tt zcmpmag} value is defined
+
+\vspace{1em}
+\(
+    \mbox{sgn}(\lvert a \rvert - \lvert b \rvert) =
+    \left \lbrace \begin{array}{rl}
+        -1 & \quad \textrm{if}~\lvert a \rvert < \lvert b \rvert \\
+         0 & \quad \textrm{if}~\lvert a \rvert = \lvert b \rvert \\
+        +1 & \quad \textrm{if}~\lvert a \rvert > \lvert b \rvert
+    \end{array} \right .
+\)
+\vspace{1em}
+
+\noindent
+It is discouraged, stylistically, to compare
+against, $-1$ and $+1$, rather, you should
+always compare against $0$. Think of it as
+returning $a - b$, or $\lvert a \rvert - \lvert b \rvert$
+in the case of {\tt zcmpmag}.
+
+
+\newpage
+\section{Marshalling}
+\label{sec:Marshalling}
+
+libzahl is designed to provide efficient communication
+for multi-processes applications, including running on
+multiple nodes on a cluster computer. However, these
+facilities require that it is known that all processes
+run the same version of libzahl, and run on compatible
+microarchitectures, that is, the processors must have
+endianness, and the intrinsic integer types in C must
+have the same widths on all processors. When this is not
+the case, string conversion (see \secref{sec:Assignment}
+and \secref{sec:String output}), but when it is the case
+{\tt zsave} and {\tt zload} can be used. {\tt zsave} and
+{\tt zload} are declared as
+
+\begin{alltt}
+   size_t zsave(z_t a, char *buf);
+   size_t zload(z_t a, const char *buf);
+\end{alltt}
+
+\noindent
+{\tt zsave} stores a version- and microarchitecture-depend
+binary representation of {\tt a} in {\tt buf}, and returns
+the number of bytes written to {\tt buf}. If {\tt buf} is
+{\tt NULL}, the numbers that will be written is returned.
+{\tt zload} unmarshals an integers from {\tt buf}, created
+with {\tt zsave}, into {\tt a}, and returns the number of
+read bytes. {\tt zload} and will return the value returned
+by {\tt zsave}.

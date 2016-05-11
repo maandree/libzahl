@@ -147,6 +147,9 @@ error code, you instead look at the return value.
        case ZERROR_NEGATIVE:
            fprintf(stderr, "Undefined (negative input)\verb|\|n");
            \textcolor{c}{return 1;}
+       case ZERROR_INVALID_RADIX:
+           fprintf(stderr, "Radix must be at least 2\verb|\|n");
+           \textcolor{c}{return 1;}
        default:
            zperror("");
            \textcolor{c}{return 1;}
@@ -228,7 +231,7 @@ for reuse.
 If you plan to reuse the variable later, you need to
 reinitialise it by calling {\tt zinit} again.
 
-Alternatives to {\tt zseti} include:
+Alternatives to {\tt zseti} include \psecref{sec:Assignment}:
 
 \begin{alltt}
    void zsetu(z_t a, uint64_t value);

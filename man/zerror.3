@@ -72,6 +72,15 @@ values is
 .B EDOM
 and
 .BR EINVAL .
+.TP
+.B ZERROR_INVALID_RADIX
+A radix less than 2 was selected, which is invalid because,
+radix 0 is impossible as there would be no digits, and radix
+1 is impossible because only the value 0 can be represented
+in radix 1. The closest matching
+.I errno
+values is
+.BR EINVAL .
 .SH RETURN VALUE
 .B zerror
 returns the error that caused libzahl a function to fail.
