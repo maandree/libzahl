@@ -30,34 +30,6 @@ gets
 Mod
 .IR divisor .
 .P
-Be aware,
-.I remainder
-gets
-.RI | dividend |
-Mod
-.RI | divisor |,
-this means that it is only guaranteed to be true that
-.I dividend
-=
-.I quotient
-⋅
-.I divisor
-+
-.IR remainder
-if
-.I dividend
-and
-.I divisor
-are both non-negative.
-It is up to the user, to make the necessary adjustment to
-.I remainder
-to make this true or to satisfy any desired property. This
-exceptional behaviour has been choosen because it is the
-simplies, works just fine if you are working with natural
-numbers only, and there are two many ways to define
-modulus; this one is advantages when you want to make
-adjustments, it is straight-forward.
-.P
 It is safe to call
 .B zdivmod
 with non-unique parameters,

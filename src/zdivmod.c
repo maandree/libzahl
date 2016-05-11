@@ -67,9 +67,10 @@ done:
 void
 zdivmod(z_t a, z_t b, z_t c, z_t d)
 {
-	int sign, cmpmag;
+	int c_sign, sign, cmpmag;
 
-	sign = zsignum(c) * zsignum(d);
+	c_sign = zsignum(c);
+	sign = c_sign * zsignum(d);
 
 	if (unlikely(!sign)) {
 		if (check(!zzero(c))) {
@@ -87,7 +88,6 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 			SET_SIGNUM(b, 0);
 		} else {
 			SET(b, c);
-			SET_SIGNUM(b, 1);
 			SET_SIGNUM(a, 0);
 		}
 		return;
@@ -95,4 +95,6 @@ zdivmod(z_t a, z_t b, z_t c, z_t d)
 
 	zdivmod_impl(a, b, c, d);
 	SET_SIGNUM(a, sign);
+	if (zsignum(b) > 0)
+		SET_SIGNUM(b, c_sign);
 }

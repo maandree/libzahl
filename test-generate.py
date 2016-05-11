@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 # See LICENSE file for copyright and license details.
 
-import random
+import sys, random
 
 
 def mod(a, b):
-    return abs(a) % abs(b)
+    r = (abs(a) % abs(b)) * (-1 if a < 0 else 1)
+    q = div(a, b)
+    if a != q * b + r:
+        print('zdivmod does not satisfly n = qd + r', file = sys.stderr)
+        sys.exit(1)
+    return r
 
 def div(a, b): # Python's division is floored, not truncated.
     r = abs(a) // abs(b)

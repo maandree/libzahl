@@ -47,18 +47,18 @@ Unless specified otherwise, returns are {\tt void} and all parameters are of typ
 \entry{zadd(a, b, c)}        {$a \gets b + c$}            {}
 \entry{zsub(a, b, c)}        {$a \gets b - c$}            {}
 \entry{zmul(a, b, c)}        {$a \gets b \cdot c$}        {}
-\entry{zmodmul(a, b, c, d)}  {$a \gets b \cdot c \mod d$} {$0 \le a < \ab{d}$}
+\entry{zmodmul(a, b, c, d)}  {$a \gets b \cdot c \mod d$} {$0 \le a~\mbox{sgn}~bc < \ab{d}$}
 \entry{zdiv(a, b, c)}        {$a \gets b / c$}            {rounded towards zero}
 \entry{zdivmod(a, b, c, d)}  {$a \gets c / d$}            {rounded towards zero}
-\entry{zdivmod(a, b, c, d)}  {$b \gets c \mod d$}         {$0 \le b < \ab{d}$}
-\entry{zmod(a, b, c)}        {$a \gets b \mod c$}         {$0 \le a < \ab{c}$}
+\entry{zdivmod(a, b, c, d)}  {$b \gets c \mod d$}         {$0 \le b~\mbox{sgn}~c < \ab{d}$}
+\entry{zmod(a, b, c)}        {$a \gets b \mod c$}         {$0 \le a~\mbox{sgn}~b < \ab{c}$}
 %\entry{zdiv\_exact(a, b, c)} {$a \gets b / c$}            {assumes $c \vert d$}
 \entry{zsqr(a, b)}           {$a \gets b^2$}              {}
 \entry{zmodsqr(a, b, c)}     {$a \gets b^2 \mod c$}       {$0 \le a < \ab{c}$}
 \entry{zsqr(a, b)}           {$a \gets b^2$}              {}
 \entry{zpow(a, b, c)}        {$a \gets b^c$}              {}
 \entry{zpowu(a, b, c)}       {$a \gets b^c$}              {{\tt c} is an \ullong{}}
-\entry{zmodpow(a, b, c, d)}  {$a \gets b^c \mod d$}       {$0 \le a < \ab{d}$}
+\entry{zmodpow(a, b, c, d)}  {$a \gets b^c \mod d$}       {$0 \le a~\mbox{sgn}~b^c < \ab{d}$}
 \entry{zmodpowu(a, b, c, d)} {$a \gets b^c \mod d$}       {ditto, {\tt c} is an \ullong{}}
 \entry{zabs(a, b)}           {$a \gets \ab{b}$}           {}
 \entry{zneg(a, b)}           {$a \gets -b$}               {}

@@ -590,10 +590,10 @@ main(void)
 	zseti(a, -7);
 	zseti(b, 3);
 	zmod(c, a, b);
-	assert(zcmpi(c, 1), == 0);
+	assert(zcmpi(c, -1), == 0);
 	zseti(b, -3);
 	zmod(c, a, b);
-	assert(zcmpi(c, 1), == 0);
+	assert(zcmpi(c, -1), == 0);
 
 	zseti(a, 7);
 	zseti(b, 3);
@@ -608,11 +608,11 @@ main(void)
 	zseti(b, 3);
 	zdivmod(d, c, a, b);
 	assert(zcmpi(d, -2), == 0);
-	assert(zcmpi(c, 1), == 0);
+	assert(zcmpi(c, -1), == 0);
 	zseti(b, -3);
 	zdivmod(d, c, a, b);
 	assert(zcmpi(d, 2), == 0);
-	assert(zcmpi(c, 1), == 0);
+	assert(zcmpi(c, -1), == 0);
 
 	zseti(a, 10);
 	zseti(b, -1);
