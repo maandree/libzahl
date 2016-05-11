@@ -831,6 +831,10 @@ main(void)
 	assert_nr(zmodpowu(a, _0, 1, _0));
 	assert_nr(zmodpowu(a, _1, 0, _0));
 	assert_nr((zneg(_1, _1), zmodpowu(a, _1, 0, _0))); zneg(_1, _1);
+	assert_nr(zstr_length(a, 0));
+	assert_nr(zstr_length(a, 1));
+	zstr_length(a, 2);
+	zstr_length(a, 3);
 #endif
 
 	zsetu(a, 1LL);
