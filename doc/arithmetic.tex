@@ -187,7 +187,7 @@ can be expressed as a simple formula
 \vspace{-1em}
 \[ \hspace*{-0.4cm}
     a^b =
-    \prod_{k \in \textbf{Z}_{+} ~:~ \left \lfloor {b \over 2^k} \hspace*{-1ex} \mod 2 \right \rfloor = 1}
+    \prod_{k \in \textbf{Z}_{+} ~:~ \left \lfloor \frac{b}{2^k} \hspace*{-1ex} \mod 2 \right \rfloor = 1}
     a^{2^k}
 \]
 
@@ -212,13 +212,10 @@ The algorithm can be expressed in psuedocode as
 \hspace{-2.8ex}
 \begin{minipage}{\linewidth}
 \begin{algorithmic}
-    \STATE $r \gets 1$
-    \STATE $f \gets a$
+    \STATE $r, f \gets 1, a$
     \WHILE{$b \neq 0$}
-      \IF{$b \equiv 1 ~(\textrm{Mod}~ 2)$}
-        \STATE $r \gets r \cdot f$
-      \ENDIF
-      \STATE $f \gets f^2$ \qquad \textcolor{c}{\{$f \gets f \cdot f$\}}
+      \STATE $r \gets r \cdot f$ {\bf unless} $2 \vert b$
+      \STATE $f \gets f^2$ \textcolor{c}{\{$f \gets f \cdot f$\}}
       \STATE $b \gets \lfloor b / 2 \rfloor$
     \ENDWHILE
     \RETURN $r$ 
@@ -234,12 +231,9 @@ expressed as
 \hspace{-2.8ex}
 \begin{minipage}{\linewidth}
 \begin{algorithmic}
-    \STATE $r \gets 1$
-    \STATE $f \gets a$
+    \STATE $r, f \gets 1, a$
     \WHILE{$b \neq 0$}
-      \IF{$b \equiv 1 ~(\textrm{Mod}~ 2)$}
-        \STATE $r \gets r \cdot f \hspace*{-1ex}~ \mod m$
-      \ENDIF
+      \STATE $r \gets r \cdot f \hspace*{-1ex}~ \mod m$ \textbf{unless} $2 \vert b$
       \STATE $f \gets f^2 \hspace*{-1ex}~ \mod m$
       \STATE $b \gets \lfloor b / 2 \rfloor$
     \ENDWHILE

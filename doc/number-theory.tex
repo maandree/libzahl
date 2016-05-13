@@ -132,7 +132,7 @@ definion ensures
 
 \vspace{1em}
 \( \displaystyle{
-    {a \over \gcd(a, b)} \left \lbrace \begin{array}{rl}
+    \frac{a}{\gcd(a, b)} \left \lbrace \begin{array}{rl}
         > 0 & \textrm{if}~ a < 0, b < 0 \\
         < 0 & \textrm{if}~ a < 0, b > 0 \\
         = 1 & \textrm{if}~ b = 0, a \neq 0 \\
@@ -143,7 +143,7 @@ definion ensures
 \vspace{1em}
 
 \noindent
-and analogously for $b \over \gcd(a,\,b)$. Note however,
+and analogously for $\frac{b}{\gcd(a,\,b)}$. Note however,
 the convension $\gcd(0, 0) = 0$ is adhered. Therefore,
 before dividing with $\gcd{a, b}$ you may want to check
 whether $\gcd(a, b) = 0$. $\gcd(a, b)$ is calculated
@@ -156,17 +156,12 @@ the Binary GCD algorithm.
 \hspace{-2.8ex}
 \begin{minipage}{\linewidth}
 \begin{algorithmic}
-    \IF{$ab = 0$}
-        \RETURN $a + b$
-    \ELSIF{$a < 0$ \AND $b < 0$}
-        \RETURN $-\gcd(\lvert a \rvert, \lvert b \rvert)$
-    \ENDIF
+    \RETURN $a + b$ {\bf if} $ab = 0$
+    \RETURN $-\gcd(\lvert a \rvert, \lvert b \rvert)$ {\bf if} $a < 0$ \AND $b < 0$
     \STATE $s \gets \max s : 2^s \vert a, b$
     \STATE $u, v \gets \lvert a \rvert \div 2^s, \lvert b \rvert \div 2^s$
     \WHILE{$u \neq v$}
-        \IF{$u > v$}
-            \STATE $u \leftrightarrow v$
-        \ENDIF
+        \STATE $v \leftrightarrow u$ {\bf if} $v < u$
         \STATE $v \gets v - u$
         \STATE $v \gets v \div 2^x$, where $x = \max x : 2^x \vert v$
     \ENDWHILE
@@ -184,4 +179,83 @@ $\max x : 2^x \vert z$ is returned by {\tt zlsb(z)}
 \section{Primality test}
 \label{sec:Primality test}
 
-TODO % zptest
+The primality of an integer can be test with
+
+\begin{alltt}
+   enum zprimality zptest(z_t w, z_t a, int t);
+\end{alltt}
+
+\noindent
+{\tt zptest} uses Miller–Rabin primality test,
+with {\tt t} runs of its witness loop, to
+determine whether {\tt a} is prime. {\tt zptest}
+returns either
+
+\begin{itemize}
+\item {\tt PRIME} = 2:
+{\tt a} is prime. This is only returned for
+known prime numbers: 2 and 3.
+
+\item {\tt PROBABLY\_PRIME} = 1:
+{\tt a} is probably a prime. The certainty
+will be $1 - 4^{-t}$.
+
+\item {\tt NONPRIME} = 0:
+{\tt a} is either composite, non-positive, or 1.
+It is certain that {\tt a} is not prime.
+\end{itemize}
+
+If and only if {\tt NONPRIME} is returned, a
+value will be assigned to {\tt w} — unless
+{\tt w} is {\tt NULL}. This will be the witness
+of {\tt a}'s completeness. If $a \le 2$, it
+is not really composite, and the value of
+{\tt a} is copied into {\tt w}.
+
+$\gcd(w, a)$ can be used to extract a factor
+of $a$. This factor is however not necessarily,
+and unlikely so, prime, but can be composite,
+or even 1. In the latter case this becomes
+utterly useless, and therefore using this
+method for prime factorisation is a bad idea.
+
+Below is pseudocode for the Miller–Rabin primality
+test with witness return.
+
+\vspace{1em}
+\hspace{-2.8ex}
+\begin{minipage}{\linewidth}
+\begin{algorithmic}
+    \RETURN NONPRIME ($w \gets a$) {\bf if} {$a \le 1$}
+    \RETURN PRIME {\bf if} {$a \le 3$}
+    \RETURN NONPRIME ($w \gets 2$) {\bf if} {$2 \vert a$}
+    \STATE $r \gets \max r : 2^r \vert (a - 1)$
+    \STATE $d \gets (a - 1) \div 2^r$
+    \STATE {\bf repeat} $t$ {\bf times}
+    
+    \hspace{2ex}
+    \begin{minipage}{\linewidth}
+        \STATE $k \xleftarrow{\$} \textbf{Z}_{a - 2} \setminus \textbf{Z}_{2}$
+        \STATE $x \gets k^d \mod a$
+        \STATE {\bf continue} {\bf if} $x = 1$ \OR $x = a - 1$
+        \STATE {\bf repeat} $r$ {\bf times or until} $x = 1$ \OR $x = a - 1$
+
+        \hspace{2ex}
+        \begin{minipage}{\linewidth}
+            \vspace{-1ex}
+            \STATE $x \gets x^2 \mod a$
+        \end{minipage}
+        \vspace{-1.5em}
+        \STATE {\bf end repeat}
+        \STATE {\bf if} $x = 1$ {\bf return} NONPRIME ($w \gets k$)
+    \end{minipage}
+    \vspace{-0.8ex}
+    \STATE {\bf end repeat}
+    \RETURN PROBABLY PRIME
+\end{algorithmic}
+\end{minipage}
+\vspace{1em}
+
+\noindent
+$\max x : 2^x \vert z$ is returned by {\tt zlsb(z)}
+\psecref{sec:Boundary}.

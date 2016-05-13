@@ -60,7 +60,7 @@ extgcd(z_t bézout_coeff_1, z_t bézout_coeff_2, z_t gcd
 \label{sec:Least common multiple}
 
 \( \displaystyle{
-    \mbox{lcm}(a, b) = {\lvert a \cdot b \rvert \over \mbox{gcd}(a, b)}
+    \mbox{lcm}(a, b) = \frac{\lvert a \cdot b \rvert}{\mbox{gcd}(a, b)}
 }\)
 
 
@@ -233,7 +233,7 @@ The resulting algorithm can be expressed
       1 & \textrm{if}~ n = 0 \\
       \textrm{undefined} & \textrm{otherwise}
     \end{array} \right . =
-    n! \sum_{i = 0}^n {(-1)^i \over i!}
+    n! \sum_{i = 0}^n \frac{(-1)^i}{i!}
 }\)
 
 
@@ -286,7 +286,7 @@ The resulting algorithm can be expressed
 \label{sec:Raising factorial}
 
 \( \displaystyle{
-    x^{(n)} = {(x + n - 1)! \over (x - 1)!}
+    x^{(n)} = \frac{(x + n - 1)!}{(x - 1)!}
 }\), undefined for $n < 0$.
 
 
@@ -294,7 +294,7 @@ The resulting algorithm can be expressed
 \label{sec:Falling factorial}
 
 \( \displaystyle{
-    (x)_n = {x! \over (x - n)!}
+    (x)_n = \frac{x!}{(x - n)!}
 }\), undefined for $n < 0$.
 
 
@@ -334,9 +334,9 @@ $\Gamma(n) = (n - 1)!$, undefined for $n \le 0$.
 \label{sec:Binomial coefficient}
 
 \( \displaystyle{
-    {n \choose k} = {n! \over k!(n - k)!}
-    = {1 \over (n - k)!} \prod_{i = k + 1}^n i
-    = {1 \over k!} \prod_{i = n - k + 1}^n i
+    \binom{n}{k} = \frac{n!}{k!(n - k)!}
+    = \frac{1}{(n - k)!} \prod_{i = k + 1}^n i
+    = \frac{1}{k!} \prod_{i = n - k + 1}^n i
 }\)
 
 
@@ -344,7 +344,7 @@ $\Gamma(n) = (n - 1)!$, undefined for $n \le 0$.
 \label{sec:Catalan number}
 
 \( \displaystyle{
-    C_n = \left . {2n \choose n} \middle / (n + 1) \right .
+    C_n = \left . \binom{2n}{n} \middle / (n + 1) \right .
 }\)
 
 
@@ -352,7 +352,7 @@ $\Gamma(n) = (n - 1)!$, undefined for $n \le 0$.
 \label{sec:Fuss-Catalan number} % not en dash
 
 \( \displaystyle{
-    A_m(p, r) = {r \over mp + r} {mp + r \choose m}
+    A_m(p, r) = \frac{r}{mp + r} \binom{mp + r}{m}
 }\)
 
 
