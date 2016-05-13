@@ -28,7 +28,7 @@ zptest(z_t witness, z_t n, int t)
 	}
 	if (unlikely(zeven(n))) {
 		if (witness)
-			SET(witness, n);
+			zsetu(witness, 2);
 		return NONPRIME;
 	}
 
