@@ -25,10 +25,11 @@ zmodpowu(z_t a, z_t b, unsigned long long int c, z_t d)
 
 	zmod(tb, b, d);
 	zset(td, d);
-	zsetu(a, 1);
 
 	if (c & 1)
-		zmodmul(a, a, tb, td);
+		zset(a, tb);
+	else
+		zsetu(a, 1);
 	while (c >>= 1) {
 		zmodsqr(tb, tb, td);
 		if (c & 1)

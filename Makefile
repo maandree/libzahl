@@ -78,7 +78,11 @@ TEXSRC =\
 	doc/libzahls-design.tex\
 	doc/get-started.tex\
 	doc/miscellaneous.tex\
-	doc/arithmetic.tex
+	doc/arithmetic.tex\
+	doc/bit-operations.tex\
+	doc/number-theory.tex\
+	doc/random-numbers.tex\
+	doc/not-implemented.tex
 
 HDR_PUBLIC = zahl.h $(HDR_SEMIPUBLIC)
 HDR        = $(HDR_PUBLIC) $(HDR_PRIVATE)

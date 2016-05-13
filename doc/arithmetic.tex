@@ -186,8 +186,9 @@ can be expressed as a simple formula
 
 \vspace{-1em}
 \[ \hspace*{-0.4cm}
-    a^b = \prod_{i = 0}^{\lceil \log_2 b \rceil}
-    \left ( a^{2^i} \right )^{\left \lfloor {\displaystyle{b \over 2^i}} \hspace*{-1ex} \mod 2 \right \rfloor}
+    a^b =
+    \prod_{k \in \textbf{Z}_{+} ~:~ \left \lfloor {b \over 2^k} \hspace*{-1ex} \mod 2 \right \rfloor = 1}
+    a^{2^k}
 \]
 
 \noindent

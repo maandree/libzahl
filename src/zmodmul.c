@@ -6,6 +6,7 @@ void
 zmodmul(z_t a, z_t b, z_t c, z_t d)
 {
 	/* TODO Montgomery modular multiplication */
+	/* TODO Kochanski multiplication */
 	if (unlikely(a == d)) {
 		zset(libzahl_tmp_modmul, d);
 		zmul(a, b, c);

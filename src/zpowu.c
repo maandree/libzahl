@@ -21,10 +21,11 @@ zpowu(z_t a, z_t b, unsigned long long int c)
 
 	neg = znegative(b) && (c & 1);
 	zabs(tb, b);
-	zsetu(a, 1);
 
 	if (c & 1)
-		zmul_ll(a, a, tb);
+		zset(a, tb);
+	else
+		zsetu(a, 1);
 	while (c >>= 1) {
 		zsqr_ll(tb, tb);
 		if (c & 1)

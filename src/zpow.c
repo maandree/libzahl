@@ -14,6 +14,8 @@ zpow(z_t a, z_t b, z_t c)
 	 * 7↑19 = 7↑10011₂ = 7↑2⁰ ⋅ 7↑2¹ ⋅ 7↑2⁴ where a↑2↑(n + 1) = (a↑2↑n)².
 	 */
 
+	/* TODO use zpowu when possible */
+
 	size_t i, j, n, bits;
 	zahl_char_t x;
 	int neg;

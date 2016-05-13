@@ -12,6 +12,8 @@ zmodpow(z_t a, z_t b, z_t c, z_t d)
 	size_t i, j, n, bits;
 	zahl_char_t x;
 
+	/* TODO use zmodpowu when possible */
+
 	if (unlikely(zsignum(c) <= 0)) {
 		if (zzero(c)) {
 			if (check(zzero(b)))

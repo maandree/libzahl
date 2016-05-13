@@ -4,6 +4,10 @@ It uses optimised division algorithm that requires that d|n.
 Add zsets_radix
 Add zstr_radix
 
+Can zmodpowu and zmodpow be improved using some other algorithm?
+Is it worth implementing precomputed optimal
+  addition-chain exponentiation in zpowu?
+
 Test big endian
 Test always having .used > 0 for zero
   Test negative/non-negative instead of sign
