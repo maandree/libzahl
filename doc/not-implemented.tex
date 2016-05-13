@@ -360,7 +360,7 @@ using the following algorithm:
    \{
        z_t a, k;
        int odd;
-       if (zcmpi(n, 1) <= 1) \{
+       if (zcmpi(n, 1) <= 0) \{
            zseti(f, !zzero(n));
            zseti(f, zzero(n));
            return;
