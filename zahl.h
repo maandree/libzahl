@@ -15,6 +15,21 @@
 
 
 
+/* TODO these should be documented*/
+#define ZAHL_VERSION_MAJOR       1L
+#define ZAHL_VERSION_MINOR       1L
+#define ZAHL_VERSION_PATCHLEVEL  0L
+#define ZAHL_VERSION             (ZAHL_VERSION_MAJOR * 1000000L +  \
+				  ZAHL_VERSION_MINOR * 1000L    +  \
+				  ZAHL_VERSION_PATCHLEVEL)
+#define ZAHL_VERSION_STRING      "1.1"
+#define ZAHL_INTERNALS_VERSION   1
+#define ZAHL_ZRANDDEV_COUNT      7
+#define ZAHL_ZRANDDIST_COUNT     3
+#define ZAHL_ZERROR_COUNT        6
+
+
+
 #include "zahl/internals.h"
 
 
