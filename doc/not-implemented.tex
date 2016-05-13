@@ -174,6 +174,46 @@ important function for many combinatorial
 applications, therefore it may be implemented
 in the future if the demand is high enough.
 
+An efficient, yet not optimal, implementation
+of factorials that about halves the number of
+required multiplications compared to the naïve
+method can be derived from the observation
+
+\vspace{1em}
+\( \displaystyle{
+    n! = n!! ~ \lfloor n / 2 \rfloor! ~ 2^{\lfloor n / 2 \rfloor}
+}\), $n$ odd.
+\vspace{1em}
+
+\noindent
+The resulting algorithm can be expressed
+
+\begin{alltt}
+   void
+   fact(z_t r, uint64_t n)
+   \{
+       z_t p, f, two;
+       uint64_t *ns, s = 1, i = 1;
+       zinit(p), zinit(f), zinit(two);
+       zseti(r, 1), zseti(p, 1), zseti(f, n), zseti(two, 2);
+       ns = alloca(zbits(f) * sizeof(*ns));
+       while (n > 1) \{
+           if (n & 1) \{
+               ns[i++] = n;
+               s += n >>= 1;
+           \} else \{
+               zmul(r, r, (zsetu(f, n), f));
+               n -= 1;
+           \}
+       \}
+       for (zseti(f, 1); i-- > 0; zmul(r, r, p);)
+           for (n = ns[i]; zcmpu(f, n); zadd(f, f, two))
+               zmul(p, p, f);
+       zlsh(r, r, s);
+       zfree(two), zfree(f), zfree(p);
+   \}
+\end{alltt}
+
 
 \subsection{Subfactorial}
 \label{sec:Subfactorial}
