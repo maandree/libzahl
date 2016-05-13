@@ -1,7 +1,8 @@
 \chapter{Number theory}
 \label{chap:Number theory}
 
-TODO
+In this chapter, you will learn about the
+number theoretic functions in libzahl.
 
 \vspace{1cm}
 \minitoc
@@ -11,14 +12,97 @@ TODO
 \section{Odd or even}
 \label{sec:Odd or even}
 
-TODO % zodd zeven zodd_nonzero zeven_nonzero
+There are four functions available for testing
+the oddness and evenness of an integer:
+
+\begin{alltt}
+   int zodd(z_t a);
+   int zeven(z_t a);
+   int zodd_nonzero(z_t a);
+   int zeven_nonzero(z_t a);
+\end{alltt}
+
+\noindent
+{\tt zodd} returns 1 if {\tt a} contains an
+odd value, or 0 if {\tt a} contains an even
+number. Conversely, {\tt zeven} returns 1 if
+{\tt a} contains an even value, or 0 if {\tt a}
+contains an odd number. {\tt zodd\_nonzero} and
+{\tt zeven\_nonzero} behave exactly like {\tt zodd}
+and {\tt zeven}, respectively, but assumes that
+{\tt a} contains a non-zero value, if not
+undefined behaviour is invoked, possibly in the
+form of a segmentation fault; they are thus
+sligtly faster than {\tt zodd} and {\tt zeven}.
+
+It is discouraged to test the returned value
+against 1, we should always test against 0,
+treating all non-zero value as equivalent to 1.
+For clarity, we use also avoid testing that
+the returned value is zero, for example, rather
+than {\tt !zeven(a)} we write {\tt zodd(a)}.
 
 
 \newpage
 \section{Signum}
 \label{sec:Signum}
 
-TODO % zsignum zzero
+There are two functions available for testing
+the sign of an integer, one of the can be used
+to retrieve the sign:
+
+\begin{alltt}
+   int zsignum(z_t a);
+   int zzero(z_t a);
+\end{alltt}
+
+\noindent
+{\tt zsignum} returns $-1$ if $a < 0$,
+$0$ if $a = 0$, and $+1$ if $a > 0$, that is,
+
+\vspace{1em}
+\( \displaystyle{
+    \mbox{sgn}~a = \left \lbrace \begin{array}{rl}
+        -1 & \textrm{if}~ a < 0 \\
+         0 & \textrm{if}~ a = 0 \\
+        +1 & \textrm{if}~ a > 0
+    \end{array} \right .
+}\)
+\vspace{1em}
+
+\noindent
+It is discouraged to compare the returned value
+against $-1$ and $+1$; always compare against 0,
+for example:
+
+\begin{alltt}
+   if (zsignum(a) >  0)  "positive";
+   if (zsignum(a) >= 0)  "non-negative";
+   if (zsignum(a) == 0)  "zero";
+   if (!zsignum(a))      "zero";
+   if (zsignum(a) <= 0)  "non-positive";
+   if (zsignum(a) <  0)  "negative";
+   if (zsignum(a))       "non-zero";
+\end{alltt}
+
+\noindent
+However, when we are doing arithmetic with the
+signum, we may relay on the result never being
+any other value than $-1$, $0$, and $+0$.
+For example:
+
+\begin{alltt}
+   zset(sgn, zsignum(a));
+   zadd(b, sgn);
+\end{alltt}
+
+{\tt zzero} returns 0 if $a = 0$ or 1 if
+$a \neq 0$. Like with {\tt zsignum}, avoid
+testing the returned value against 1, rather
+test that the returned value is not 0. When
+however we are doing arithmetic with the
+result, we may relay on the result never
+being any other value than 0 or 1.
 
 
 \newpage
