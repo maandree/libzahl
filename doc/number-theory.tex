@@ -109,7 +109,75 @@ being any other value than 0 or 1.
 \section{Greatest common divisor}
 \label{sec:Greatest common divisor}
 
-TODO % zgcd
+There is no single agreed upon definition
+for the greatest common divisor of two
+integer, that cover non-positive integers.
+In libzahl we define it as
+
+\vspace{1em}
+\( \displaystyle{
+    \gcd(a, b) = \left \lbrace \begin{array}{rl}
+        -k & \textrm{if}~ a < 0, b < 0 \\
+        b  & \textrm{if}~ a = 0 \\
+        a  & \textrm{if}~ b = 0 \\
+        k  & \textrm{otherwise}
+    \end{array} \right .
+}\),
+\vspace{1em}
+
+\noindent
+where $k$ is the largest integer that divides
+both $\lvert a \rvert$ and $\lvert b \rvert$. This
+definion ensures
+
+\vspace{1em}
+\( \displaystyle{
+    {a \over \gcd(a, b)} \left \lbrace \begin{array}{rl}
+        > 0 & \textrm{if}~ a < 0, b < 0 \\
+        < 0 & \textrm{if}~ a < 0, b > 0 \\
+        = 1 & \textrm{if}~ b = 0, a \neq 0 \\
+        = 0 & \textrm{if}~ a = 0, b \neq 0 \\
+        \in \textbf{N} & \textrm{otherwise if}~ a \neq 0, b \neq 0
+    \end{array} \right .
+}\),
+\vspace{1em}
+
+\noindent
+and analogously for $b \over \gcd(a,\,b)$. Note however,
+the convension $\gcd(0, 0) = 0$ is adhered. Therefore,
+before dividing with $\gcd{a, b}$ you may want to check
+whether $\gcd(a, b) = 0$. $\gcd(a, b)$ is calculated
+with {\tt zgcd(a, b)}.
+
+{\tt zgcd} calculates the greatest common divisor using
+the Binary GCD algorithm.
+
+\vspace{1em}
+\hspace{-2.8ex}
+\begin{minipage}{\linewidth}
+\begin{algorithmic}
+    \IF{$ab = 0$}
+        \RETURN $a + b$
+    \ELSIF{$a < 0$ \AND $b < 0$}
+        \RETURN $-\gcd(\lvert a \rvert, \lvert b \rvert)$
+    \ENDIF
+    \STATE $s \gets \max s : 2^s \vert a, b$
+    \STATE $u, v \gets \lvert a \rvert \div 2^s, \lvert b \rvert \div 2^s$
+    \WHILE{$u \neq v$}
+        \IF{$u > v$}
+            \STATE $u \leftrightarrow v$
+        \ENDIF
+        \STATE $v \gets v - u$
+        \STATE $v \gets v \div 2^x$, where $x = \max x : 2^x \vert v$
+    \ENDWHILE
+    \RETURN $u \cdot 2^s$
+\end{algorithmic}
+\end{minipage}
+\vspace{1em}
+
+\noindent
+$\max x : 2^x \vert z$ is returned by {\tt zlsb(z)}
+\psecref{sec:Boundary}.
 
 
 \newpage
