@@ -88,7 +88,30 @@ whenever possible. One such wrapper could be
 \section{Truncation}
 \label{sec:Truncation}
 
-TODO % ztrunc
+In \secref{sec:Shift} we have seen how bit-shift
+operations can be used to multiply or divide by a
+power of two. There is also a bit-truncation
+operation: {\tt ztrunc}, which is used to keep
+only the lowest bits, or equivalently, calculate
+the remainder of a division by a power of two.
+
+\begin{alltt}
+   void ztrunc(z_t r, z_t a, size_t b);
+\end{alltt}
+
+\noindent
+is consistent with {\tt zmod}; like {\tt zlsh} and
+{\tt zrsh}, {\tt a}'s sign is preserved into {\tt r}
+assuming the result is non-zero.
+
+{\tt ztrunc(r, a, b)} stores only the lowest {\tt b}
+bits in {\tt a} into {\tt r}, or equivalently,
+calculates $r \gets a \mod 2^b$. For example, if
+
+$a = 100011000_2$ then
+
+$r = \phantom{10001}1000_2$ after calling
+{\tt ztrunc(r, a, 4)}.
 
 
 \newpage
