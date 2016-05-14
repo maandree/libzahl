@@ -25,7 +25,63 @@ TODO % zand zor zxor znot
 \section{Shift}
 \label{sec:Shift}
 
-TODO % zlsh zrsh
+There are two functions for shifting bits
+in integers:
+
+\begin{alltt}
+   void zlsh(z_t r, z_t a, size_t b);
+   void zrsh(z_t r, z_t a, size_t b);
+\end{alltt}
+
+\noindent
+{\tt zlsh} performs a left-shift, and {\tt zrsh}
+performs a right-shift. That is, {\tt zlsh} adds
+{\tt b} trailing binary zeroes, and {\tt zrsh}
+removes the lowest {\tt b} binary digits. So if
+
+$a = \phantom{00}10000101_2$ then
+
+$r = 1000010100_2$ after calling {\tt zlsh(r, a, 2)}, and
+
+$r = \phantom{0100}100001_2$ after calling {\tt zrsh(r, a, 2)}.
+\vspace{1em}
+
+{\tt zlsh(r, a, b)} is equivalent to $r \gets a \cdot 2^b$,
+and {\tt zrsh(r, a, b)} is equivalent to
+$r \gets \lfloor a \div 2^b \rfloor$, {\tt zlsh} and
+{\tt zrsh} are significantly faster than {\tt zpowu}
+and should be used whenever possible. {\tt zpowu}
+does not check if it is possible for it to use {\tt zlsh}
+instead, even if it would, {\tt zlsh} and {\tt zrsh}
+would still be preferable in most cases because it
+removes the need for {\tt zmul} and {\tt zdiv},
+respectively.
+
+{\tt zlsh} and {\tt zrsh} are implemented in two steps:
+(1) shift whole characters, that is, groups of aligned
+64 bits, and (2) shift on a bit-level between characters.
+
+If you are implementing a calculator, you may want to
+create a wrapper for {\tt zpow} that uses {\tt zlsh}
+whenever possible. One such wrapper could be
+
+\begin{alltt}
+   void
+   pow(z_t r, z_t a, z_t b)
+   \{
+       size_t s1, s2;
+       if ((s1 = zlsb(a)) + 1 == zbits(a) &&
+                     zbits(b) <= 8 * sizeof(SIZE_MAX)) \{
+           s2 = zzero(b) ? 0 : b->chars[0];
+           if (s1 <= SIZE_MAX / s2) \{
+               zsetu(r, 1);
+               zlsh(r, r, s1 * s2);
+               return;
+           \}
+       \}
+       zpow(r, a, b);
+   \}
+\end{alltt}
 
 
 \newpage
