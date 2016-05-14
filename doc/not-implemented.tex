@@ -82,7 +82,7 @@ modinv(z_t inv, z_t a, z_t m)
         zset(apos, a);
         if (zcmpmag(apos, mabs))
             zmod(apos, apos, mabs);
-        zadd(apos, mabs, apos);
+        zadd(apos, apos, mabs);
     \}
     extgcd(inv, _1, _2, _3, gcd, apos, mabs);
     if ((invertible = !zcmpi(gcd, 1))) \{
