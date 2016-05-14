@@ -110,7 +110,51 @@ $r = \phantom{10001}1000_2$ after calling
 \section{Split}
 \label{sec:Split}
 
-TODO % zsplit
+In \secref{sec:Shift} and \secref{sec:Truncation}
+we have seen how bit operations can be used to
+calculate division by a power of two and
+modulus a power of two efficiently using
+bit-shift and bit-truncation operations. libzahl
+also has a bit-split operation that can be used
+to efficently calculate both division and
+modulus a power of two efficiently in the same
+operation, or equivalently, storing low bits
+in one integer and high bits in another integer.
+This function is
+
+\begin{alltt}
+   void zsplit(z_t high, z_t low, z_t a, size_t b);
+\end{alltt}
+
+\noindent
+Unlike {\tt zdivmod}, it is not more efficient
+than calling {\tt zrsh} and {\tt ztrunc}, but
+it is more convenient. {\tt zsplit} requires
+that {\tt high} and {\tt low} are from each
+other distinct references.
+
+Calling {\tt zsplit(high, low, a, b)} is
+equivalent to
+
+\begin{alltt}
+   ztrunc(low, a, delim);
+   zrsh(high, a, delim);
+\end{alltt}
+
+\noindent
+assuming {\tt a} and {\tt low} are not the
+same reference (reverse the order of the
+functions if they are the same reference.)
+
+{\tt zsplit} copies the lowest {\tt b} bits
+of {\tt a} to {\tt low}, and the rest of the
+bits to {\tt high}, with the lowest {\tt b}
+removesd. For example, if $a = 1010101111_2$,
+then $high = 101010_2$ and $low = 1111_2$
+after calling {\tt zsplit(high, low, a, 4)}.
+
+{\tt zsplit} is especially useful in
+divide-and-conquer algorithms.
 
 
 \newpage
