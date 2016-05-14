@@ -40,15 +40,14 @@ $r = \phantom{0100}100001_2$ after calling {\tt zrsh(r, a, 2)}.
 \vspace{1em}
 
 {\tt zlsh(r, a, b)} is equivalent to $r \gets a \cdot 2^b$,
-and {\tt zrsh(r, a, b)} is equivalent to
-$r \gets \lfloor a \div 2^b \rfloor$, {\tt zlsh} and
-{\tt zrsh} are significantly faster than {\tt zpowu}
-and should be used whenever possible. {\tt zpowu}
-does not check if it is possible for it to use {\tt zlsh}
-instead, even if it would, {\tt zlsh} and {\tt zrsh}
-would still be preferable in most cases because it
-removes the need for {\tt zmul} and {\tt zdiv},
-respectively.
+and {\tt zrsh(r, a, b)} is equivalent to $r \gets a \div 2^b$,
+with truncated division, {\tt zlsh} and {\tt zrsh} are
+significantly faster than {\tt zpowu} and should be used
+whenever possible. {\tt zpowu} does not check if it is
+possible for it to use {\tt zlsh} instead, even if it
+would, {\tt zlsh} and {\tt zrsh} would still be preferable
+in most cases because it removes the need for {\tt zmul}
+and {\tt zdiv}, respectively.
 
 {\tt zlsh} and {\tt zrsh} are implemented in two steps:
 (1) shift whole characters, that is, groups of aligned
