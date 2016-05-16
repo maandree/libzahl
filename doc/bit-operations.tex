@@ -1,7 +1,10 @@
 \chapter{Bit operations}
 \label{chap:Bit operations}
 
-TODO
+libzahl provides a number of functions that operate on
+bits. These can sometimes be used instead of arithmetic
+functions for increased performance. You should read
+the sections in order.
 
 \vspace{1cm}
 \minitoc
@@ -11,7 +14,48 @@ TODO
 \section{Boundary}
 \label{sec:Boundary}
 
-TODO % zbits zlsb
+To retrieve the index of the lowest set bit, use
+
+\begin{alltt}
+   size_t zlsb(z_t a);
+\end{alltt}
+
+\noindent
+It will return a zero-based index, that is, if the
+least significant bit is indeed set, it will return 0.
+
+If {\tt a} is a power of 2, it will return the power
+of which 2 is raised, effectively calculating the
+binary logarithm of {\tt a}. Note, this is only if
+{\tt a} is a power of two. More generally, it returns
+the number of trailing binary zeroes, if equivalently
+the number of times {\tt a} can evenly be divided by
+2. However, in the special case where $a = 0$,
+{\tt SIZE\_MAX} is returned.
+
+A similar function is
+
+\begin{alltt}
+   size_t zbit(z_t a);
+\end{alltt}
+
+\noindent
+It returns the minimal number of bits require to
+represent an integer. That is, $\lceil \log_2 a \rceil - 1$,
+or equivalently, the number of times {\tt a} can be
+divided by 2 before it gets the value 0. However, in
+the special case where $a = 0$, 1 is returned. 0 is
+never returned. If you want the value 0 to be returned
+if $a = 0$, write
+
+\begin{alltt}
+   zzero(a) ? 0 : zbits(a)
+\end{alltt}
+
+The definition ``it returns the minimal number
+of bits required to represent an integer,''
+holds true if $a = 0$, the other divisions
+do not hold true if $a = 0$.
 
 
 \newpage
@@ -161,7 +205,28 @@ divide-and-conquer algorithms.
 \section{Bit manipulation}
 \label{sec:Bit manipulation}
 
-TODO % zbset
+
+The function
+
+\begin{alltt}
+   zbset(z_t r, z_t a, size_t bit, int mode);
+\end{alltt}
+
+\noindent
+is used to manipulate single bits in {\tt a}. It will
+copy {\tt a} into {\tt r} and then, in {\tt r}, either
+set, clear, or flip, the bit with the index {\tt bit}
+— the least significant bit has the index 0. The
+action depend on the value of {\tt mode}:
+
+\begin{itemize}
+\item
+$mode > 0$ ($+1$): set
+\item
+$mode = 0$ ($0$): clear
+\item
+$mode < 0$ ($-1$): flip
+\end{itemize}
 
 
 \newpage

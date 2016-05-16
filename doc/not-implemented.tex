@@ -399,7 +399,10 @@ using the following algorithm:
        \}
        zfree(k), zfree(a);
    \}
+\end{alltt}
 
+\newpage
+\begin{alltt}
    void
    fib(z_t f, z_t n)
    \{
@@ -591,6 +594,11 @@ be improve by comparing character by
 character manually with using {\tt zxor}.
 
 
+\newpage
+\section{Miscellaneous}
+\label{sec:Miscellaneous}
+
+
 \subsection{Character retrieval}
 \label{sec:Character retrieval}
 
@@ -600,4 +608,77 @@ getu(z_t a)
 \{
     return zzero(a) ? 0 : a->chars[0];
 \}
+\end{alltt}
+
+\subsection{Fit test}
+\label{sec:Fit test}
+
+Some libraries have functions for testing
+whether a big integer is small enough to
+fit into an intrinsic type. Since libzahl
+does not provide conversion to intrinsic
+types this is irrelevant. But additionally,
+it can be implemented with a single
+one-line macro that does not have any
+side-effects.
+
+\begin{alltt}
+   #define fits_in(a, type)  (zbits(a) <= 8 * sizeof(type))
+   \textcolor{c}{/* \textrm{Just be sure the type is integral.} */}
+\end{alltt}
+
+
+\subsection{Reference duplication}
+\label{sec:Reference duplication}
+
+This could be useful for creating duplicates
+with modified sign. But only if neither
+{\tt r} or {\tt a} will be modified whilst
+both are in use. Because it is unsafe,
+fairly simple to create an implementation
+with acceptable performance — {\tt *r = *a},
+— and probably seldom useful, this has not
+be implemented.
+
+\begin{alltt}
+   int
+   refdup(z_t r, z_t a)
+   \{
+       \textcolor{c}{/* \textrm{Almost fully optimised, but perfectly portable} *r = *a; */}
+       r->sign    = a->sign;
+       r->used    = a->used;
+       r->alloced = a->alloced;
+       r->chars   = a->chars;
+   \}
+\end{alltt}
+
+
+\subsection{Variadic initialisation}
+\label{sec:Variadic initialisation}
+
+Must bignum libraries have variadic functions
+for initialisation and uninitialisation. This
+is not available in libzahl, because it is
+not useful enough and has performance overhead.
+And what's next, support {\tt va\_list},
+variadic addition, variadic multiplication,
+power towers, set manipulation? Anyone can
+implement variadic wrapper for {\tt zinit} and
+{\tt zfree} if they really need it. But if
+you want to avoid the overhead, you can use
+something like this:
+
+\begin{alltt}
+   /* \textrm{Call like this:} MANY(zinit, (a), (b), (c)) */
+   #define MANY(f, ...)  (_MANY1(f, __VA_ARGS__,,,,,,,,,))
+   
+   #define _MANY1(f, a, ...)  (void)f a, _MANY2(f, __VA_ARGS__)
+   #define _MANY2(f, a, ...)  (void)f a, _MANY3(f, __VA_ARGS__)
+   #define _MANY3(f, a, ...)  (void)f a, _MANY4(f, __VA_ARGS__)
+   #define _MANY4(f, a, ...)  (void)f a, _MANY5(f, __VA_ARGS__)
+   #define _MANY5(f, a, ...)  (void)f a, _MANY6(f, __VA_ARGS__)
+   #define _MANY6(f, a, ...)  (void)f a, _MANY7(f, __VA_ARGS__)
+   #define _MANY7(f, a, ...)  (void)f a, _MANY8(f, __VA_ARGS__)
+   #define _MANY8(f, a, ...)  (void)f a, _MANY9(f, __VA_ARGS__)
+   #define _MANY9(f, a, ...)  (void)f a
 \end{alltt}
