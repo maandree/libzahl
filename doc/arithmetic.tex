@@ -223,7 +223,7 @@ lend you a hand.
 
 \noindent
 Now to the weird ones that will more often than
-not award you a face-slap. % Hade positive punishment
+not award you a face-slap. % Had positive punishment
 % been legal or even mildly pedagogical. But I would
 % not put it past Coca-Cola.
 
@@ -306,7 +306,19 @@ not award you a face-slap. % Hade positive punishment
    \}
 \end{alltt}
 
-% TODO zdivmod's algorithm
+Currently, libzahl uses an almost trivial division
+algorithm. It operates on positive numbers. It begins
+by left-shifting the divisor as must as possible with
+letting it exceed the dividend. Then, it subtracts
+the shifted divisor from the dividend and add 1,
+left-shifted as much as the divisor, to the quotient.
+The quotient begins at 0. It then right-shifts
+the shifted divisor as little as possible until
+it no longer exceeds the diminished dividend and
+marks the shift in the quotient. This process is
+repeated on till the unshifted divisor is greater
+than the diminished dividend. The final diminished
+dividend is the remainder.
 
 
 
