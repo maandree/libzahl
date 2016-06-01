@@ -123,7 +123,191 @@ TODO % zmul zmodmul
 \section{Division}
 \label{sec:Division}
 
-TODO % zdiv zmod zdivmod
+To calculate the quotient or modulus of two integers,
+use either of
+
+\begin{alltt}
+   void zdiv(z_t quotient, z_t dividend, z_t divisor);
+   void zmod(z_t remainder, z_t dividend, z_t divisor);
+   void zdivmod(z_t quotient, z_t remainder,
+                z_t dividend, z_t divisor);
+\end{alltt}
+
+\noindent
+These function \emph{do not} allow {\tt NULL}
+for the output parameters: {\tt quotient} and
+{\tt remainder}. The quotient and remainder are
+calculated simultaneously and indivisibly, hence
+{\tt zdivmod} is provided to calculated both, if
+you are only interested in the quotient or only
+interested in the remainder, use {\tt zdiv} or
+{\tt zmod}, respectively.
+
+These functions calculate a truncated quotient.
+That is, the result is rounded towards zero. This
+means for example that if the quotient is in
+$(-1,~1)$, {\tt quotient} gets 0. That that, this
+would not be the case for one of the sides of zero.
+For example, if the quotient would have been
+floored, negative quotients would have been rounded
+away from zero. libzahl only provides truncated
+division,
+
+The remain is defined such that $n = qd + r$ after
+calling {\tt zdivmod(q, r, n, d)}. There is no
+difference in the remainer between {\tt zdivmod}
+and {\tt zmod}. The sign of {\tt d} has no affect
+on {\tt r}, {\tt r} will always, unless it is zero,
+have the same sign as {\tt n}.
+
+There are of course other ways to define integer
+division (that is, \textbf{Z} being the codomain)
+than as truncated division. For example integer
+divison in Python is floored — yes, you did just
+read `integer divison in Python is floored,' and
+you are correct, that is not the case in for
+example C. Users that want another definition
+for division than truncated division are required
+to implement that themselves. We will however
+lend you a hand.
+
+\begin{alltt}
+   #define isneg(x) (zsignum(x) < 0)
+   static z_t one;
+   \textcolor{c}{__attribute__((constructor)) static}
+   void init(void) \{ zinit(one), zseti(one, 1); \}
+
+   static int
+   cmpmag_2a_b(z_t a, z_b b)
+   \{
+       int r;
+       zadd(a, a, a), r = zcmpmag(a, b), zrsh(a, a, 1);
+       return r;
+   \}
+\end{alltt}
+
+\begin{alltt}
+   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   divmod_floor(z_t q, z_t r, z_t n, z_t d)
+   \{
+       zdivmod(q, r, n, d);
+       if (!zzero(r) && isneg(n) != isneg(d))
+           zsub(q, q, one), zadd(r, r, d);
+   \}
+\end{alltt}
+
+\begin{alltt}
+   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   divmod_ceil(z_t q, z_t r, z_t n, z_t d)
+   \{
+       zdivmod(q, r, n, d);
+       if (!zzero(r) && isneg(n) == isneg(d))
+           zadd(q, q, one), zsub(r, r, d);
+   \}
+\end{alltt}
+
+\begin{alltt}
+   /* \textrm{This is how we normally round numbers.} */
+   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   divmod_half_from_zero(z_t q, z_t r, z_t n, z_t d)
+   \{
+       zdivmod(q, r, n, d);
+       if (!zzero(r) && cmpmag_2a_b(r, d) >= 0) \{
+           if (isneg(n) == isneg(d))
+               zadd(q, q, one), zsub(r, r, d);
+           else
+               zsub(q, q, one), zadd(r, r, d);
+       \}
+   \}
+\end{alltt}
+
+\noindent
+Now to the weird ones that will more often than
+not award you a face-slap. % Hade positive punishment
+% been legal or even mildly pedagogical. But I would
+% not put it past Coca-Cola.
+
+\begin{alltt}
+   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   divmod_half_to_zero(z_t q, z_t r, z_t n, z_t d)
+   \{
+       zdivmod(q, r, n, d);
+       if (!zzero(r) && cmpmag_2a_b(r, d) > 0) \{
+           if (isneg(n) == isneg(d))
+               zadd(q, q, one), zsub(r, r, d);
+           else
+               zsub(q, q, one), zadd(r, r, d);
+       \}
+   \}
+\end{alltt}
+
+\begin{alltt}
+   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   divmod_half_up(z_t q, z_t r, z_t n, z_t d)
+   \{
+       int cmp;
+       zdivmod(q, r, n, d);
+       if (!zzero(r) && (cmp = cmpmag_2a_b(r, d)) >= 0) \{
+           if (isneg(n) == isneg(d))
+               zadd(q, q, one), zsub(r, r, d);
+           else if (cmp)
+               zsub(q, q, one), zadd(r, r, d);
+       \}
+   \}
+\end{alltt}
+
+\begin{alltt}
+   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   divmod_half_down(z_t q, z_t r, z_t n, z_t d)
+   \{
+       int cmp;
+       zdivmod(q, r, n, d);
+       if (!zzero(r) && (cmp = cmpmag_2a_b(r, d)) >= 0) \{
+           if (isneg(n) != isneg(d))
+               zsub(q, q, one), zadd(r, r, d);
+           else if (cmp)
+               zadd(q, q, one), zsub(r, r, d);
+       \}
+   \}
+\end{alltt}
+
+\begin{alltt}
+   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   divmod_half_to_even(z_t q, z_t r, z_t n, z_t d)
+   \{
+       int cmp;
+       zdivmod(q, r, n, d);
+       if (!zzero(r) && (cmp = cmpmag_2a_b(r, d)) >= 0) \{
+           if (cmp || zodd(q)) \{
+               if (isneg(n) != isneg(d))
+                   zsub(q, q, one), zadd(r, r, d);
+               else
+                   zadd(q, q, one), zsub(r, r, d);
+           \}
+       \}
+   \}
+\end{alltt}
+
+\newpage
+\begin{alltt}
+   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   divmod_half_to_odd(z_t q, z_t r, z_t n, z_t d)
+   \{
+       int cmp;
+       zdivmod(q, r, n, d);
+       if (!zzero(r) && (cmp = cmpmag_2a_b(r, d)) >= 0) \{
+           if (cmp || zeven(q)) \{
+               if (isneg(n) != isneg(d))
+                   zsub(q, q, one), zadd(r, r, d);
+               else
+                   zadd(q, q, one), zsub(r, r, d);
+           \}
+       \}
+   \}
+\end{alltt}
+
+% TODO zdivmod's algorithm
+
 
 
 \newpage
