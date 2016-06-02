@@ -162,10 +162,12 @@ benchmark-zrand: bench/benchmark-zrand.c bench/benchmark.h libzahl.a
 refsheet.pdf: doc/refsheet.tex
 	pdflatex doc/refsheet.tex </dev/null
 	pdflatex doc/refsheet.tex </dev/null
+	-@printf 'refsheet.%s\n' aux log | xargs rm -- 2>/dev/null
 
 libzahl.pdf: $(TEXSRC)
 	pdflatex doc/libzahl.tex </dev/null
 	pdflatex doc/libzahl.tex </dev/null
+	-@printf 'libzahl.%s\n' aux idx log maf toc out | xargs rm -- libzahl.mtc* 2>/dev/null
 
 check: test
 	./test
