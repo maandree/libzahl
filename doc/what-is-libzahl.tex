@@ -15,8 +15,8 @@ what is its limitations.
 \label{sec:The name and the what}
 
 In mathematics, the set of all integers is represented
-by a bold uppercase `Z' ({\bf Z}), or sometimes
-double-stroked (blackboard bold) ($\mathbb{Z}$). This symbol
+by a bold uppercase `Z' ({\bf Z}), or sometimes              % proper symbol
+double-stroked (blackboard bold) ($\mathbb{Z}$). This symbol % hand-written style, specially on whiteboards and blackboards
 is derived from the german word for integers: `Zahlen'
 [\textprimstress{}tsa\textlengthmark{}l\textschwa{}n],
 whose singular is `Zahl' [tsa\textlengthmark{}l]. libzahl
@@ -100,8 +100,8 @@ followed by output parameters, and output parameters
 followed by input parameters. The former variant is the
 conventional for C functions. The latter is more in style
 with primitive operations, pseudo-code, mathematics, and
-how it would look if the output was return. In libzahl,
-the latter convention is used. That is, we write
+how it would look if the output was return. In libzahl, the
+latter convention is used. That is, we write
 
 \begin{alltt}
    zadd(sum, augend, addend);
@@ -129,8 +129,9 @@ $augend + addend \rightarrow sum$.
 \vspace{1em}
 
 libzahl, GNU MP, and Hebimath use the output-first
-convention. LibTomMath and TomsFastMath use the
-input-first convention.
+convention.\footnote{GNU MP-style.} LibTomMath and
+TomsFastMath use the input-first convention.\footnote{BSD
+MP-style.}
 
 Unlike other bignum libraries, errors in libzahl are
 caught using {\tt setjmp}. This ensure that it can be

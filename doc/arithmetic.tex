@@ -186,6 +186,7 @@ lend you a hand.
    \}
 \end{alltt}
 
+% Floored division
 \begin{alltt}
    void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
    divmod_floor(z_t q, z_t r, z_t n, z_t d)
@@ -196,9 +197,10 @@ lend you a hand.
    \}
 \end{alltt}
 
+% Ceiled division
 \begin{alltt}
    void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
-   divmod_ceil(z_t q, z_t r, z_t n, z_t d)
+   divmod_ceiling(z_t q, z_t r, z_t n, z_t d)
    \{
        zdivmod(q, r, n, d);
        if (!zzero(r) && isneg(n) == isneg(d))
@@ -206,6 +208,10 @@ lend you a hand.
    \}
 \end{alltt}
 
+% Division with round half aways from zero
+% This rounding method is also called:
+%    round half toward infinity
+%    commercial rounding
 \begin{alltt}
    /* \textrm{This is how we normally round numbers.} */
    void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
@@ -227,6 +233,9 @@ not award you a face-slap. % Had positive punishment
 % been legal or even mildly pedagogical. But I would
 % not put it past Coca-Cola.
 
+% Division with round half toward zero
+% This rounding method is also called:
+%     round half away from infinity
 \begin{alltt}
    void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
    divmod_half_to_zero(z_t q, z_t r, z_t n, z_t d)
@@ -241,6 +250,9 @@ not award you a face-slap. % Had positive punishment
    \}
 \end{alltt}
 
+% Division with round half up
+% This rounding method is also called:
+%     round half towards positive infinity
 \begin{alltt}
    void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
    divmod_half_up(z_t q, z_t r, z_t n, z_t d)
@@ -256,6 +268,9 @@ not award you a face-slap. % Had positive punishment
    \}
 \end{alltt}
 
+% Division with round half down
+% This rounding method is also called:
+%     round half towards negative infinity
 \begin{alltt}
    void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
    divmod_half_down(z_t q, z_t r, z_t n, z_t d)
@@ -271,6 +286,16 @@ not award you a face-slap. % Had positive punishment
    \}
 \end{alltt}
 
+% Division with round half to even
+% This rounding method is also called:
+%     unbiased rounding        (really stupid name)
+%     convergent rounding      (also quite stupid name)
+%     statistician's rounding
+%     Dutch rounding
+%     Gaussian rounding
+%     odd–even rounding
+%     bankers' rounding
+% It is the default rounding method used in IEEE 754.
 \begin{alltt}
    void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
    divmod_half_to_even(z_t q, z_t r, z_t n, z_t d)
@@ -288,6 +313,7 @@ not award you a face-slap. % Had positive punishment
    \}
 \end{alltt}
 
+% Division with round half to odd
 \newpage
 \begin{alltt}
    void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
@@ -305,6 +331,14 @@ not award you a face-slap. % Had positive punishment
        \}
    \}
 \end{alltt}
+
+% Other standard methods include stochastic rounding
+% and round half alternatingly, and what is is
+% New Zealand called “Swedish rounding”, which is
+% no longer used in Sweden, and is just normal round
+% half aways from zero but with 0.5 rather than
+% 1 as the integral unit, and is just a special case
+% of a more general rounding method.
 
 Currently, libzahl uses an almost trivial division
 algorithm. It operates on positive numbers. It begins

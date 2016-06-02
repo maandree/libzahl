@@ -29,7 +29,9 @@
 \geometry{margin=1in}
 \usepackage{microtype}
 \DisableLigatures{encoding = *, family = *} % NB! disables -- and ---
-\frenchspacing
+% I really dislike fi- and ff-ligatures, just like look so wrong.
+\frenchspacing % i.e. non-American spacing: i.e. no extra space after sentences,
+               % this also means that periods do not have to be context-marked.
 
 \newcommand{\chapref}[1]{\hyperref[#1]{Chapter~\ref*{#1} [\nameref*{#1}], page \pageref*{#1}}}
 \newcommand{\secref}[1]{\hyperref[#1]{Section~\ref*{#1} [\nameref*{#1}], page \pageref*{#1}}}
@@ -61,6 +63,28 @@ Permission to use, copy, modify, and/or distribute this document for any
 purpose with or without fee is hereby granted, provided that the above
 copyright notice and this permission notice appear in all copies.}
 \newpage
+
+
+% Conventionally, most words in a title in English should start with
+% uppercase. I believe that this is inconsistent stupidity, pardon my
+% Klatchian. There is not consensus of which words should not start
+% with lowercase or even if any shall start with lowercase. There is
+% also no consensus on how long the title should be before only the
+% first word should start with uppercase. It is only generally (but
+% not always) agreed that most words should start with uppercase and
+% when the title is too long only the first word start with uppercase.
+% I believe that is is better to stick with the Swedish convention:
+% It should look just like a sentience except it may not end with a
+% period unless that is part of an ellipsis or an abbreviation.
+% I would also like to use straight apostrophes, like in French, (and
+% reserve the curved ones for quotes,) but that is just too painful in
+% LaTeX, so I will only be do so for French words. Most style guides
+% for English will be followed. They will only be broken if they are
+% stupid or inferior. For example, I will never write ‘CPU's’ for
+% plural of CPU — that's just stupid, — only for genitive, nor
+% will I write ‘CPUs’ for plural of CPU, because it is inferior to
+% ‘CPU:s’.
+
 
 \shorttoc{Short contents}{0}
 \setcounter{tocdepth}{2}
