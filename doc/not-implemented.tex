@@ -18,6 +18,17 @@ a robust program should store temporary
 variables on a stack, so they can be
 clean up of something happens.
 
+Research problems, like prime-factorisation
+and discrete logarithms do not fit in the
+scope of bignum libraries. % Unless they are extraordinarily bloated with vague mission-scope, like systemd.
+And therefore does not fit into libzahl,
+and will not be included in this chapter.
+Operators and functions that grow so
+ridiculously fast that a tiny lookup table
+constructed to cover all practicle input
+will also not be included in this chapter,
+nor in libzahl.
+
 \vspace{1cm}
 \minitoc
 
