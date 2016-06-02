@@ -209,7 +209,7 @@ divide-and-conquer algorithms.
 The function
 
 \begin{alltt}
-   zbset(z_t r, z_t a, size_t bit, int mode);
+   void zbset(z_t r, z_t a, size_t bit, int mode);
 \end{alltt}
 
 \noindent
@@ -233,7 +233,40 @@ $mode < 0$ ($-1$): flip
 \section{Bit test}
 \label{sec:Bit test}
 
-TODO % zbtest
+libzahl provides a function for testing whether a bit
+in a big integer is set:
+
+\begin{alltt}
+   int zbtest(z_t a, size_t bit);
+\end{alltt}
+
+\noindent
+it will return 1 if the bit with the index {\tt bit}
+is set in {\tt a}, counting from the least significant
+bit, starting at zero. 0 is returned otherwise. The
+sign of {\tt a} is ignored.
+
+We can think of this like so: consider
+
+$$ \lvert a \rvert = \sum_{i = 0}^\infty k_i 2^i,~ k_i \in \{0, 1\}, $$
+
+\noindent
+{\tt zbtest(a, b)} returns $k_b$. Equivalently, we can think
+that {\tt zbtest(a, b)} return whether $b \in B$ where $B$
+is defined by
+
+$$ \lvert a \rvert = \sum_{b \in B} 2^b,~ B \subset \textbf{Z}_+, $$
+
+\noindent
+or as right-shifting $a$ by $b$ bits and returning whether the
+least significant bit is set.
+
+{\tt zbtest} always returns 1 or 0, but for good code quality, you
+should avoid testing against 1, rather you should test whether the
+value is a truth-value or a falsehood-value. However, there is
+nothing wrong with depending on the value being restricted to being
+either 1 or 0 if you want to sum up returned values or otherwise
+use them in new values.
 
 
 \newpage
