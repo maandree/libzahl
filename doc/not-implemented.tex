@@ -65,6 +65,17 @@ extgcd(z_t bézout_coeff_1, z_t bézout_coeff_2, z_t gcd
 \}
 \end{alltt}
 
+Perhaps you are asking yourself ``wait a minute,
+doesn't the extended Euclidean algorithm only
+have three outputs if you include the greatest
+common divisor, what is this shenanigans?''
+No\footnote{Well, technically yes, but it calculates
+two values for free in the same ways as division
+calculates the remainder for free.}, it has five
+outputs, most implementations just ignore two of
+them. If this confuses you, or you want to know
+more about this, I refer you to Wikipeida.
+
 
 \newpage
 \section{Least common multiple}
