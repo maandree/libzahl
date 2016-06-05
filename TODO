@@ -28,7 +28,7 @@ size?
 
 Add entropy test for zrand.
 
-Should zmodpowu, zmodpow, and zmodmul be removed?
+Should zmodpowu, zmodpow, zmodmul, and zmodsqr be removed?
   I need to research how important these are.
   They are important for cryptography, but we do not care about that.
   They are important for discrete/abstract mathematics, but bignum probably isn't in those cases?
