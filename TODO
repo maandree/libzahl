@@ -41,3 +41,6 @@ Add CPU-warmup loop to benchmarks.
   This loop shall be done after help variables have
   been assigned values, as this can help the warmup.
 
+benchmark with worst case, average case, and best case input.
+
+zadd, zsub: benchmark both dense and sparse integers.
