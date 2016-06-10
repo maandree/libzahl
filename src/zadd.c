@@ -25,6 +25,11 @@
 	"\n    jc 1f"           \
 	"\n    movq $0, %[x]"   \
 	"\n 1:"
+/*
+ * I have already tried setc, cmovnc, cmovc, and adc,
+ * instead of the last four lines. There does not seem
+ * to be any better why to store the carry flag.
+ */
 
 # define ASM_ADD(N)                                                                          \
 	do {                                                                                 \
