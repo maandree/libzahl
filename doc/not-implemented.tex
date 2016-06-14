@@ -2,30 +2,30 @@
 \label{chap:Not implemented}
 
 In this chapter we maintain a list of
-features we have choosen not to implement,
+features we have chosen not to implement,
 but would fit into libzahl had we not have
 our priorities straight. Functions listed
-herein will only be implemented if there
-is shown that it would be overwhelmingly
+herein will only be implemented if it is
+shown that it would be overwhelmingly
 advantageous. For each feature, a sample
 implementation or a mathematical expression
 on which you can base your implemention
 is included. The sample implementations create
 temporary integer references, this is to
-simplify in the examples. You should try to
+simplify the examples. You should try to
 use dedicated variables; in case of recursion,
 a robust program should store temporary
 variables on a stack, so they can be
-clean up of something happens.
+clean up if something happens.
 
 Research problems, like prime-factorisation
 and discrete logarithms do not fit in the
 scope of bignum libraries. % Unless they are extraordinarily bloated with vague mission-scope, like systemd.
-And therefore does not fit into libzahl,
+And therefore do not fit into libzahl,
 and will not be included in this chapter.
 Operators and functions that grow so
 ridiculously fast that a tiny lookup table
-constructed to cover all practicle input
+constructed to cover all practical input
 will also not be included in this chapter,
 nor in libzahl.
 
@@ -196,7 +196,7 @@ TODO % Square: Cipolla's algorithm, Pocklington's algorithm, Tonelli–Shanks al
 
 \( \displaystyle{
     n! = \left \lbrace \begin{array}{ll}
-        \displaystyle{\prod_{i = 0}^n i} & \textrm{if}~ n \ge 0 \\
+        \displaystyle{\prod_{i = 1}^n i} & \textrm{if}~ n \ge 0 \\
         \textrm{undefined} & \textrm{otherwise}
     \end{array} \right .
 }\)
@@ -463,7 +463,7 @@ Each call to {\tt fib\_ll} returns $F_n$ and $F_{n - 1}$
 for any input $n$. $F_{k}$ is only correctly returned
 for $k \ge 0$. $F_n$ and $F_{n - 1}$ is used for
 calculating $F_{2n}$ or $F_{2n + 1}$. The algorithm
-can be speed up with a larger lookup table than one
+can be sped up with a larger lookup table than one
 covering just the base cases. Alternatively, a naïve
 calculation could be used for sufficiently small input.
 
@@ -596,8 +596,8 @@ a fully unrolled
 \label{sec:Hamming distance}
 
 A simple way to compute the Hamming distance,
-the number of differing bits, between two number
-is with the function
+the number of differing bits, between two
+numbers is with the function
 
 \begin{alltt}
    size_t
@@ -615,8 +615,8 @@ is with the function
 
 \noindent
 The performance of this function could
-be improve by comparing character by
-character manually with using {\tt zxor}.
+be improved by comparing character by
+character manually using {\tt zxor}.
 
 
 \newpage
@@ -658,7 +658,7 @@ side-effects.
 
 This could be useful for creating duplicates
 with modified sign. But only if neither
-{\tt r} or {\tt a} will be modified whilst
+{\tt r} nor {\tt a} will be modified whilst
 both are in use. Because it is unsafe,
 fairly simple to create an implementation
 with acceptable performance — {\tt *r = *a},
