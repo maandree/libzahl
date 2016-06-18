@@ -174,10 +174,21 @@ division: {\tt mpz\_tdiv\_q}, {\tt mpz\_tdiv\_r} and
 \label{sec:Limitations}
 
 libzahl is not recommended for cryptographic
-applications, it is not mature enough, and its author
-does not have the necessary expertise. And in
-particular, it does not implement constant time
-operations. Additionally, libzahl is not thread-safe.
+applications, it is not mature enough, and its
+author does not have the necessary expertise.
+And in particular, it does not implement constant
+time operations, and it does not clear pooled
+memory. Using libzahl in cryptographic application
+is insecure; your application may become susceptible
+attacks such as timing attacks, power-monitoring
+attacks, electromagnetic attacks, acoustic
+cryptanalysis, and data remanence attacks. libzahl
+is known to be susceptible to timing attacks
+(due to lack of constant time operations) and
+data remanence attacks (due to pooling memory
+for reuse without clearing the content of the
+memory allocations.) Additionally, libzahl is not
+thread-safe.
 
 libzahl is also only designed for POSIX systems.
 It will probably run just fine on any modern

@@ -53,6 +53,12 @@ You are strongly discouraged from using
 .B libzahl
 for cryptographic applications. Instead, use a library
 specifically targeting cryptography, otherwise, your
-program may be subject to side-channel attacks.
+program may be subject to side-channel attacks such as
+timing attacks, power-monitoring attacks, electromagnetic
+attacks, acoustic cryptanalysis, and data remanence
+attacks.
+.B libzahl
+is known to be susceptible to timing attacks and data
+remanence attacks.
 .SH SEE ALSO
 .BR zsetup (3)
