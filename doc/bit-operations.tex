@@ -251,26 +251,77 @@ We can think of this like so: consider
 $$ \lvert a \rvert = \sum_{i = 0}^\infty k_i 2^i,~ k_i \in \{0, 1\}, $$
 
 \noindent
-{\tt zbtest(a, b)} returns $k_b$. Equivalently, we can think
-that {\tt zbtest(a, b)} return whether $b \in B$ where $B$
-is defined by
+{\tt zbtest(a, b)} returns $k_b$. Equivalently, we can
+think that {\tt zbtest(a, b)} return whether $b \in B$
+where $B$ is defined by
 
 $$ \lvert a \rvert = \sum_{b \in B} 2^b,~ B \subset \textbf{Z}_+, $$
 
 \noindent
-or as right-shifting $a$ by $b$ bits and returning whether the
-least significant bit is set.
+or as right-shifting $a$ by $b$ bits and returning
+whether the least significant bit is set.
 
-{\tt zbtest} always returns 1 or 0, but for good code quality, you
-should avoid testing against 1, rather you should test whether the
-value is a truth-value or a falsehood-value. However, there is
-nothing wrong with depending on the value being restricted to being
-either 1 or 0 if you want to sum up returned values or otherwise
-use them in new values.
+{\tt zbtest} always returns 1 or 0, but for good
+code quality, you should avoid testing against 1,
+rather you should test whether the value is a
+truth-value or a falsehood-value. However, there
+is nothing wrong with depending on the value being
+restricted to being either 1 or 0 if you want to
+sum up returned values or otherwise use them in
+new values.
 
 
 \newpage
 \section{Connectives}
 \label{sec:Connectives}
 
-TODO % zand zor zxor znot
+libzahl implements the four basic logical
+connectives: and, or, exclusive or, and not.
+The functions for these are named {\tt zand},
+{\tt zor}, {\tt zxor}, and {\tt znot},
+respectively.
+
+The connectives apply to each bit in the
+integers, as well as the sign. The sign is
+treated as a bit that is set if the integer
+is negative, and as cleared otherwise. For
+example (integers are in binary):
+
+\begin{alltt}
+   zand(r, a, b)              zor(r, a, b)
+   a = +1010  (input)         a = +1010  (input)
+   b = -1100  (input)         b = -1100  (input)
+   r = +1000  (output)        r = -1110  (output)
+
+   zxor(r, a, b)              znot(r, a)
+   a = +1010  (input)         a = +1010  (input)
+   b = -1100  (input)         r = -0101  (output)
+   r = +0110  (output)
+\end{alltt}
+
+Remember, in libzahl, integers are represented
+with sign and magnitude, not two's complement,
+even when using these connectives. Therefore,
+more work than just changing the name of the
+called function may be required when moving
+between big integer libraries. Consequently,
+{\tt znot} does not flip bits that are higher
+than the highest set bit, which means that
+{\tt znot} is nilpotent rather than idempotent.
+
+Below is a list of the value of {\tt a} when
+{\tt znot(a, a)} is called repeatedly.
+
+\begin{alltt}
+   10101010
+   -1010101
+     101010
+     -10101
+       1010
+       -101
+         10
+         -1
+          0
+          0
+          0
+\end{alltt}
