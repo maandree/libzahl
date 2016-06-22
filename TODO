@@ -44,3 +44,6 @@ Add CPU-warmup loop to benchmarks.
 benchmark with worst case, average case, and best case input.
 
 zadd, zsub: benchmark both dense and sparse integers.
+
+Feedback on error handling:
+	 http://bbs.progrider.org/prog/read/1457215529/31,47
