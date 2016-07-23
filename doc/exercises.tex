@@ -1,0 +1,96 @@
+\chapter{Exercises}
+\label{chap:Exercises}
+
+% TODO
+% 
+% All exercises should be group with a chapter
+% 
+% ▶   Recommended
+% M   Matematically oriented
+% HM  Higher matematical education required
+% 
+% 00  Immediate
+% 10  Simple
+% 20  Medium
+% 30  Moderately hard
+% 40  Term project
+% 50  Research project
+% 
+% ⁺   High risk of undershoot difficulty
+
+
+\begin{enumerate}[label=\textbf{\arabic*}.]
+
+
+\item {[\textit{M10}]} \textbf{Convergence of the Lucas Number ratios}
+
+Find an approximation for $\displaystyle{ \lim_{n \to \infty} \frac{L_{n + 1}}{L_n}}$,
+where $L_n$ is the $n^{\text{th}}$ Lucas Number \psecref{sec:Lucas numbers}.
+
+\( \displaystyle{
+    L_n \stackrel{\text{\tiny{def}}}{\text{=}} \left \{ \begin{array}{ll}
+      2 & \text{if} ~ n = 0 \\
+      1 & \text{if} ~ n = 1 \\
+      L_{n - 1} + L_{n + 1} & \text{otherwise}
+    \end{array} \right .
+}\)
+
+
+\item {[\textit{M12${}^+$}]} \textbf{Factorisation of factorials}
+
+Implement the function
+
+\vspace{-1em}
+\begin{alltt}
+   void factor_fact(z_t n);
+\end{alltt}
+\vspace{-1em}
+
+\noindent
+which prints the prime factorisation of $n!$ (the $n^{\text{th}}$ factorial).
+The function shall be efficient for all $n$ where all primes $p \le n$ can
+be found efficiently. You can assume that $n \ge 2$. You should not evaluate $n!$.
+
+
+\end{enumerate}
+
+
+
+\chapter{Solutions}
+\label{chap:Solutions}
+
+
+\begin{enumerate}[label=\textbf{\arabic*}.]
+
+\item \textbf{Convergence of the Lucas Number ratios}
+
+It would be a mistake to use bignum, and bigint in particular,
+to solve this problem. Good old mathematics is a much better solution.
+
+$$ \lim_{n \to \infty} \frac{L_{n + 1}}{L_n} = \lim_{n \to \infty} \frac{L_{n}}{L_{n - 1}} = \lim_{n \to \infty} \frac{L_{n - 1}}{L_{n - 2}} $$
+
+$$ \frac{L_{n}}{L_{n - 1}} = \frac{L_{n - 1}}{L_{n - 2}} $$
+
+$$ \frac{L_{n - 1} + L_{n - 2}}{L_{n - 1}} = \frac{L_{n - 1}}{L_{n - 2}} $$
+
+$$ 1 + \frac{L_{n - 2}}{L_{n - 1}} = \frac{L_{n - 1}}{L_{n - 2}} $$
+
+$$ 1 + \varphi = \frac{1}{\varphi} $$
+
+So the ratio tends toward the golden ration.
+
+
+\item \textbf{Factorisation of factorials}
+
+Base your implementation on
+
+\( \displaystyle{
+    n! = \prod_{p~\in~\textbf{P}}^{n} p^{k_p}, ~\text{where}~
+    k_p = \sum_{a = 1}^{\lfloor \log_p n \rfloor} \lfloor np^{-a} \rfloor.
+}\)
+
+There is no need to calculate $\lfloor \log_p n \rfloor$,
+you will see when $p^a > n$.
+
+
+\end{enumerate}

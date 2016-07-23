@@ -82,7 +82,8 @@ TEXSRC =\
 	doc/bit-operations.tex\
 	doc/number-theory.tex\
 	doc/random-numbers.tex\
-	doc/not-implemented.tex
+	doc/not-implemented.tex\
+	doc/exercises.tex
 
 HDR_PUBLIC = zahl.h $(HDR_SEMIPUBLIC)
 HDR        = $(HDR_PUBLIC) $(HDR_PRIVATE)
