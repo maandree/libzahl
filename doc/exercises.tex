@@ -52,6 +52,27 @@ The function shall be efficient for all $n$ where all primes $p \le n$ can
 be found efficiently. You can assume that $n \ge 2$. You should not evaluate $n!$.
 
 
+\item {[\textit{M20}]} \textbf{Reverse factorisation of factorials}
+
+You should already have solved ``Factorisation of factorials''
+before you solve this problem.
+
+Implement the function
+
+\vspace{-1em}
+\begin{alltt}
+   void unfactor_fact(z_t x, z_t *P,
+        unsigned long long int *K, size_t n);
+\end{alltt}
+\vspace{-1em}
+
+\noindent
+which given the factorsation of $x!$ determines $x$.
+The factorisation of $x!$ is
+$\displaystyle{\prod_{i = 1}^{n} P_i^{K_i}}$, where
+$P_i$ is \texttt{P[i - 1]} and $K_i$ is \texttt{K[i - 1]}.
+
+
 \end{enumerate}
 
 
@@ -77,7 +98,7 @@ $$ 1 + \frac{L_{n - 2}}{L_{n - 1}} = \frac{L_{n - 1}}{L_{n - 2}} $$
 
 $$ 1 + \varphi = \frac{1}{\varphi} $$
 
-So the ratio tends toward the golden ration.
+So the ratio tends toward the golden ratio.
 
 
 \item \textbf{Factorisation of factorials}
@@ -91,6 +112,32 @@ Base your implementation on
 
 There is no need to calculate $\lfloor \log_p n \rfloor$,
 you will see when $p^a > n$.
+
+
+\item \textbf{Reverse factorisation of factorials}
+
+$\displaystyle{x = \max_{p ~\in~ P} ~ p \cdot f(p, k_p)}$,
+where $k_p$ is the power of $p$ in the factorisation
+of $x!$. $f(p, k)$ is defined as:
+
+\vspace{1em}
+\hspace{-2.8ex}
+\begin{minipage}{\linewidth}
+\begin{algorithmic}
+    \STATE $k^\prime \gets 0$
+    \WHILE{$k > 0$}
+      \STATE $a \gets 0$
+      \WHILE{$p^a \le k$}
+        \STATE $k \gets k - p^a$
+        \STATE $a \gets a + 1$
+      \ENDWHILE
+      \STATE $k^\prime \gets k^\prime + p^{a - 1}$
+    \ENDWHILE
+    \RETURN $k^\prime$
+\end{algorithmic}
+\end{minipage}
+\vspace{1em}
+
 
 
 \end{enumerate}
