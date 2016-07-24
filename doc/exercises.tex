@@ -130,6 +130,19 @@ a fast primality tester.
 
 
 
+\item {[\textit{10}]} \textbf{Fermat primality test}
+
+$a^{p - 1} \equiv 1 ~(\text{Mod}~p) ~\forall~ 1 < a < p$
+for all primes $p$ and for a few composites $p$,
+which are know as pseudoprimes\footnote{If $p$ is composite
+but passes the test for all $a$, $p$ is a Carmichael
+number.}. Use this to implement a heuristic primality
+tester. Try to mimic \texttt{zptest} as much as possible.
+GNU~MP uses $a = 210$, but you don't have to. ($a$ is
+called a base.)
+
+
+
 \end{enumerate}
 
 
@@ -283,6 +296,53 @@ enum zprimality ptest_fast(z_t p)
     c = zcmpu(a, 2);
     zfree(a);
     return c ? NONPRIME : PROBABLY_PRIME;
+\}
+\end{alltt}
+
+
+
+\item \textbf{Fermat primality test}
+
+Below is a simple implementation. It can be improved by
+just testing against a fix base, such as $a = 210$, it
+$t = 0$. It could also do an exhaustive test (all $a$
+such that $1 < a < p$) if $t < 0$.
+
+\vspace{-1em}
+\begin{alltt}
+enum zprimality ptest_fermat(z_t witness, z_t p, int t)
+\{
+    enum zprimality rc = PROBABLY_PRIME;
+    z_t a, p1, p3, temp;
+    int c;
+
+    if ((c = zcmpu(p, 2)) <= 0) \{
+        if (!c)
+            return PRIME;
+        if (witness && witness != p)
+            zset(witness, p);
+        return NONPRIME;
+    \}
+
+    zinit(a), zinit(p1), zinit(p3), zinit(temp);
+    zsetu(temp, 3), zsub(p3, p, temp);
+    zsetu(temp, 1), zsub(p1, p, temp);
+
+    zsetu(temp, 2);
+    while (t--) \{
+        zrand(a, DEFAULT_RANDOM, UNIFORM, p3);
+        zadd(a, a, temp);
+        zmodpow(a, a, p1, p);
+        if (zcmpu(a, 1)) \{
+            if (witness)
+                zswap(witness, a);
+            rc = NONPRIME;
+            break;
+        \}
+    \}
+
+    zfree(temp), zfree(p3), zfree(p1), zfree(a);
+    return rc;
 \}
 \end{alltt}
 
