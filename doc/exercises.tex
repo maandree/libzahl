@@ -24,8 +24,10 @@
 
 \item {[\textit{M10}]} \textbf{Convergence of the Lucas Number ratios}
 
-Find an approximation for $\displaystyle{ \lim_{n \to \infty} \frac{L_{n + 1}}{L_n}}$,
-where $L_n$ is the $n^{\text{th}}$ Lucas Number \psecref{sec:Lucas numbers}.
+Find an approximation for
+$\displaystyle{ \lim_{n \to \infty} \frac{L_{n + 1}}{L_n}}$,
+where $L_n$ is the $n^{\text{th}}$
+Lucas Number \psecref{sec:Lucas numbers}.
 
 \( \displaystyle{
     L_n \stackrel{\text{\tiny{def}}}{\text{=}} \left \{ \begin{array}{ll}
@@ -48,9 +50,11 @@ Implement the function
 \vspace{-1em}
 
 \noindent
-which prints the prime factorisation of $n!$ (the $n^{\text{th}}$ factorial).
-The function shall be efficient for all $n$ where all primes $p \le n$ can
-be found efficiently. You can assume that $n \ge 2$. You should not evaluate $n!$.
+which prints the prime factorisation of $n!$
+(the $n^{\text{th}}$ factorial). The function shall
+be efficient for all $n$ where all primes $p \le n$
+can be found efficiently. You can assume that
+$n \ge 2$. You should not evaluate $n!$.
 
 
 
@@ -73,6 +77,30 @@ which given the factorsation of $x!$ determines $x$.
 The factorisation of $x!$ is
 $\displaystyle{\prod_{i = 1}^{n} P_i^{K_i}}$, where
 $P_i$ is \texttt{P[i - 1]} and $K_i$ is \texttt{K[i - 1]}.
+
+
+
+\item {[$\RHD$\textit{M17}]} \textbf{Factorials inverted}
+
+Implement the function
+
+\vspace{-1em}
+\begin{alltt}
+   void unfact(z_t x, z_t n);
+\end{alltt}
+\vspace{-1em}
+
+\noindent
+which given a factorial number $n$, i.e. on the form
+$x! = 1 \cdot 2 \cdot 3 \cdot \ldots \cdot x$,
+calculates $x = n!^{-1}$. You can assume that
+$n$ is a perfect factorial number and that $x \ge 1$.
+Extra credit if you can detect when the input, $n$,
+is not a factorial number. Such function would of
+course return an \texttt{int} 1 if the input is a
+factorial and 0 otherwise, or alternatively 0
+on success and $-1$ with \texttt{errno} set to
+\texttt{EDOM} if the input is not a factorial.
 
 
 
@@ -153,9 +181,60 @@ of $x!$. $f(p, k)$ is defined as:
 
 
 
+\item \textbf{Factorials inverted}
+
+Use \texttt{zlsb} to get the power of 2 in the
+prime factorisation of $n$, that is, the number
+of times $n$ is divisible by 2. If we write $n$ on
+the form $1 \cdot 2 \cdot 3 \cdot \ldots \cdot x$,
+every $2^\text{nd}$ factor is divisible by 2, every
+$4^\text{th}$ factor is divisible by $2^2$, and so on.
+From call \texttt{zlsb} we know how many times,
+$n$ is divisible by 2, but know how many of the factors
+are divisible by 2, but this can be calculated with
+the following algorithm, where $k$ is the number
+times $n$ is divisible by 2:
+
+\vspace{1em}
+\hspace{-2.8ex}
+\begin{minipage}{\linewidth}
+\begin{algorithmic}
+    \STATE $k^\prime \gets 0$
+    \WHILE{$k > 0$}
+      \STATE $a \gets 0$
+      \WHILE{$2^a \le k$}
+        \STATE $k \gets k - 2^a$
+        \STATE $a \gets a + 1$
+      \ENDWHILE
+      \STATE $k^\prime \gets k^\prime + 2^{a - 1}$
+    \ENDWHILE
+    \RETURN $k^\prime$
+\end{algorithmic}
+\end{minipage}
+\vspace{1em}
+
+\noindent
+Note that $2^a$ is efficiently calculated with,
+\texttt{zlsh}, but it is more efficient to use
+\texttt{zbset}.
+
+Now that we know $k^\prime$, the number of
+factors ni $1 \cdot \ldots \cdot x$ that are
+divisible by 2, we have two choices for $x$:
+$k^\prime$ and $k^\prime + 1$. To check which, we
+calculate $(k^\prime - 1)!!$ (the semifactoral, i.e.
+$1 \cdot 3 \cdot 5 \cdot \ldots \cdot (k^\prime - 1)$)
+naïvely and shift the result $k$ steps to the left.
+This gives us $k^\prime!$. If $x! \neq k^\prime!$, then
+$x = k^\prime + 1$ unless $n$ is not factorial number.
+Of course, if $x! = k^\prime!$, then $x = k^\prime$.
+
+
+
 \item \textbf{Fast primality test}
 
-If we select $x = y = 1$ we get $2^p \equiv 2 ~(\text{Mod}~p)$. This gives us
+If we select $x = y = 1$ we get
+$2^p \equiv 2 ~(\text{Mod}~p)$. This gives us
 
 \vspace{-1em}
 \begin{alltt}
