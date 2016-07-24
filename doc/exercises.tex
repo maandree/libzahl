@@ -22,6 +22,22 @@
 \begin{enumerate}[label=\textbf{\arabic*}.]
 
 
+
+\item {[$\RHD$\textit{02}]} \textbf{Saturated subtraction}
+
+Implement the function
+
+\vspace{-1em}
+\begin{alltt}
+   void monus(z_t r, z_t a, z_t b);
+\end{alltt}
+\vspace{-1em}
+
+\noindent
+which calculates $a \dotminus b = \max \{ 0,~ a - b \}$.
+
+
+
 \item {[\textit{M10}]} \textbf{Convergence of the Lucas Number ratios}
 
 Find an approximation for
@@ -121,6 +137,20 @@ Use this to implement a fast primality tester.
 
 
 \begin{enumerate}[label=\textbf{\arabic*}.]
+
+\item \textbf{Saturated subtraction}
+
+\vspace{-1em}
+\begin{alltt}
+void monus(z_t r, z_t a, z_t b)
+\{
+    zsub(r, a, b);
+    if (zsignum(r) < 0)
+        zsetu(r, 0);
+\}
+\end{alltt}
+
+
 
 \item \textbf{Convergence of the Lucas Number ratios}
 
@@ -243,7 +273,7 @@ enum zprimality ptest_fast(z_t p)
     z_t a;
     int c = zcmpu(p, 2);
     if (c <= 0)
-      return c ? NONPRIME : PRIME;
+        return c ? NONPRIME : PRIME;
     zinit(a);
     zsetu(a, 1);
     zlsh(a, a, p);
