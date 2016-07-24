@@ -467,6 +467,15 @@ For input, larger than our limit, that passes the test,
 we can run it through \texttt{zptest} to reduce the
 number of false positives.
 
+As an alternative solution, instead of comparing against
+known pseudoprimes. Find a minimal set of primes that
+includes divisors for all known pseudoprimes, and do
+trail division with these primes when a number passes
+the test. No pseudoprime need to have more than one divisor
+included in the set, so this set cannot be larger than
+the set of pseudoprimes.
+
+
 
 
 \end{enumerate}
