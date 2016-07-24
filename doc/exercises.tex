@@ -143,6 +143,43 @@ called a base.)
 
 
 
+\item {[\textit{11}]} \textbf{Lucas–Lehmer primality test}
+
+The Lucas–Lehmer primality test can be used to determine
+whether a Mersenne numbers $M_n = 2^n - 1$ is a prime (a
+Mersenne prime). $M_n$ is a prime if and only if
+$s_{n - 1} \equiv 0 ~(\text{Mod}~M_n)$, where
+
+\( \displaystyle{
+    s_i = \left \{ \begin{array}{ll}
+      4 & \text{if} ~ i = 0 \\
+      s_{i - 1}^2 - 2 & \text{otherwise}.
+    \end{array} \right .
+}\)
+
+\noindent
+The Lucas–Lehmer primality test requires that $n \ge 3$,
+however $M_2 = 2^2 - 1 = 3$ is a prime. Implement a version
+of the Lucas–Lehmer primality test that takes $n$ as the
+input. For some more fun, when you are done, you can
+implement a version that takes $M_n$ as the input.
+
+For improved performance, instead of using \texttt{zmod},
+you can use the recursive function
+%
+\( \displaystyle{
+    k ~\mbox{Mod}~ 2^n - 1 =
+    \left (
+      (k ~\mbox{Mod}~ 2^n) + \lfloor k \div 2^n \rfloor
+    \right ) ~\mbox{Mod}~ 2^n - 1,
+}\)
+%
+where $k ~\mbox{Mod}~ 2^n$ is efficiently calculated
+using \texttt{zand($k$, $2^n - 1$)}. (This optimisation
+is not part of the difficulty rating of this problem.)
+
+
+
 \end{enumerate}
 
 
@@ -345,6 +382,54 @@ enum zprimality ptest_fermat(z_t witness, z_t p, int t)
     return rc;
 \}
 \end{alltt}
+
+
+
+\item \textbf{Lucas–Lehmer primality test}
+
+\vspace{-1em}
+\begin{alltt}
+enum zprimality ptest_llt(z_t n)
+\{
+    z_t s, M;
+    int c;
+    size_t p;
+
+    if ((c = zcmpu(n, 2)) <= 0)
+        return c ? NONPRIME : PRIME;
+
+    if (n->used > 1) \{
+        \textcolor{c}{/* \textrm{An optimised implementation would not need this} */}
+        errno = ENOMEM;
+        return (enum zprimality)(-1);
+    \}
+
+    zinit(s), zinit(M), zinit(2);
+
+    p = (size_t)(n->chars[0]);
+    zsetu(s, 1), zsetu(M, 0);
+    zbset(M, M, p, 1), zsub(M, M, s);
+    zsetu(s, 4);
+    zsetu(two, 2);
+
+    p -= 2;
+    while (p--) \{
+        zsqr(s, s);
+        zsub(s, s, two);
+        zmod(s, s, M);
+    \}
+    c = zzero(s);
+
+    zfree(two), zfree(M), zfree(s);
+    return c ? PRIME : NONPRIME;
+\}
+\end{alltt}
+
+$M_n$ is composite if $n$ is composite, therefore,
+if you do not expect prime-only values on $n$, the
+performance can be improve by using some other
+primality test (or this same test if $n$ is a
+Mersenne number) to first check that $n$ is prime.
 
 
 
