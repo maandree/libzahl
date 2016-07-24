@@ -11,6 +11,7 @@
 #include <unistd.h>
 
 
+
 #ifdef BENCHMARK_LIB
 # include BENCHMARK_LIB
 #else
@@ -31,11 +32,9 @@
 # define CLOCK_MONOTONIC_RAW  CLOCK_MONOTONIC
 #endif
 
-
 #ifdef __x86_64__
 # define RDTSC_MAYBE_SUPPORTED
 #endif
-
 
 #if !defined(USE_RDTSC) && !defined(USE_CLOCK) && !defined(USE_GETTIME)
 # if 1 && defined(RDTSC_MAYBE_SUPPORTED) && defined(__linux__)
@@ -49,17 +48,19 @@
 
 
 
+extern char timebuf[512];
+extern unsigned long long int freq;
+
+#ifndef COMPILING_UTIL_C
+
 static struct timespec dur;
-static char timebuf[512];
 
-
-#if defined(USE_RDTSC) && defined(__x86_64__)
+# if defined(USE_RDTSC) && defined(__x86_64__)
 typedef unsigned long long int rdtsc_t;
 static unsigned int start_high, start_low, end_high, end_low;
-static unsigned long long int freq;
-
-# define TIC  (rdtsc(&start_low, &start_high))
-# define TOC\
+#  define rdtsc_join(low, high)   ((rdtsc_t)(low) | (((rdtsc_t)(high)) << 32))
+#  define TIC  (rdtsc(&start_low, &start_high))
+#  define TOC\
 	do {\
 		rdtsc_t dur_cycles;\
 		double dur_seconds;\
@@ -71,37 +72,26 @@ static unsigned long long int freq;
 		dur_seconds -= (double)(dur.tv_sec = (int)dur_seconds);\
 		dur.tv_nsec = (long int)(dur_seconds * 1000000000L);\
 	} while (0)
-
 static inline void
 rdtsc(unsigned int *low, unsigned int *high)
 {
 	__asm__ __volatile__ ("rdtsc" : "=a"(*low), "=d"(*high));
 }
 
-static inline rdtsc_t
-rdtsc_join(unsigned int low, unsigned int high)
-{
-	return (rdtsc_t)low | (((rdtsc_t)high) << 32);
-}
-
-
-#elif defined(USE_CLOCK)
+# elif defined(USE_CLOCK)
 static clock_t start, end;
-
-# define TIC  (start = clock())
-# define TOC\
+#  define TIC  (start = clock())
+#  define TOC\
 	do {\
 		end = clock();\
 		dur.tv_sec = (end - start) / 1000000ULL;\
 		dur.tv_nsec = ((end - start) % 1000000ULL) * 1000;\
 	} while (0)
 
-
-#elif defined(USE_GETTIME)
+# elif defined(USE_GETTIME)
 static struct timespec start;
-
-# define TIC  clock_gettime(CLOCK_MONOTONIC_RAW, &start)
-# define TOC\
+#  define TIC  clock_gettime(CLOCK_MONOTONIC_RAW, &start)
+#  define TOC\
 	do {\
 		clock_gettime(CLOCK_MONOTONIC_RAW, &dur);\
 		dur.tv_sec -= start.tv_sec;\
@@ -111,36 +101,14 @@ static struct timespec start;
 			dur.tv_sec -= 1;\
 		}\
 	} while (0)
+
+# endif
+
+
+# define TICKS  ((unsigned long long int)(dur.tv_sec) * 1000000000ULL + (unsigned long long int)(dur.tv_nsec))
+# define STIME  (sprintf(timebuf, "%lli.%09li", (long long)(dur.tv_sec), dur.tv_nsec), timebuf)
+
 #endif
 
 
-#define TICKS  ((unsigned long long int)(dur.tv_sec) * 1000000000ULL + (unsigned long long int)(dur.tv_nsec))
-#define STIME  (sprintf(timebuf, "%lli.%09li", (long long)(dur.tv_sec), dur.tv_nsec), timebuf)
-
-
-static void
-benchmark_init(void)
-{
-#if defined(__linux__)
-	cpu_set_t cpuset;
-# if defined(USE_RDTSC)
-	FILE *f;
-	char *line = 0;
-	size_t size = 0;
-	char path[PATH_MAX];
-# endif
-	CPU_ZERO(&cpuset);
-	CPU_SET(USE_CPU, &cpuset);
-	sched_setaffinity(getpid(), sizeof(cpuset), &cpuset);
-# if defined(USE_RDTSC)
-	sprintf(path, "/sys/devices/system/cpu/cpu%i/cpufreq/cpuinfo_max_freq", USE_CPU);
-	f = fopen(path, "r");
-	if (getline(&line, &size, f) < 0)
-		abort();
-	fclose(f);
-	freq = strtoull(line, 0, 10);
-	free(line);
-# endif
-#endif
-	(void) timebuf;
-}
+void benchmark_init(void);
