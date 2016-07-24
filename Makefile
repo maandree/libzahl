@@ -149,15 +149,15 @@ test-random.c: test-generate.py
 test: test.c libzahl.a test-random.c
 	$(CC) $(LDFLAGS) $(CFLAGS_WITHOUT_O) -O0 $(CPPFLAGS) -o $@ test.c libzahl.a
 
-benchmark: bench/benchmark.c bench/benchmark.h $(BENCHMARK_DEP_$(BENCHMARK_LIB))
+benchmark: bench/benchmark.c bench/util.h $(BENCHMARK_DEP_$(BENCHMARK_LIB))
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark.c \
 		$(BENCHMARK_LIB_$(BENCHMARK_LIB)) $(BENCHMARK_C_$(BENCHMARK_LIB))
 
-benchmark-func: bench/benchmark-func.c bench/benchmark.h $(BENCHMARK_DEP_$(BENCHMARK_LIB))
+benchmark-func: bench/benchmark-func.c bench/util.h $(BENCHMARK_DEP_$(BENCHMARK_LIB))
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark-func.c \
 		$(BENCHMARK_LIB_$(BENCHMARK_LIB)) $(BENCHMARK_C_$(BENCHMARK_LIB))
 
-benchmark-zrand: bench/benchmark-zrand.c bench/benchmark.h libzahl.a
+benchmark-zrand: bench/benchmark-zrand.c bench/util.h libzahl.a
 	$(CC) $(LDFLAGS) $(CFLAGS) $(CPPFLAGS) -o $@ bench/benchmark-zrand.c libzahl.a
 
 refsheet.pdf: doc/refsheet.tex

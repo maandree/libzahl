@@ -1,4 +1,4 @@
-#include "benchmark.h"
+#include "util.h"
 
 
 #define BENCHMARK(INSTRUCTION, FAST)\

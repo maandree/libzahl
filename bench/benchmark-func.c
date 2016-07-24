@@ -1,4 +1,4 @@
-#include "benchmark.h"
+#include "util.h"
 
 #include <limits.h>
 
