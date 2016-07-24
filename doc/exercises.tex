@@ -36,6 +36,7 @@ where $L_n$ is the $n^{\text{th}}$ Lucas Number \psecref{sec:Lucas numbers}.
 }\)
 
 
+
 \item {[\textit{M12${}^+$}]} \textbf{Factorisation of factorials}
 
 Implement the function
@@ -50,6 +51,7 @@ Implement the function
 which prints the prime factorisation of $n!$ (the $n^{\text{th}}$ factorial).
 The function shall be efficient for all $n$ where all primes $p \le n$ can
 be found efficiently. You can assume that $n \ge 2$. You should not evaluate $n!$.
+
 
 
 \item {[\textit{M20}]} \textbf{Reverse factorisation of factorials}
@@ -71,6 +73,15 @@ which given the factorsation of $x!$ determines $x$.
 The factorisation of $x!$ is
 $\displaystyle{\prod_{i = 1}^{n} P_i^{K_i}}$, where
 $P_i$ is \texttt{P[i - 1]} and $K_i$ is \texttt{K[i - 1]}.
+
+
+
+\item {[\textit{05}]} \textbf{Fast primality test}
+
+$(x + y)^p \equiv x^p + y^p ~(\text{Mod}~p)$
+for all primes $p$ and for a few composites $p$.
+Use this to implement a fast primality tester.
+
 
 
 \end{enumerate}
@@ -101,6 +112,7 @@ $$ 1 + \varphi = \frac{1}{\varphi} $$
 So the ratio tends toward the golden ratio.
 
 
+
 \item \textbf{Factorisation of factorials}
 
 Base your implementation on
@@ -112,6 +124,7 @@ Base your implementation on
 
 There is no need to calculate $\lfloor \log_p n \rfloor$,
 you will see when $p^a > n$.
+
 
 
 \item \textbf{Reverse factorisation of factorials}
@@ -137,6 +150,30 @@ of $x!$. $f(p, k)$ is defined as:
 \end{algorithmic}
 \end{minipage}
 \vspace{1em}
+
+
+
+\item \textbf{Fast primality test}
+
+If we select $x = y = 1$ we get $2^p \equiv 2 ~(\text{Mod}~p)$. This gives us
+
+\vspace{-1em}
+\begin{alltt}
+enum zprimality ptest_fast(z_t p)
+\{
+    z_t a;
+    int c = zcmpu(p, 2);
+    if (c <= 0)
+      return c ? NONPRIME : PRIME;
+    zinit(a);
+    zsetu(a, 1);
+    zlsh(a, a, p);
+    zmod(a, a, p);
+    c = zcmpu(a, 2);
+    zfree(a);
+    return c ? NONPRIME : PROBABLY_PRIME;
+\}
+\end{alltt}
 
 
 
