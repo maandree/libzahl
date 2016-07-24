@@ -180,6 +180,14 @@ is not part of the difficulty rating of this problem.)
 
 
 
+\item {[\textit{20}]} \textbf{Fast primality test with bounded perfection}
+
+Implement a primality test that is both very fast and
+never returns \texttt{PROBABLY\_PRIME} for input less
+than or equal to a preselected number.
+
+
+
 \end{enumerate}
 
 
@@ -430,6 +438,34 @@ if you do not expect prime-only values on $n$, the
 performance can be improve by using some other
 primality test (or this same test if $n$ is a
 Mersenne number) to first check that $n$ is prime.
+
+
+
+\item \textbf{Fast primality test with bounded perfection}
+
+First we select a fast primality test. We can use
+$2^p \equiv 2 ~(\texttt{Mod}~ p) ~\forall~ p \in \textbf{P}$,
+as describe in the solution for the problem
+\textit{Fast primality test}.
+
+Next, we use this to generate a large list of primes and
+pseudoprimes. Use a perfect primality test, such as a
+naïve test or the AKS primality test, to filter out all
+primes and retain only the pseudoprimes. This is not in
+runtime so it does not matter that this is slow, but to
+speed it up, we can use a probabilistic test such the
+Miller–Rabin primality test (\texttt{zptest}) before we
+use the perfect test.
+
+Now that we have a quite large — but not humongous — list
+of pseudoprimes, we can incorporate it into our fast
+primality test. For any input that passes the test, and
+is less or equal to the largest pseudoprime we found,
+binary search our list of pseudoprime for the input.
+
+For input, larger than our limit, that passes the test,
+we can run it through \texttt{zptest} to reduce the
+number of false positives.
 
 
 
