@@ -168,13 +168,13 @@ For improved performance, instead of using \texttt{zmod},
 you can use the recursive function
 %
 \( \displaystyle{
-    k ~\mbox{Mod}~ 2^n - 1 =
+    k \mod (2^n - 1) =
     \left (
-      (k ~\mbox{Mod}~ 2^n) + \lfloor k \div 2^n \rfloor
-    \right ) ~\mbox{Mod}~ 2^n - 1,
+      (k \mod 2^n) + \lfloor k \div 2^n \rfloor
+    \right ) \mod (2^n - 1),
 }\)
 %
-where $k ~\mbox{Mod}~ 2^n$ is efficiently calculated
+where $k \mod 2^n$ is efficiently calculated
 using \texttt{zand($k$, $2^n - 1$)}. (This optimisation
 is not part of the difficulty rating of this problem.)
 
