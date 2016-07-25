@@ -336,7 +336,8 @@ $2^p \equiv 2 ~(\text{Mod}~p)$. This gives us
 
 \vspace{-1em}
 \begin{alltt}
-enum zprimality ptest_fast(z_t p)
+enum zprimality
+ptest_fast(z_t p)
 \{
     z_t a;
     int c = zcmpu(p, 2);
@@ -363,7 +364,8 @@ such that $1 < a < p$) if $t < 0$.
 
 \vspace{-1em}
 \begin{alltt}
-enum zprimality ptest_fermat(z_t witness, z_t p, int t)
+enum zprimality
+ptest_fermat(z_t witness, z_t p, int t)
 \{
     enum zprimality rc = PROBABLY_PRIME;
     z_t a, p1, p3, temp;
@@ -405,7 +407,8 @@ enum zprimality ptest_fermat(z_t witness, z_t p, int t)
 
 \vspace{-1em}
 \begin{alltt}
-enum zprimality ptest_llt(z_t n)
+enum zprimality
+ptest_llt(z_t n)
 \{
     z_t s, M;
     int c;
@@ -505,7 +508,8 @@ but for efficiency and briefness, we will use
 
 \vspace{-1em}
 \begin{alltt}
-void golden_pow(z_t r, z_t n)
+void
+golden_pow(z_t r, z_t n)
 \{
     if (zsignum(n) <= 0)
         zsetu(r, zcmpi(n, -1) >= 0);
