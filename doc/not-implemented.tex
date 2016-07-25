@@ -163,7 +163,8 @@ so a compressed lookup table can be used for small $p$.
   \left ( \frac{a}{n} \right ) = 
   \prod_k \left ( \frac{a}{p_k} \right )^{n_k},
 }\)
-where $n$ = $\displaystyle{\prod_k p_k^{n_k}}$, and $p_k \in \textbf{P}$.
+where $\displaystyle{n = \prod_k p_k^{n_k} > 0}$,
+and $p_k \in \textbf{P}$.
 \vspace{1em}
 
 Like the Legendre symbol, the Jacobi symbol is $n$-period over $a$.
@@ -197,14 +198,65 @@ Use the following algorithm to calculate the Jacobi symbol:
     \STATE \textbf{start over}
 \end{algorithmic}
 \end{minipage}
-\vspace{1em}
-
 
 
 \subsection{Kronecker symbol}
 \label{sec:Kronecker symbol}
 
-TODO
+The Kronecker symbol
+$\displaystyle{\left ( \frac{a}{n} \right )}$
+is a generalisation of the Jacobi symbol,
+where $n$ can be any integer. For positive
+odd $n$, the Kronecker symbol is equal to
+the Jacobi symbol. For even $n$, the
+Kronecker symbol is $2n$-periodic over $a$,
+the Kronecker symbol is zero for all
+$(a, n)$ with both $a$ and $n$ are even.
+
+\vspace{1em}
+\noindent
+\( \displaystyle{
+    \left ( \frac{a}{2^k \cdot n} \right ) =
+    \left ( \frac{a}{n} \right ) \cdot \left ( \frac{a}{2} \right )^k,
+}\)
+where
+\( \displaystyle{
+    \left ( \frac{a}{2} \right ) =
+    \left \lbrace \begin{array}{rl}
+        1  & \text{if}~ a \equiv 1, 7 ~(\text{Mod}~ 8) \\
+        -1 & \text{if}~ a \equiv 3, 5 ~(\text{Mod}~ 8) \\
+        0  & \text{otherwise}
+    \end{array} \right .
+}\)
+
+\vspace{1em}
+\noindent
+\( \displaystyle{
+    \left ( \frac{-a}{n} \right ) =
+    \left ( \frac{a}{n} \right ) \cdot \left ( \frac{a}{-1} \right ),
+}\)
+where
+\( \displaystyle{
+    \left ( \frac{a}{-1} \right ) =
+    \left \lbrace \begin{array}{rl}
+        1  & \text{if}~ a \ge 0 \\
+        -1 & \text{if}~ a < 0
+    \end{array} \right .
+}\)
+\vspace{1em}
+
+\noindent
+However, for $n = 0$, the symbol is defined as
+
+\vspace{1em}
+\noindent
+\( \displaystyle{
+    \left ( \frac{a}{0} \right ) =
+    \left \lbrace \begin{array}{rl}
+        1 & \text{if}~ a = \pm 1 \\
+        0 & \text{otherwise.}
+    \end{array} \right .
+}\)
 
 
 \subsection{Power residue symbol}
