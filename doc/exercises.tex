@@ -488,7 +488,7 @@ the set of pseudoprimes.
 \item \textbf{Powers of the golden ratio}
 
 This was an information gathering exercise.
-For $n \ge 1$, $L_n = [\varphi^n]$, where
+For $n \ge 2$, $L_n = [\varphi^n]$, where
 $L_n$ is the $n^\text{th}$ Lucas number.
 
 \( \displaystyle{
@@ -505,12 +505,14 @@ but for efficiency and briefness, we will use
 
 \vspace{-1em}
 \begin{alltt}
-void golden_pow(z_t r, z_t p)
+void golden_pow(z_t r, z_t n)
 \{
-    if (zsignum(p) <= 0)
-        zsetu(r, zcmpi(p, -1) >= 0);
+    if (zsignum(n) <= 0)
+        zsetu(r, zcmpi(n, -1) >= 0);
+    else if (!zcmpu(n, 1))
+        zsetu(r, 2);
     else
-        lucas(r, p);
+        lucas(r, n);
 \}
 \end{alltt}
 
