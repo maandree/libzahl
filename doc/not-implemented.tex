@@ -136,7 +136,23 @@ TODO
 \subsection{Legendre symbol}
 \label{sec:Legendre symbol}
 
-TODO
+\( \displaystyle{
+  \left ( \frac{a}{p} \right ) \equiv a^{\frac{p - 1}{2}} ~(\text{Mod}~p),~
+  \left ( \frac{a}{p} \right ) \in \{-1,~0,~1\},~
+  p \in \textbf{P},~ p > 2
+}\)
+
+\noindent
+That is, unless $\displaystyle{a^{\frac{p - 1}{2}} ~\text{Mod}~ p \le 1}$,
+$\displaystyle{a^{\frac{p - 1}{2}} ~\text{Mod}~ p = p - 1}$, so
+$\displaystyle{\left ( \frac{a}{p} \right ) = -1}$.
+
+It should be noted that
+\( \displaystyle{
+  \left ( \frac{a}{p} \right ) = 
+  \left ( \frac{a ~\text{Mod}~ p}{p} \right ),
+}\)
+so a compressed lookup table can be used for small $p$.
 
 
 \subsection{Jacobi symbol}
