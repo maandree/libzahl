@@ -141,10 +141,11 @@ TODO
   \left ( \frac{a}{p} \right ) \in \{-1,~0,~1\},~
   p \in \textbf{P},~ p > 2
 }\)
+\vspace{1em}
 
 \noindent
-That is, unless $\displaystyle{a^{\frac{p - 1}{2}} ~\text{Mod}~ p \le 1}$,
-$\displaystyle{a^{\frac{p - 1}{2}} ~\text{Mod}~ p = p - 1}$, so
+That is, unless $\displaystyle{a^{\frac{p - 1}{2}} \mod p \le 1}$,
+$\displaystyle{a^{\frac{p - 1}{2}} \mod p = p - 1}$, so
 $\displaystyle{\left ( \frac{a}{p} \right ) = -1}$.
 
 It should be noted that
@@ -158,7 +159,46 @@ so a compressed lookup table can be used for small $p$.
 \subsection{Jacobi symbol}
 \label{sec:Jacobi symbol}
 
-TODO
+\( \displaystyle{
+  \left ( \frac{a}{n} \right ) = 
+  \prod_k \left ( \frac{a}{p_k} \right )^{n_k},
+}\)
+where $n$ = $\displaystyle{\prod_k p_k^{n_k}}$, and $p_k \in \textbf{P}$.
+\vspace{1em}
+
+Like the Legendre symbol, the Jacobi symbol is $n$-period over $a$.
+If $n$, is prime, the Jacobi symbol is the Legendre symbol, but
+the Jacobi symbol is defined for all odd numbers $n$, where the
+Legendre symbol is defined only for odd primes $n$.
+
+Use the following algorithm to calculate the Jacobi symbol:
+
+\vspace{1em}
+\hspace{-2.8ex}
+\begin{minipage}{\linewidth}
+\begin{algorithmic}
+    \STATE $a \gets a \mod n$
+    \STATE $r \gets \mbox{lsb}~ a$
+    \STATE $a \gets a \cdot 2^{-r}$
+    \STATE \(\displaystyle{
+      r \gets \left \lbrace \begin{array}{rl}
+        1 &
+          \text{if}~ n \equiv 1, 7 ~(\text{Mod}~ 8)
+          ~\text{or}~ r \equiv 0 ~(\text{Mod}~ 2) \\
+        -1 & \text{otherwise} \\
+      \end{array} \right .
+    }\)
+    \IF{$a = 1$}
+        \RETURN $r$
+    \ELSIF{$\gcd(a, n) \neq 1$}
+        \RETURN $0$
+    \ENDIF
+    \STATE $(a, n) = (n, a)$
+    \STATE \textbf{start over}
+\end{algorithmic}
+\end{minipage}
+\vspace{1em}
+
 
 
 \subsection{Kronecker symbol}
