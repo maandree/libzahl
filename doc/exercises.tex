@@ -188,6 +188,14 @@ than or equal to a preselected number.
 
 
 
+\item {[\textit{30}]} \textbf{Powers of the golden ratio}
+
+Implement function that returns $\varphi^n$ rounded
+to the nearest integer, where $n$ is the input and
+$\varphi$ is the golden ratio.
+
+
+
 \end{enumerate}
 
 
@@ -475,6 +483,36 @@ the test. No pseudoprime need to have more than one divisor
 included in the set, so this set cannot be larger than
 the set of pseudoprimes.
 
+
+
+\item \textbf{Powers of the golden ratio}
+
+This was an information gathering exercise.
+For $n \ge 1$, $L_n = [\varphi^n]$, where
+$L_n$ is the $n^\text{th}$ Lucas number.
+
+\( \displaystyle{
+    L_n \stackrel{\text{\tiny{def}}}{\text{=}} \left \{ \begin{array}{ll}
+      2 & \text{if} ~ n = 0 \\
+      1 & \text{if} ~ n = 1 \\
+      L_{n - 1} + L_{n + 1} & \text{otherwise}
+    \end{array} \right .
+}\)
+
+\noindent
+but for efficiency and briefness, we will use
+\texttt{lucas} from \secref{sec:Lucas numbers}.
+
+\vspace{-1em}
+\begin{alltt}
+void golden_pow(z_t r, z_t p)
+\{
+    if (zsignum(p) <= 0)
+        zsetu(r, zzero(p));
+    else
+        lucas(r, p);
+\}
+\end{alltt}
 
 
 
