@@ -508,7 +508,7 @@ but for efficiency and briefness, we will use
 void golden_pow(z_t r, z_t p)
 \{
     if (zsignum(p) <= 0)
-        zsetu(r, zzero(p));
+        zsetu(r, zcmpi(p, -1) >= 0);
     else
         lucas(r, p);
 \}
