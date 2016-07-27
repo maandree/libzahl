@@ -38,6 +38,14 @@ which calculates $r = a \dotminus b = \max \{ 0,~ a - b \}$.
 
 
 
+\item {[$\RHD$\textit{10}]} \textbf{Modular powers of 2}
+
+What is the advantage of using \texttt{zmodpow}
+over \texttt{zbset} or \texttt{zlsh} in combination
+with \texttt{zmod}?
+
+
+
 \item {[\textit{M10}]} \textbf{Convergence of the Lucas Number ratios}
 
 Find an approximation for
@@ -218,6 +226,15 @@ void monus(z_t r, z_t a, z_t b)
 \}
 \end{alltt}
 
+
+\item \textbf{Modular powers of 2}
+
+\texttt{zbset} and \texttt{zbit} requires $\Theta(n)$
+memory to calculate $2^n$. \texttt{zmodpow} only
+requires $\mathcal{O}(\min \{n, \log m\})$ memory
+to calculate $2^n \text{ mod } m$. $\Theta(n)$
+memory complexity becomes problematic for very
+large $n$.
 
 
 \item \textbf{Convergence of the Lucas Number ratios}
