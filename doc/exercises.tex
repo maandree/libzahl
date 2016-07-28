@@ -262,9 +262,12 @@ which calculates the totient of $n$. Its
 formula is
 
 \( \displaystyle{
-    \varphi(n) = n \prod_{p \in \textbf{P} : p | n}
+    \varphi(n) = |n| \prod_{p \in \textbf{P} : p | n}
     \left ( 1 - \frac{1}{p} \right ).
 }\)
+
+Note that, $\varphi(-n) = \varphi(n)$, $\varphi(0) = 0$,
+and $\varphi(1) = 1$.
 
 
 
@@ -671,7 +674,8 @@ So, if we set $a = n$ and $b = 1$, then we iterate
 of all integers $p$, $2 \le p \le n$. For which $p$
 that is prime, we set $a \gets a \cdot (p - 1)$ and
 $b \gets b \cdot p$. After the iteration, $b | a$,
-and $\varphi(n) = \frac{a}{b}$.
+and $\varphi(n) = \frac{a}{b}$. However, if $n < 0$,
+then, $\varphi(n) = \varphi|n|$.
 
 
 
