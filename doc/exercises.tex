@@ -179,10 +179,10 @@ For improved performance, instead of using \texttt{zmod},
 you can use the recursive function
 %
 \( \displaystyle{
-    k \mod (2^n - 1) =
+    k \text{ mod } (2^n - 1) =
     \left (
-      (k \mod 2^n) + \lfloor k \div 2^n \rfloor
-    \right ) \mod (2^n - 1),
+      (k \text{ mod } 2^n) + \lfloor k \div 2^n \rfloor
+    \right ) \text{ mod } (2^n - 1),
 }\)
 %
 where $k \mod 2^n$ is efficiently calculated
