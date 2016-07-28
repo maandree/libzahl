@@ -207,6 +207,67 @@ $\varphi$ is the golden ratio.
 
 
 
+\item {[\textit{$\RHD$05}]} \textbf{zlshu and zrshu}
+
+Why does libzahl have
+
+\vspace{-1em}
+\begin{alltt}
+   void zlsh(z_t, z_t, size_t);
+   void zrsh(z_t, z_t, size_t);
+\end{alltt}
+\vspace{-1em}
+
+\noindent
+rather than
+
+\vspace{-1em}
+\begin{alltt}
+   void zlsh(z_t, z_t, z_t);
+   void zrsh(z_t, z_t, z_t);
+   void zlshu(z_t, z_t, size_t);
+   void zrshu(z_t, z_t, size_t);
+\end{alltt}
+\vspace{-1em}
+
+
+
+\item {[$\RHD$M15]} \textbf{Modular left-shift}
+
+Implement a function that calculates
+$2^a \text{ mod } b$, using \texttt{zmod} and
+only cheap functions. You can assume $a \ge 0$,
+ $b \ge 1$. You can also assume that all
+parameters are unique pointers.
+
+
+
+\item {[$\RHD$08]} \textbf{Modular left-shift, extended}
+
+{\small\textit{You should already have solved
+``Modular left-shift'' before you solve this
+problem.}}
+
+Extend the function you wrote in ``Modular left-shift''
+to accept negative $b$ and non-unique pointers.
+
+
+
+\item {[13]} \textbf{The totient}
+
+The totient of $n$ is the number of integer $a$,
+$0 < a < n$ that are relatively prime to $n$.
+Implement Euler's totient function $\varphi(n)$
+which calculates the totient of $n$. Its
+formula is
+
+\( \displaystyle{
+    \varphi(n) = n \prod_{p \in \textbf{P} : p | n}
+    \left ( 1 - \frac{1}{p} \right ).
+}\)
+
+
+
 \end{enumerate}
 
 
@@ -228,6 +289,7 @@ void monus(z_t r, z_t a, z_t b)
         zsetu(r, 0);
 \}
 \end{alltt}
+\vspace{-1em}
 
 
 \item \textbf{Modular powers of 2}
@@ -372,6 +434,7 @@ ptest_fast(z_t p)
     return c ? NONPRIME : PROBABLY_PRIME;
 \}
 \end{alltt}
+\vspace{-1em}
 
 
 
@@ -420,6 +483,7 @@ ptest_fermat(z_t witness, z_t p, int t)
     return rc;
 \}
 \end{alltt}
+\vspace{-1em}
 
 
 
@@ -539,6 +603,76 @@ golden_pow(z_t r, z_t n)
         lucas(r, n);
 \}
 \end{alltt}
+\vspace{-1em}
+
+
+
+\item \textbf{zlshu and zrshu}
+
+You are in big trouble, memorywise, of you
+need to evaluate $2^{2^{64}}$.
+
+
+
+\item \textbf{Modular left-shift}
+
+\vspace{-1em}
+\begin{alltt}
+void modlsh(z_t r, z_t a, z_t b)
+\{
+    z_t t, at;
+    size_t s = zbits(b);
+
+    zinit(t), zinit(at);
+    zset(at, a);
+    zsetu(r, 1);
+    zsetu(t, s);
+
+    while (zcmp(at, t) > 0) \{
+        zsub(at, at, t);
+        zlsh(r, r, t);
+        zmod(r, r, b);
+        if (zzero(r))
+            break;
+    \}
+    if (!zzero(a) && !zzero(b)) \{
+        zlsh(r, r, a);
+        zmod(r, r, b);
+    \}
+
+    zfree(at), zfree(t);
+\}
+\end{alltt}
+\vspace{-1em}
+
+It is worth noting that this function is
+not necessarily faster than \texttt{zmodpow}.
+
+
+
+\item \textbf{Modular left-shift, extended}
+
+The sign of \texttt{b} shall not effect the
+result. Use \texttt{zabs} to create a copy
+of \texttt{b} with its absolute value.
+
+
+
+\item \textbf{The totient}
+
+\( \displaystyle{
+    \varphi(n)
+    = n \prod_{p \in \textbf{P} : p | n} \left ( 1 - \frac{1}{p} \right )
+    = n \prod_{p \in \textbf{P} : p | n} \left ( \frac{p - 1}{p} \right )
+}\)
+
+\noindent
+So, if we set $a = n$ and $b = 1$, then we iterate
+of all integers $p$, $2 \le p < n$. For which $p$
+that is prime, we set $a \gets a \cdot (p - 1)$ and
+$b \gets b \cdot p$. After the iteration, $b | a$,
+and $\varphi(n) = \frac{a}{b}$.
+
 
 
 
