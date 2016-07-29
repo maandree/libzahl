@@ -764,7 +764,7 @@ modtetra(z_t r, z_t b, unsigned long n, z_t m)
     z_t t, temp;
 
     if (n <= 1) \{
-        if (n)
+        if (!n)
             zsetu(r, zcmpu(m, 1));
         else
             zmod(r, b, m);
