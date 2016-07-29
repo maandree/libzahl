@@ -290,6 +290,18 @@ You can assume $b > 0$ and $m > 0$. You can also assume
 unique pointers.
 
 
+
+\item {[\textit{13}]} \textbf{Modular generalised power towers}
+
+{\small\textit{This problem requires a working
+solution for ``Modular tetration''.}}
+
+Modify your solution for ``Modular tetration'' to
+evaluate any expression on the forms
+$a^b,~a^{b^c},~a^{b^{c^d}},~\ldots \text{ mod } m$.
+
+
+
 \end{enumerate}
 
 
@@ -715,7 +727,7 @@ tetra(z_t r, z_t b, unsigned long n)
 \{
     zsetu(r, 1);
     while (n--)
-        pow(r, b, r);
+        zpow(r, b, r);
 \}
 \end{alltt}
 \vspace{-1em}
@@ -799,6 +811,63 @@ modtetra(z_t r, z_t b, unsigned long n, z_t m)
 \}
 \end{alltt}
 \vspace{-1em}
+
+
+
+\item \textbf{Modular generalised power towers}
+
+Instead of the signature
+
+\vspace{-1em}
+\begin{alltt}
+   void modtetra(z_t r, z_t b, unsigned long n, z_t m);
+\end{alltt}
+\vspace{-1em}
+
+\noindent
+you want to use the signature
+
+\vspace{-1em}
+\begin{alltt}
+   void modtower_(z_t r, z_t *a, size_t n, z_t m);
+\end{alltt}
+\vspace{-1em}
+
+Instead of using, \texttt{b} (in \texttt{modtetra}),
+use \texttt{*a}. At every recursion, instead of
+passing on \texttt{a}, pass on \texttt{a + 1}.
+
+The function \texttt{tetra} is modified into
+
+\vspace{-1em}
+\begin{alltt}
+   void tower(z_t r, z_t *a, size_t n)
+   \{
+       zsetu(r, 1);
+       while (n--);
+           zpow(r, a[n], r);
+   \}
+\end{alltt}
+\vspace{-1em}
+
+\noindent
+\texttt{cmp\_tetra} is changed analogously.
+
+To avoid problems in the evaluation, define
+
+\vspace{-1em}
+\begin{alltt}
+   void modtower(z_t r, z_t *a, size_t n, z_t m);
+\end{alltt}
+\vspace{-1em}
+
+\noindent
+which cuts the power short at the first element
+of of \texttt{a} that equals 1. For example, if
+$a = \{2, 3, 4, 5, 1, 2, 3\}$, and $n = 7$
+($n = |a|$), then \texttt{modtower}, sets $n = 4$,
+and effectively $a = \{2, 3, 4, 5\}$. After this
+\texttt{modtower} calls \texttt{modtower\_}.
 
 
 
