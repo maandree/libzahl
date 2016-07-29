@@ -232,7 +232,7 @@ rather than
 
 
 
-\item {[$\RHD$M15]} \textbf{Modular left-shift}
+\item {[\textit{$\RHD$M15}]} \textbf{Modular left-shift}
 
 Implement a function that calculates
 $2^a \text{ mod } b$, using \texttt{zmod} and
@@ -242,7 +242,7 @@ parameters are unique pointers.
 
 
 
-\item {[$\RHD$08]} \textbf{Modular left-shift, extended}
+\item {[\textit{$\RHD$08}]} \textbf{Modular left-shift, extended}
 
 {\small\textit{You should already have solved
 ``Modular left-shift'' before you solve this
@@ -253,7 +253,7 @@ to accept negative $b$ and non-unique pointers.
 
 
 
-\item {[13]} \textbf{The totient}
+\item {[\textit{13}]} \textbf{The totient}
 
 The totient of $n$ is the number of integer $a$,
 $0 < a < n$ that are relatively prime to $n$.
@@ -269,6 +269,25 @@ formula is
 Note that $\varphi(-n) = \varphi(n)$, $\varphi(0) = 0$,
 and $\varphi(1) = 1$.
 
+
+
+\item {[\textit{HMP32}]} \textbf{Modular tetration}
+
+Implement the function
+
+\vspace{-1em}
+\begin{alltt}
+   void modtetra(z_t r, z_t b, unsigned long n, z_t m);
+\end{alltt}
+\vspace{-1em}
+
+\noindent
+which calculates $r = {}^n{}b \text{ mod } m$, where
+${}^0{}b = 1$, ${}^1{}b = b$, ${}^2{}b = b^b$,
+${}^3{}b = b^{b^b}$, ${}^b{}b = b^{b^{b^b}}$, and so on.
+You can assume $b > 0$ and $m > 0$. You can also assume
+\texttt{r}, \texttt{b}, and \texttt{m} are mutually
+unique pointers.
 
 
 \end{enumerate}
@@ -621,7 +640,8 @@ need to evaluate $2^{2^{64}}$.
 
 \vspace{-1em}
 \begin{alltt}
-void modlsh(z_t r, z_t a, z_t b)
+void
+modlsh(z_t r, z_t a, z_t b)
 \{
     z_t t, at;
     size_t s = zbits(b);
@@ -677,6 +697,108 @@ $b \gets b \cdot p$. After the iteration, $b | a$,
 and $\varphi(n) = \frac{a}{b}$. However, if $n < 0$,
 then, $\varphi(n) = \varphi|n|$.
 
+
+
+\item \textbf{Modular tetration}
+
+Let \texttt{totient} be Euler's totient function.
+It is described in the problem ``The totient''.
+
+We need two help function: \texttt{tetra(r, b, n)}
+which calculated $r = {}^n{}b$, and \texttt{cmp\_tetra(a, b, n)}
+which is compares $a$ to ${}^n{}b$.
+
+\vspace{-1em}
+\begin{alltt}
+void
+tetra(z_t r, z_t b, unsigned long n)
+\{
+    zsetu(r, 1);
+    while (n--)
+        pow(r, b, r);
+\}
+\end{alltt}
+\vspace{-1em}
+
+\vspace{-1em}
+\begin{alltt}
+int
+cmp_tetra(z_t a, z_t b, unsigned long n)
+\{
+    z_t B;
+    int cmp;
+
+    if (!n || !zcmpu(b, 1))
+        return zcmpu(a, 1);
+    if (n == 1)
+        return zcmp(a, b);
+    if (zcmp(a, b) >= 0)
+        return +1;
+
+    zinit(B);
+    zsetu(B, 1);
+    while (n) \{
+        zpow(B, b, B);
+        if (zcmp(a, B) < 0) \{
+            zfree(B);
+            return -1;
+        \}
+    \}
+    cmp = zcmp(a, B);
+    zfree(B);
+    return cmp;
+
+\}
+\end{alltt}
+\vspace{-1em}
+
+\texttt{tetra} can generate unmaintainably huge
+numbers. Will however only call \texttt{tetra}
+when this is not the case.
+
+\vspace{-1em}
+\begin{alltt}
+void
+modtetra(z_t r, z_t b, unsigned long n, z_t m)
+\{
+    z_t t, temp;
+
+    if (n <= 1) \{
+        if (n)
+            zsetu(r, zcmpu(m, 1));
+        else
+            zmod(r, b, m);
+        return;
+    \}
+
+    zmod(r, b, m);
+    if (zcmpu(r, 1) <= 0)
+        return;
+
+    zinit(t);
+    zinit(temp);
+
+    t = totient(m);
+    zgcd(temp, b, m);
+
+    if (!zcmpu(temp, 1)) \{
+        modtetra(temp, b, n - 1, t);
+        zmodpow(r, r, temp, m);
+    \} else if (cmp_tetra(t, b, n - 1) > 0) \{
+        temp = tetra(b, n - 1);
+        zpowmod(r, r, temp, m);
+    \} else \{
+        modtetra(temp, b, n - 1, t);
+        zmodpow(temp, r, temp, m);
+        zmodpow(r, r, t, m);
+        zmodmul(r, r, temp, m);
+    \}
+
+    zfree(temp);
+    zfree(t);
+\}
+\end{alltt}
+\vspace{-1em}
 
 
 
