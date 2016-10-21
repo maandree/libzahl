@@ -271,6 +271,38 @@ and $\varphi(1) = 1$.
 
 
 
+\item {[\textit{M13}]} \textbf{The totient from factorisation}
+
+Implement the function
+
+\vspace{-1em}
+\begin{alltt}
+   void totient_fact(z_t t, z_t *P,
+                     unsigned long long int *K, size_t n);
+\end{alltt}
+\vspace{-1em}
+
+\noindent
+which calculates the totient $t = \varphi(n)$, where
+$n = \displaystyle{\prod_{i = 1}^n P_i^{K_i}} > 0$,
+and $P_i = \texttt{P[i - 1]} \in \textbf{P}$,
+$K_i = \texttt{K[i - 1]} \ge 1$. All values \texttt{P}.
+\texttt{P} and \texttt{K} make up the prime factorisation
+of $n$.
+
+You can use the following rules:
+
+\( \displaystyle{
+  \begin{array}{ll}
+      \varphi(1) = 1                      & \\
+      \varphi(p) = p - 1                  & \text{if } p \in \textbf{P} \\
+      \varphi(nm) = \varphi(n)\varphi(m)  & \text{if } \gcd(n, m) = 1   \\
+      n^a\varphi(n) = \varphi(n^{a + 1})  &
+  \end{array}
+}\)
+
+
+
 \item {[\textit{HMP32}]} \textbf{Modular tetration}
 
 Implement the function
@@ -708,6 +740,31 @@ that is prime, we set $a \gets a \cdot (p - 1)$ and
 $b \gets b \cdot p$. After the iteration, $b | a$,
 and $\varphi(n) = \frac{a}{b}$. However, if $n < 0$,
 then, $\varphi(n) = \varphi|n|$.
+
+
+
+\item \textbf{The totient from factorisation}
+
+\vspace{-1em}
+\begin{alltt}
+void
+totient_fact(z_t t, z_t *P,
+             unsigned long long *K, size_t n)
+\{
+    z_t a, one;
+    zinit(a), zinit(one);
+    zseti(t, 1);
+    zseti(one, 1);
+    while (n--) \{
+        zpowu(a, P[n], K[n] - 1);
+        zmul(t, t, a);
+        zsub(a, P[n], one);
+        zmul(t, t, a);
+    \}
+    zfree(a), zfree(one);
+\}
+\end{alltt}
+\vspace{-1em}
 
 
 
