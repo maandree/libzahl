@@ -57,8 +57,8 @@ it can still be improved. Furthermore, GNU MP cannot be
 used for robust applications.
 
 \item
-LibTomMath is very slow, infact performance is not its
-priority, rather its simplicit is the priority. Despite
+LibTomMath is very slow, in fact performance is not its
+priority, rather its simplicity is the priority. Despite
 this, it is not really that simple.
 
 \item
@@ -73,8 +73,8 @@ philosophy.\footnote{\href{http://suckless.org/philosophy}
 {http://suckless.org/philosophy}} libzahl is simple,
 very fast, simple to use, and can be used in robust
 applications. Currently however, it does not support
-multithreading, but it has better support multiprocessing
-and distributed computing than its competitor.
+multithreading, but it has better support for multiprocessing
+and distributed computing than its competitors.
 
 Lesser ``competitors'' (less known) to libzahl include
 Hebimath and bsdnt.
@@ -142,10 +142,10 @@ caught using {\tt setjmp}. This ensure that it can be
 used in robust applications, catching errors does not
 become a mess, and it minimises the overhead of
 catching errors. Errors are only checked when they can
-occur, not also after each function-return.
+occur, not also after each function return.
 
 Additionally, libzahl tries to keep the functions'
-names simple and natural rather than techniqual or
+names simple and natural rather than technical or
 mathematical. The names resemble those of the standard
 integer operators. For example, the left-shift, right-shift
 and truncation bit-operations in libzahl are called
@@ -213,6 +213,19 @@ Two's complement is used.
 strictly necessary for it to be an CPU-intrinsic,
 but that would be favourable for performance.)
 \end{itemize}
+
+Because of the prevalence of theses properties
+in contemporary machines, and the utilisation of
+these properties in software, especially software
+for POSIX and popular platforms with similar
+properties, any new general-purpose machine most
+have these properties lest, it but useless with
+today's software. Therefore, libzahl can make
+the assumption that the machine has these
+properties. If the machine does not have these
+properties, the compiler must compensate for
+these machines deficiencies, making it generally
+slower.
 
 These limitations may be removed later. And there
 is some code that does not make these assumptions

@@ -155,7 +155,7 @@ allows you do so if you so choose.
 
 The {\tt .sign} member, is either $-1$, 0, or 1,
 when the integer is negative, zero, or positive,
-respectively. Whenever, {\tt .sign} is 0, the value
+respectively. Whenever {\tt .sign} is 0, the value
 of {\tt .used} and {\tt .chars} are undefined.
 
 {\tt .used} holds to the number of elements used in
@@ -192,7 +192,7 @@ they are not considered input integers. The order
 of the input parameters are that of the order you
 would write them using mathematical notation, this
 also holds true if you include the output parameter
-(as long as there is exactly one output,) for example
+(as long as there is exactly one output), for example
 
 \vspace{1em}
 $a \gets b^c \mod d$
@@ -256,7 +256,7 @@ This assumption is not made for non-commutative
 functions.
 
 When writting your own functions, be aware,
-input-parameters are generally not declared {\tt const}
+input parameters are generally not declared {\tt const}
 in libzahl. Currently, some functions actually make
 modifications (that do not affect the value) to
-input-parameters.
+input parameters.

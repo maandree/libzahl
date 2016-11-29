@@ -84,9 +84,12 @@ more about this, I refer you to Wikipeida.
 \( \displaystyle{
     \mbox{lcm}(a, b) = \frac{\lvert a \cdot b \rvert}{\mbox{gcd}(a, b)}
 }\)
+\vspace{1em}
 
-Be aware, {\tt zgcd} can return zero.
-
+$\mbox{lcm}(a, b)$ is undefined when $a$ or
+$b$ is zero, because division by zero is
+undefined. Note however that $\mbox{gcd}(a, b)$
+is only zero when both $a$ and $b$ is zero.
 
 \newpage
 \section{Modular multiplicative inverse}
@@ -309,7 +312,7 @@ TODO % Square: Cipolla's algorithm, Pocklington's algorithm, Tonelli–Shanks al
 }\)
 \vspace{1em}
 
-This can be implemented much more efficently
+This can be implemented much more efficiently
 than using the naïve method, and is a very
 important function for many combinatorial
 applications, therefore it may be implemented

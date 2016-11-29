@@ -65,7 +65,7 @@ a proper UCS minus sign is not supported.
 Using what we have learned so far, and {\tt zstr}
 which we will learn about in \secref{sec:String output},
 we can construct a simple program that calculates the
-sum of a set of number.
+sum of a set of numbers.
 
 \begin{alltt}
    \textcolor{c}{#include <stdio.h>
@@ -153,10 +153,10 @@ there are cases where it is needed. In some case
 \noindent
 however its implementation is optimised to be
 around three times as fast. It just swaps the members
-of the parameters, and thereby the values, There
+of the parameters, and thereby the values. There
 is no rewriting of {\tt .chars} involved; thus
 it runs in constant time. It also does not
-require that any argument has be initialised.
+require that any argument has been initialised.
 After the call, {\tt a} will be initialised
 if and only if {\tt b} was initialised, and
 vice versa.
@@ -301,11 +301,11 @@ The return for {\tt zcmpmag} value is defined
 \vspace{1em}
 
 \noindent
-It is discouraged, stylistically, to compare
-against, $-1$ and $+1$, rather, you should
-always compare against $0$. Think of it as
-returning $a - b$, or $\lvert a \rvert - \lvert b \rvert$
-in the case of {\tt zcmpmag}.
+It is discouraged, stylistically, to compare against
+$-1$ and $+1$, rather, you should always compare
+against $0$. Think of it as returning $a - b$, or
+$\lvert a \rvert - \lvert b \rvert$ in the case of
+{\tt zcmpmag}.
 
 
 \newpage
@@ -320,7 +320,7 @@ run the same version of libzahl, and run on compatible
 microarchitectures, that is, the processors must have
 endianness, and the intrinsic integer types in C must
 have the same widths on all processors. When this is not
-the case, string conversion (see \secref{sec:Assignment}
+the case, string conversion can be used (see \secref{sec:Assignment}
 and \secref{sec:String output}), but when it is the case
 {\tt zsave} and {\tt zload} can be used. {\tt zsave} and
 {\tt zload} are declared as
@@ -331,11 +331,11 @@ and \secref{sec:String output}), but when it is the case
 \end{alltt}
 
 \noindent
-{\tt zsave} stores a version- and microarchitecture-depend
+{\tt zsave} stores a version- and microarchitecture-dependent
 binary representation of {\tt a} in {\tt buf}, and returns
 the number of bytes written to {\tt buf}. If {\tt buf} is
-{\tt NULL}, the numbers that will be written is returned.
-{\tt zload} unmarshals an integers from {\tt buf}, created
-with {\tt zsave}, into {\tt a}, and returns the number of
-read bytes. {\tt zload} and will return the value returned
-by {\tt zsave}.
+{\tt NULL}, the numbers bytes that would have be written is
+returned. {\tt zload} unmarshals an integers from {\tt buf},
+created with {\tt zsave}, into {\tt a}, and returns the number
+of read bytes. {\tt zload} returns the value returned by
+{\tt zsave}.

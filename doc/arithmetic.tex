@@ -69,7 +69,7 @@ instruction specifically for performing
 addition with ripple-carry over multiple words,
 adds twos numbers plus the carry from the
 last addition. libzahl uses assembly to
-implement this efficiently. If however, an
+implement this efficiently. If, however, an
 assembly implementation is not available for
 the on which machine it is running, libzahl
 implements ripple-carry less efficiently
@@ -80,8 +80,8 @@ the compiler is known to support this
 extension, it is implemented using inefficient
 pure C code. This last resort manually
 predicts whether an addition will overflow;
-this could be made more efficent, but never
-using the highest bit, in each character,
+this could be made more efficient, by never
+using the highest bit in each character,
 except to detect overflow. This optimisation
 is however not implemented because it is
 not deemed important enough and would
@@ -100,9 +100,9 @@ in-place operation:
 \noindent
 Use this whenever possible, it will improve
 your performance, as it will involve less
-CPU instructions for each character-addition
+CPU instructions for each character addition
 and it may be possible to eliminate some
-character-additions.
+character additions.
 
 
 \newpage
@@ -138,7 +138,7 @@ These function \emph{do not} allow {\tt NULL}
 for the output parameters: {\tt quotient} and
 {\tt remainder}. The quotient and remainder are
 calculated simultaneously and indivisibly, hence
-{\tt zdivmod} is provided to calculated both, if
+{\tt zdivmod} is provided to calculated both; if
 you are only interested in the quotient or only
 interested in the remainder, use {\tt zdiv} or
 {\tt zmod}, respectively.
@@ -146,14 +146,14 @@ interested in the remainder, use {\tt zdiv} or
 These functions calculate a truncated quotient.
 That is, the result is rounded towards zero. This
 means for example that if the quotient is in
-$(-1,~1)$, {\tt quotient} gets 0. That that, this
+$(-1,~1)$, {\tt quotient} gets 0. That is, this % TODO try to clarify
 would not be the case for one of the sides of zero.
 For example, if the quotient would have been
 floored, negative quotients would have been rounded
 away from zero. libzahl only provides truncated
-division,
+division.
 
-The remain is defined such that $n = qd + r$ after
+The remainder is defined such that $n = qd + r$ after
 calling {\tt zdivmod(q, r, n, d)}. There is no
 difference in the remainer between {\tt zdivmod}
 and {\tt zmod}. The sign of {\tt d} has no affect
@@ -188,7 +188,7 @@ lend you a hand.
 
 % Floored division
 \begin{alltt}
-   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   void \textcolor{c}{/* \textrm{All arguments must be unique.} */}
    divmod_floor(z_t q, z_t r, z_t n, z_t d)
    \{
        zdivmod(q, r, n, d);
@@ -199,7 +199,7 @@ lend you a hand.
 
 % Ceiled division
 \begin{alltt}
-   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   void \textcolor{c}{/* \textrm{All arguments must be unique.} */}
    divmod_ceiling(z_t q, z_t r, z_t n, z_t d)
    \{
        zdivmod(q, r, n, d);
@@ -214,7 +214,7 @@ lend you a hand.
 %    commercial rounding
 \begin{alltt}
    /* \textrm{This is how we normally round numbers.} */
-   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   void \textcolor{c}{/* \textrm{All arguments must be unique.} */}
    divmod_half_from_zero(z_t q, z_t r, z_t n, z_t d)
    \{
        zdivmod(q, r, n, d);
@@ -237,7 +237,7 @@ not award you a face-slap. % Had positive punishment
 % This rounding method is also called:
 %     round half away from infinity
 \begin{alltt}
-   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   void \textcolor{c}{/* \textrm{All arguments must be unique.} */}
    divmod_half_to_zero(z_t q, z_t r, z_t n, z_t d)
    \{
        zdivmod(q, r, n, d);
@@ -254,7 +254,7 @@ not award you a face-slap. % Had positive punishment
 % This rounding method is also called:
 %     round half towards positive infinity
 \begin{alltt}
-   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   void \textcolor{c}{/* \textrm{All arguments must be unique.} */}
    divmod_half_up(z_t q, z_t r, z_t n, z_t d)
    \{
        int cmp;
@@ -272,7 +272,7 @@ not award you a face-slap. % Had positive punishment
 % This rounding method is also called:
 %     round half towards negative infinity
 \begin{alltt}
-   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   void \textcolor{c}{/* \textrm{All arguments must be unique.} */}
    divmod_half_down(z_t q, z_t r, z_t n, z_t d)
    \{
        int cmp;
@@ -297,7 +297,7 @@ not award you a face-slap. % Had positive punishment
 %     bankers' rounding
 % It is the default rounding method used in IEEE 754.
 \begin{alltt}
-   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   void \textcolor{c}{/* \textrm{All arguments must be unique.} */}
    divmod_half_to_even(z_t q, z_t r, z_t n, z_t d)
    \{
        int cmp;
@@ -316,7 +316,7 @@ not award you a face-slap. % Had positive punishment
 % Division with round half to odd
 \newpage
 \begin{alltt}
-   void \textcolor{c}{/* \textrm{All arguments most be unique.} */}
+   void \textcolor{c}{/* \textrm{All arguments must be unique.} */}
    divmod_half_to_odd(z_t q, z_t r, z_t n, z_t d)
    \{
        int cmp;
@@ -342,7 +342,7 @@ not award you a face-slap. % Had positive punishment
 
 Currently, libzahl uses an almost trivial division
 algorithm. It operates on positive numbers. It begins
-by left-shifting the divisor as must as possible with
+by left-shifting the divisor as much as possible with
 letting it exceed the dividend. Then, it subtracts
 the shifted divisor from the dividend and add 1,
 left-shifted as much as the divisor, to the quotient.
@@ -350,7 +350,7 @@ The quotient begins at 0. It then right-shifts
 the shifted divisor as little as possible until
 it no longer exceeds the diminished dividend and
 marks the shift in the quotient. This process is
-repeated on till the unshifted divisor is greater
+repeated until the unshifted divisor is greater
 than the diminished dividend. The final diminished
 dividend is the remainder.
 
@@ -376,7 +376,7 @@ exponentiation are
 
 \noindent
 They are identical, except {\tt zpowu} expects
-and intrinsic type as the exponent. Both functions
+an intrinsic type as the exponent. Both functions
 calculate
 
 \vspace{1em}
@@ -410,7 +410,7 @@ exponentiation by squaring. {\tt zmodpow} and
 {\tt zmodpowu} are optimised, they modulate
 results for multiplication and squaring at
 every multiplication and squaring, rather than
-modulating every at the end. Exponentiation
+modulating the result at the end. Exponentiation
 by modulation is a very simple algorithm which
 can be expressed as a simple formula
 
