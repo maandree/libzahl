@@ -145,7 +145,7 @@ definion ensures
 \noindent
 and analogously for $\frac{b}{\gcd(a,\,b)}$. Note however,
 the convension $\gcd(0, 0) = 0$ is adhered. Therefore,
-before dividing with $\gcd{a, b}$ you may want to check
+before dividing with $\gcd(a, b)$ you may want to check
 whether $\gcd(a, b) = 0$. $\gcd(a, b)$ is calculated
 with {\tt zgcd(a, b)}.
 
@@ -179,7 +179,7 @@ $\max x : 2^x \vert z$ is returned by {\tt zlsb(z)}
 \section{Primality test}
 \label{sec:Primality test}
 
-A primality of an integer can be test with
+The primality of an integer can be tested with
 
 \begin{alltt}
    enum zprimality zptest(z_t w, z_t a, int t);
@@ -235,7 +235,7 @@ test with witness return.
     
     \hspace{2ex}
     \begin{minipage}{\linewidth}
-        \STATE $k \xleftarrow{\$} \textbf{Z}_{a - 2} \setminus \textbf{Z}_{2}$
+        \STATE $k \xleftarrow{\$} \textbf{Z}_{a - 2} \setminus \textbf{Z}_{2}$ \textcolor{c}{\{Uniformly random assignment.\}}
         \STATE $x \gets k^d \mod a$
         \STATE {\bf continue} {\bf if} $x = 1$ \OR $x = a - 1$
         \STATE {\bf repeat} $r$ {\bf times or until} $x = 1$ \OR $x = a - 1$

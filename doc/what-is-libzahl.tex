@@ -141,8 +141,9 @@ Unlike other bignum libraries, errors in libzahl are
 caught using {\tt setjmp}. This ensure that it can be
 used in robust applications, catching errors does not
 become a mess, and it minimises the overhead of
-catching errors. Errors are only checked when they can
-occur, not also after each function return.
+catching errors. Typically, errors can be checked when
+they can occur and after each function return; however,
+here they can be checked only when they can occur.
 
 Additionally, libzahl tries to keep the functions'
 names simple and natural rather than technical or
@@ -193,8 +194,8 @@ thread-safe.
 libzahl is also only designed for POSIX systems.
 It will probably run just fine on any modern
 system. But it makes some assumption that POSIX
-stipulates or are unpractical not to implement
-for machines that should support POSIX (or even
+stipulates or are unpractical to leave out from
+machines that should support POSIX (or even
 support modern software):
 
 \begin{itemize}
@@ -214,12 +215,12 @@ strictly necessary for it to be an CPU-intrinsic,
 but that would be favourable for performance.)
 \end{itemize}
 
-Because of the prevalence of theses properties
+Because of the prevalence of these properties
 in contemporary machines, and the utilisation of
 these properties in software, especially software
 for POSIX and popular platforms with similar
-properties, any new general-purpose machine most
-have these properties lest, it but useless with
+properties, any new general-purpose machine must
+have these properties, lest it be useless with
 today's software. Therefore, libzahl can make
 the assumption that the machine has these
 properties. If the machine does not have these
