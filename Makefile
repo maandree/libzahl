@@ -140,8 +140,7 @@ all: libzahl.a $(DOC)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 libzahl.a: $(OBJ)
-	$(AR) rc $@ $?
-	$(RANLIB) $@
+	$(AR) -rcs $@ $?
 
 test-random.c: test-generate.py
 	./test-generate.py > test-random.c
